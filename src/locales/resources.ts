@@ -18,6 +18,8 @@ import enUS_stwOperations_Party from './en-US/stw-operations/party.json'
 import enUS_stwOperations_Urns from './en-US/stw-operations/urns.json'
 import enUS_stwOperations_XPBoosts from './en-US/stw-operations/xpboosts.json'
 import enUS_stwOperations_Llamas from './en-US/stw-operations/llamas.json'
+import enUS_stwOperations_LlamaManager from './en-US/stw-operations/llama-manager.json'
+import enUS_stwOperations_CollectionBook from './en-US/stw-operations/collection-book.json'
 import enUS_stwOperations_Unlock from './en-US/stw-operations/unlock.json'
 import enUS_accountManagement_VBucksInformation from './en-US/account-management/vbucks-information.json'
 import enUS_accountManagement_EULA from './en-US/account-management/eula.json'
@@ -51,6 +53,8 @@ const enUS = {
     urns: enUS_stwOperations_Urns,
     xpboosts: enUS_stwOperations_XPBoosts,
     llamas: enUS_stwOperations_Llamas,
+    'llama-manager': enUS_stwOperations_LlamaManager,
+    'collection-book': enUS_stwOperations_CollectionBook,
     unlock: enUS_stwOperations_Unlock,
   },
   'account-management': {
@@ -123,6 +127,8 @@ const es419 = {
     urns: es419_stwOperations_Urns,
     xpboosts: es419_stwOperations_XPBoosts,
     llamas: es419_stwOperations_Llamas,
+    'llama-manager': enUS_stwOperations_LlamaManager,
+    'collection-book': enUS_stwOperations_CollectionBook,
     unlock: es419_stwOperations_Unlock,
   },
   'account-management': {
@@ -195,6 +201,8 @@ const zhCN = {
     urns: zhCN_stwOperations_Urns,
     xpboosts: zhCN_stwOperations_XPBoosts,
     llamas: zhCN_stwOperations_Llamas,
+    'llama-manager': enUS_stwOperations_LlamaManager,
+    'collection-book': enUS_stwOperations_CollectionBook,
     unlock: zhCN_stwOperations_Unlock,
   },
   'account-management': {
@@ -267,6 +275,8 @@ const ruRU = {
     urns: ruRU_stwOperations_Urns,
     xpboosts: ruRU_stwOperations_XPBoosts,
     llamas: ruRU_stwOperations_Llamas,
+    'llama-manager': enUS_stwOperations_LlamaManager,
+    'collection-book': enUS_stwOperations_CollectionBook,
     unlock: ruRU_stwOperations_Unlock,
   },
   'account-management': {
@@ -339,6 +349,8 @@ const ptBR = {
     urns: ptBR_stwOperations_Urns,
     xpboosts: ptBR_stwOperations_XPBoosts,
     llamas: ptBR_stwOperations_Llamas,
+    'llama-manager': enUS_stwOperations_LlamaManager,
+    'collection-book': enUS_stwOperations_CollectionBook,
     unlock: ptBR_stwOperations_Unlock,
   },
   'account-management': {
@@ -379,6 +391,8 @@ import plPL_stwOperations_Party from './pl-PL/stw-operations/party.json'
 import plPL_stwOperations_Urns from './pl-PL/stw-operations/urns.json'
 import plPL_stwOperations_XPBoosts from './pl-PL/stw-operations/xpboosts.json'
 import plPL_stwOperations_Llamas from './pl-PL/stw-operations/llamas.json'
+import plPL_stwOperations_LlamaManager from './pl-PL/stw-operations/llama-manager.json'
+import plPL_stwOperations_CollectionBook from './pl-PL/stw-operations/collection-book.json'
 import plPL_stwOperations_Unlock from './pl-PL/stw-operations/unlock.json'
 import plPL_accountManagement_VBucksInformation from './pl-PL/account-management/vbucks-information.json'
 import plPL_accountManagement_EULA from './pl-PL/account-management/eula.json'
@@ -412,6 +426,8 @@ const plPL = {
     urns: plPL_stwOperations_Urns,
     xpboosts: plPL_stwOperations_XPBoosts,
     llamas: plPL_stwOperations_Llamas,
+    'llama-manager': plPL_stwOperations_LlamaManager,
+    'collection-book': plPL_stwOperations_CollectionBook,
     unlock: plPL_stwOperations_Unlock,
   },
   'account-management': {
@@ -484,6 +500,8 @@ const itIT = {
     urns: itIT_stwOperations_Urns,
     xpboosts: itIT_stwOperations_XPBoosts,
     llamas: itIT_stwOperations_Llamas,
+    'llama-manager': enUS_stwOperations_LlamaManager,
+    'collection-book': enUS_stwOperations_CollectionBook,
     unlock: itIT_stwOperations_Unlock,
   },
   'account-management': {

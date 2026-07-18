@@ -239,6 +239,32 @@ function STWOperationsSection() {
         <div className="item">
           <Label
             className="title"
+            htmlFor="llama-manager"
+          >
+            {t('stw-operations.options.llama-manager')}
+          </Label>
+          <Switch
+            id="llama-manager"
+            checked={getMenuOptionVisibility('llamaManager')}
+            onCheckedChange={updateMenuOption('llamaManager')}
+          />
+        </div>
+        <div className="item">
+          <Label
+            className="title"
+            htmlFor="collection-book"
+          >
+            {t('stw-operations.options.collection-book')}
+          </Label>
+          <Switch
+            id="collection-book"
+            checked={getMenuOptionVisibility('collectionBook')}
+            onCheckedChange={updateMenuOption('collectionBook')}
+          />
+        </div>
+        <div className="item">
+          <Label
+            className="title"
             htmlFor="unlock"
           >
             {t('stw-operations.options.unlock')}

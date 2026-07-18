@@ -254,6 +254,29 @@ export enum ElectronAPIEventKeys {
   AutoLlamasAccountCheckLoading = 'auto-llamas:account:check:loading',
 
   /**
+   * Llama Manager
+   */
+
+  LlamaManagerRequestData = 'llama-manager:request:data',
+  LlamaManagerResponseData = 'llama-manager:response:data',
+  LlamaManagerLoadingDone = 'llama-manager:loading:done',
+  LlamaManagerPurchase = 'llama-manager:purchase',
+  LlamaManagerOpenPacks = 'llama-manager:open:packs',
+  LlamaManagerOpenChoice = 'llama-manager:open:choice',
+  LlamaManagerActionResult = 'llama-manager:action:result',
+
+  /**
+   * Collection Book Manager
+   */
+
+  CollectionBookRequestData = 'collection-book:request:data',
+  CollectionBookResponseData = 'collection-book:response:data',
+  CollectionBookLoadingDone = 'collection-book:loading:done',
+  CollectionBookUpgrade = 'collection-book:upgrade',
+  CollectionBookSlot = 'collection-book:slot',
+  CollectionBookActionResult = 'collection-book:action:result',
+
+  /**
    * V-Bucks Information
    */
 

@@ -17,6 +17,15 @@ import type { CustomizableMenuSettings, Settings } from '../types/settings'
 import type { TagRecord } from '../types/tags'
 import type { TaxiServiceServiceActionConfig } from '../types/taxi-service'
 import type {
+  CollectionBookSlotRequest,
+  CollectionBookUpgradeRequest,
+} from '../types/collection-book'
+import type {
+  LlamaManagerOpenChoiceRequest,
+  LlamaManagerOpenRequest,
+  LlamaManagerPurchaseRequest,
+} from '../types/llama-manager'
+import type {
   XPBoostsConsumePersonalData,
   XPBoostsConsumeTeammateData,
   XPBoostsSearchUserConfig,
@@ -41,6 +50,8 @@ import { DevicesAuthManager } from './core/devices-auth'
 import { EULATracking } from './core/eula-tracking'
 import { FortniteLauncher } from './core/launcher'
 import { GamesLauncher } from './core/games-launcher'
+import { CollectionBookManager } from './core/collection-book'
+import { LlamaManager } from './core/llama-manager'
 import {
   MCPClientQuestLogin,
   MCPDailyQuests,
@@ -779,6 +790,63 @@ const gotTheLock = app.requestSingleInstanceLock()
     ipcMain.on(ElectronAPIEventKeys.AutoLlamasAccountCheck, async () => {
       await AutoLlamas.check()
     })
+
+    /**
+     * Llama Manager
+     */
+
+    ipcMain.on(
+      ElectronAPIEventKeys.LlamaManagerRequestData,
+      async (_, accounts: Array<AccountData>) => {
+        await LlamaManager.requestBulk(accounts)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.LlamaManagerPurchase,
+      async (_, data: LlamaManagerPurchaseRequest) => {
+        await LlamaManager.purchase(data)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.LlamaManagerOpenPacks,
+      async (_, data: LlamaManagerOpenRequest) => {
+        await LlamaManager.openPacks(data)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.LlamaManagerOpenChoice,
+      async (_, data: LlamaManagerOpenChoiceRequest) => {
+        await LlamaManager.openChoicePack(data)
+      },
+    )
+
+    /**
+     * Collection Book Manager
+     */
+
+    ipcMain.on(
+      ElectronAPIEventKeys.CollectionBookRequestData,
+      async (_, accounts: Array<AccountData>) => {
+        await CollectionBookManager.requestBulk(accounts)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.CollectionBookUpgrade,
+      async (_, data: CollectionBookUpgradeRequest) => {
+        await CollectionBookManager.upgrade(data)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.CollectionBookSlot,
+      async (_, data: CollectionBookSlotRequest) => {
+        await CollectionBookManager.slotItems(data)
+      },
+    )
 
     /**
      * V-Bucks Information

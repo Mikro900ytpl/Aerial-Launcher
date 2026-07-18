@@ -1,0 +1,78 @@
+{
+  "title": "Collection Book Manager",
+  "description": "Upgrade heroes, weapons, traps and more to a target level — one item, whole section, or everything at once. Sections mirror the Collection Book layout.",
+  "note": "Uses account XP. Max level depends on star tier (e.g. 5★ = 50). Supercharged items can go higher. Slotting puts items into the Collection Book permanently for that template.",
+  "form": {
+    "load": "Load inventory",
+    "target-level": "Target level",
+    "upgrade-all": "Upgrade all to {{level}}",
+    "filter": "Search items…",
+    "only-below": "Only below target",
+    "presets": {
+      "10": "Lv 10",
+      "20": "Lv 20",
+      "30": "Lv 30",
+      "40": "Lv 40",
+      "50": "Lv 50"
+    }
+  },
+  "stats": {
+    "items": "{{count}} items",
+    "below": "{{count}} below target",
+    "cb-level": "CB level {{level}}",
+    "account-level": "Account Lv {{level}}",
+    "xp": "{{xp}} XP"
+  },
+  "sections": {
+    "heroes-commando": "Heroes · Soldiers (Commando)",
+    "heroes-constructor": "Heroes · Constructors",
+    "heroes-ninja": "Heroes · Ninjas",
+    "heroes-outlander": "Heroes · Outlanders",
+    "heroes-other": "Heroes · Other",
+    "weapons-assault": "Weapons · Assault",
+    "weapons-shotgun": "Weapons · Shotguns",
+    "weapons-sniper": "Weapons · Snipers / Bows",
+    "weapons-pistol": "Weapons · Pistols",
+    "weapons-explosive": "Weapons · Explosive",
+    "weapons-melee": "Weapons · Melee",
+    "weapons-neon": "Weapons · Neon / Lamp",
+    "weapons-expansion": "Weapons · Expansion / Event",
+    "weapons-other": "Weapons · Other",
+    "traps": "Traps",
+    "defenders": "Defenders",
+    "survivors": "Survivors",
+    "other": "Other"
+  },
+  "groups": {
+    "heroes": "Heroes",
+    "weapons": "Weapons",
+    "other": "Other"
+  },
+  "item": {
+    "level": "Lv {{level}} / {{max}}",
+    "stars": "{{count}}★",
+    "upgrade": "Upgrade",
+    "slot": "Slot into CB"
+  },
+  "actions": {
+    "upgrade-section": "Upgrade section to {{level}}",
+    "slot-section": "Slot whole section",
+    "empty": "No items in this section."
+  },
+  "errors": {
+    "auth": "Auth failed",
+    "fetch": "Load failed"
+  },
+  "toasts": {
+    "success": "Done",
+    "upgraded": "Applied {{count}} level-up(s) (failed: {{failed}})",
+    "slotted": "Slotted {{count}} item(s)",
+    "error": "Action failed ({{context}})",
+    "error_auth": "Authentication failed",
+    "error_upgrade": "Upgrade failed (not enough XP or item locked)",
+    "error_slot": "Could not slot into Collection Book",
+    "error_nothing": "Nothing to upgrade at this target level",
+    "error_account": "Account not found",
+    "error_unknown": "Unknown error"
+  }
+}

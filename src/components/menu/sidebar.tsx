@@ -2,7 +2,20 @@ import type { MouseEventHandler, PropsWithChildren } from 'react'
 
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { Link } from '@tanstack/react-router'
-import { Copyright } from 'lucide-react'
+import {
+  BookOpen,
+  Bot,
+  CarTaxiFront,
+  Copyright,
+  KeyRound,
+  Package,
+  PartyPopper,
+  Pin,
+  ScrollText,
+  Sparkles,
+  Unlock,
+  Zap,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { forwardRef } from 'react'
 
@@ -143,6 +156,7 @@ export function SidebarMenu({
                         onAuxClick={whatIsThis()}
                       >
                         <span className="flex flex-wrap gap-x-2 gap-y-0.5 items-center">
+                          <Bot className="size-3.5 shrink-0 opacity-80" />
                           {t('stw-operations.options.auto-kick')}
                           {status !== null && (
                             <span
@@ -178,6 +192,7 @@ export function SidebarMenu({
                         onAuxClick={whatIsThis()}
                       >
                         <span className="flex flex-wrap gap-x-2 gap-y-0.5 items-center">
+                          <CarTaxiFront className="size-3.5 shrink-0 opacity-80" />
                           {t('stw-operations.options.taxi-service')}
                           {tsStatus !== null && (
                             <span
@@ -212,7 +227,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('stw-operations.options.party')}
+                        <span className="flex gap-2 items-center">
+                          <PartyPopper className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.party')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -227,7 +245,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('stw-operations.options.save-quests')}
+                        <span className="flex gap-2 items-center">
+                          <ScrollText className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.save-quests')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -242,7 +263,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('stw-operations.options.daily-quests')}
+                        <span className="flex gap-2 items-center">
+                          <ScrollText className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.daily-quests')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -257,7 +281,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('stw-operations.options.homebase-name')}
+                        <span className="flex gap-2 items-center">
+                          <KeyRound className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.homebase-name')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -272,7 +299,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('stw-operations.options.xp-boosts')}
+                        <span className="flex gap-2 items-center">
+                          <Zap className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.xp-boosts')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -287,7 +317,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('stw-operations.options.auto-pin-urns')}
+                        <span className="flex gap-2 items-center">
+                          <Pin className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.auto-pin-urns')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -302,7 +335,46 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('stw-operations.options.auto-llamas')}
+                        <span className="flex gap-2 items-center">
+                          <Sparkles className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.auto-llamas')}
+                        </span>
+                      </Link>
+                    </li>
+                  )}
+                  {getMenuOptionVisibility('llamaManager') && (
+                    <li className="item">
+                      <Link
+                        to="/stw-operations/llama-manager"
+                        className={currentClassNameHover}
+                        activeProps={{
+                          className: cn(activeClassName),
+                        }}
+                        onClick={goToPage}
+                        onAuxClick={whatIsThis()}
+                      >
+                        <span className="flex gap-2 items-center">
+                          <Package className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.llama-manager')}
+                        </span>
+                      </Link>
+                    </li>
+                  )}
+                  {getMenuOptionVisibility('collectionBook') && (
+                    <li className="item">
+                      <Link
+                        to="/stw-operations/collection-book"
+                        className={currentClassNameHover}
+                        activeProps={{
+                          className: cn(activeClassName),
+                        }}
+                        onClick={goToPage}
+                        onAuxClick={whatIsThis()}
+                      >
+                        <span className="flex gap-2 items-center">
+                          <BookOpen className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.collection-book')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -317,7 +389,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('stw-operations.options.unlock')}
+                        <span className="flex gap-2 items-center">
+                          <Unlock className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.unlock')}
+                        </span>
                       </Link>
                     </li>
                   )}

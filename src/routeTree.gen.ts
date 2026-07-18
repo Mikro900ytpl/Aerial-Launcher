@@ -20,8 +20,10 @@ import { Route as StwOperationsUnlockRouteImport } from './routes/stw-operations
 import { Route as StwOperationsTaxiServiceRouteImport } from './routes/stw-operations/taxi-service/route'
 import { Route as StwOperationsSaveQuestsRouteImport } from './routes/stw-operations/save-quests/route'
 import { Route as StwOperationsPartyRouteImport } from './routes/stw-operations/party/route'
+import { Route as StwOperationsLlamaManagerRouteImport } from './routes/stw-operations/llama-manager/route'
 import { Route as StwOperationsHomebaseNameRouteImport } from './routes/stw-operations/homebase-name/route'
 import { Route as StwOperationsDailyQuestsRouteImport } from './routes/stw-operations/daily-quests/route'
+import { Route as StwOperationsCollectionBookRouteImport } from './routes/stw-operations/collection-book/route'
 import { Route as StwOperationsAutomationRouteImport } from './routes/stw-operations/automation/route'
 import { Route as StwOperationsAutoLlamasRouteImport } from './routes/stw-operations/auto-llamas/route'
 import { Route as InformationCreditsRouteImport } from './routes/information/credits/route'
@@ -86,6 +88,12 @@ const StwOperationsPartyRouteRoute = StwOperationsPartyRouteImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const StwOperationsLlamaManagerRouteRoute =
+  StwOperationsLlamaManagerRouteImport.update({
+    path: '/stw-operations/llama-manager',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const StwOperationsHomebaseNameRouteRoute =
   StwOperationsHomebaseNameRouteImport.update({
     path: '/stw-operations/homebase-name',
@@ -95,6 +103,12 @@ const StwOperationsHomebaseNameRouteRoute =
 const StwOperationsDailyQuestsRouteRoute =
   StwOperationsDailyQuestsRouteImport.update({
     path: '/stw-operations/daily-quests',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const StwOperationsCollectionBookRouteRoute =
+  StwOperationsCollectionBookRouteImport.update({
+    path: '/stw-operations/collection-book',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -229,12 +243,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StwOperationsAutomationRouteImport
       parentRoute: typeof rootRoute
     }
+    '/stw-operations/collection-book': {
+      preLoaderRoute: typeof StwOperationsCollectionBookRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/stw-operations/daily-quests': {
       preLoaderRoute: typeof StwOperationsDailyQuestsRouteImport
       parentRoute: typeof rootRoute
     }
     '/stw-operations/homebase-name': {
       preLoaderRoute: typeof StwOperationsHomebaseNameRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/stw-operations/llama-manager': {
+      preLoaderRoute: typeof StwOperationsLlamaManagerRouteImport
       parentRoute: typeof rootRoute
     }
     '/stw-operations/party': {
@@ -285,8 +307,10 @@ export const routeTree = rootRoute.addChildren([
   InformationCreditsRouteRoute,
   StwOperationsAutoLlamasRouteRoute,
   StwOperationsAutomationRouteRoute,
+  StwOperationsCollectionBookRouteRoute,
   StwOperationsDailyQuestsRouteRoute,
   StwOperationsHomebaseNameRouteRoute,
+  StwOperationsLlamaManagerRouteRoute,
   StwOperationsPartyRouteRoute,
   StwOperationsSaveQuestsRouteRoute,
   StwOperationsTaxiServiceRouteRoute,

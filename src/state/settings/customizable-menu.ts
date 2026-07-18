@@ -46,6 +46,8 @@ export const customizableMenuSettingsRelations: Record<
     'xpBoosts',
     'autoPinUrns',
     'autoLlamas',
+    'llamaManager',
+    'collectionBook',
     'unlock',
   ],
   accountManagement: [
