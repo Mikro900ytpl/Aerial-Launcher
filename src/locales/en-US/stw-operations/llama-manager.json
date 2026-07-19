@@ -5,6 +5,12 @@
   "form": {
     "load": "Load llamas"
   },
+  "bulk": {
+    "mini": "Mini ×{{count}}",
+    "upgrade": "Upgrade ×{{count}}",
+    "mini-hint": "Buy Mini Reward Llamas on all selected accounts (voucher_basicpack)",
+    "upgrade-hint": "Buy Upgrade / X-Ray llamas on all selected accounts (50 X-Ray tickets each)"
+  },
   "tabs": {
     "inventory": "Inventory",
     "shop": "Shop",
@@ -49,6 +55,8 @@
     "success": "Done",
     "purchased": "Purchased {{count}} llama(s)",
     "opened": "Opened {{count}} llama(s)",
+    "bulk-mini": "Bought {{count}} mini llama(s) on {{accounts}} account(s) (failed: {{failed}})",
+    "bulk-upgrade": "Bought {{count}} upgrade llama(s) on {{accounts}} account(s) (failed: {{failed}})",
     "choice-only": "These packs need choice selection — use the Choice (CP) tab.",
     "choice-empty": "No choice packs to open.",
     "error": "Action failed ({{context}})",
@@ -57,6 +65,11 @@
     "error_open": "Could not open packs",
     "error_open-choice": "Could not open choice pack",
     "error_account": "Account not found",
+    "error_accounts": "No accounts selected",
+    "error_no-mini-offer": "Mini Llama offer not found in shop",
+    "error_no-upgrade-offer": "Upgrade Llama offer not found in shop",
+    "error_no-tokens": "Not enough currency / tokens",
+    "error_limit": "Daily limit or not enough currency",
     "error_unknown": "Unknown error"
   }
 }

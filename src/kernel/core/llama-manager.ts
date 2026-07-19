@@ -2,6 +2,9 @@ import type { AccountData } from '../../types/accounts'
 import type {
   LlamaManagerAccountData,
   LlamaManagerActionResult,
+  LlamaManagerBulkKind,
+  LlamaManagerBulkPurchaseRequest,
+  LlamaManagerBulkPurchaseResult,
   LlamaManagerCurrency,
   LlamaManagerInventoryPack,
   LlamaManagerOpenChoiceRequest,
@@ -81,6 +84,120 @@ function isChoicePackTemplate(templateId: string) {
     lower.includes('chooseyour') ||
     lower.includes('pickone')
   )
+}
+
+/** Mini Reward Llama — bought with voucher_basicpack tokens. */
+function isMiniRewardLlamaOffer(offer: LlamaManagerShopOffer) {
+  const sub = (offer.currencySubType ?? '').toLowerCase()
+  const title = (offer.title ?? '').toLowerCase()
+  const dev = (offer.devName ?? '').toLowerCase()
+  const grants = offer.itemGrants.map((g) => g.templateId.toLowerCase())
+
+  if (sub.includes('voucher_basicpack')) {
+    return true
+  }
+
+  if (
+    title.includes('mini reward') ||
+    title.includes('mini llama') ||
+    dev.includes('mini') ||
+    dev.includes('basicpack')
+  ) {
+    return true
+  }
+
+  return grants.some(
+    (g) =>
+      g.includes('voucher_basicpack') ||
+      g.includes('cardpack_bronze') ||
+      g.includes('mini'),
+  )
+}
+
+/**
+ * Upgrade / Super Ranged X-Ray llama.
+ * Prefer Always.UpgradePack.01 (50 X-Ray tickets), fallback token pack.
+ * Free daily upgrades are excluded from bulk paid buys.
+ */
+function findUpgradeLlamaOffer(
+  shop: Array<LlamaManagerShopOffer>,
+): LlamaManagerShopOffer | undefined {
+  const paid = shop.filter((offer) => !offer.isFree && offer.price > 0)
+
+  const byDev01 = paid.find((offer) => offer.devName === 'Always.UpgradePack.01')
+  if (byDev01) {
+    return byDev01
+  }
+
+  const byXray = paid.find((offer) => {
+    const sub = (offer.currencySubType ?? '').toLowerCase()
+    return (
+      sub.includes('currency_xrayllama') &&
+      (offer.price === 50 || offer.regularPrice === 50)
+    )
+  })
+  if (byXray) {
+    return byXray
+  }
+
+  const byDev02 = paid.find((offer) => offer.devName === 'Always.UpgradePack.02')
+  if (byDev02) {
+    return byDev02
+  }
+
+  return paid.find((offer) => {
+    const sub = (offer.currencySubType ?? '').toLowerCase()
+    return (
+      sub.includes('voucher_cardpack_bronze') ||
+      (offer.isXRay && offer.price > 0)
+    )
+  })
+}
+
+function currencyTemplateForOffer(offer: LlamaManagerShopOffer) {
+  const sub = offer.currencySubType ?? ''
+  if (sub.length > 0) {
+    return sub
+  }
+  return 'AccountResource:currency_xrayllama'
+}
+
+function tokensForOffer(
+  currencies: Array<LlamaManagerCurrency>,
+  offer: LlamaManagerShopOffer,
+) {
+  const template = currencyTemplateForOffer(offer).toLowerCase()
+  const key = template
+    .replace('accountresource:', '')
+    .replace('currency:', '')
+
+  const match = currencies.find((c) => {
+    const id = c.templateId.toLowerCase()
+    return (
+      id === template ||
+      id.includes(key) ||
+      (key.includes('xrayllama') && id.includes('xrayllama')) ||
+      (key.includes('voucher_cardpack_bronze') &&
+        id.includes('voucher_cardpack_bronze')) ||
+      (key.includes('voucher_basicpack') && id.includes('voucher_basicpack'))
+    )
+  })
+
+  return match?.quantity ?? 0
+}
+
+function findOfferForKind(
+  shop: Array<LlamaManagerShopOffer>,
+  kind: LlamaManagerBulkKind,
+) {
+  if (kind === 'mini') {
+    return shop.find(isMiniRewardLlamaOffer)
+  }
+  return findUpgradeLlamaOffer(shop)
+}
+
+function noOfferError(kind: LlamaManagerBulkKind) {
+  return kind === 'mini' ? 'no-mini-offer' : 'no-upgrade-offer'
 }
 
 function extractRewards(
@@ -530,6 +647,189 @@ export class LlamaManager {
       ElectronAPIEventKeys.LlamaManagerResponseData,
       refreshed,
     )
+  }
+
+  /**
+   * Buy any quantity of Mini or Upgrade llamas on multiple accounts at once.
+   * Caps by currency balance and daily remaining limit per account.
+   */
+  static async bulkPurchase(request: LlamaManagerBulkPurchaseRequest) {
+    const kind: LlamaManagerBulkKind = request.kind === 'upgrade' ? 'upgrade' : 'mini'
+    const quantity = Math.max(1, Math.floor(request.quantity || 1))
+    const accountIds = [...new Set(request.accountIds)].filter(Boolean)
+
+    const summary: LlamaManagerBulkPurchaseResult = {
+      success: false,
+      kind,
+      totalPurchased: 0,
+      accountsOk: 0,
+      accountsFailed: 0,
+      perAccount: [],
+    }
+
+    if (accountIds.length <= 0) {
+      summary.error = 'accounts'
+      MainWindow.instance.webContents.send(
+        ElectronAPIEventKeys.LlamaManagerBulkResult,
+        summary,
+      )
+      return
+    }
+
+    await Promise.allSettled(
+      accountIds.map(async (accountId) => {
+        const account = AccountsManager.getAccountById(accountId)
+        const entry: LlamaManagerBulkPurchaseResult['perAccount'][number] = {
+          accountId,
+          purchased: 0,
+        }
+
+        if (!account) {
+          entry.error = 'account'
+          summary.accountsFailed += 1
+          summary.perAccount.push(entry)
+          return
+        }
+
+        try {
+          const snapshot = await LlamaManager.fetchAccountData(account)
+
+          if (snapshot.error) {
+            entry.error = snapshot.error
+            summary.accountsFailed += 1
+            summary.perAccount.push(entry)
+            return
+          }
+
+          const offer = findOfferForKind(snapshot.shop, kind)
+
+          if (!offer) {
+            entry.error = noOfferError(kind)
+            summary.accountsFailed += 1
+            summary.perAccount.push(entry)
+            MainWindow.instance.webContents.send(
+              ElectronAPIEventKeys.LlamaManagerResponseData,
+              snapshot,
+            )
+            return
+          }
+
+          const tokens = tokensForOffer(snapshot.currencies, offer)
+          const byTokens =
+            offer.price > 0 ? Math.floor(tokens / offer.price) : quantity
+          const byLimit =
+            offer.remaining !== null && offer.remaining >= 0
+              ? offer.remaining
+              : quantity
+          const toBuy = Math.min(quantity, byTokens, byLimit)
+
+          if (toBuy <= 0) {
+            entry.error = tokens <= 0 ? 'no-tokens' : 'limit'
+            summary.accountsFailed += 1
+            summary.perAccount.push(entry)
+            MainWindow.instance.webContents.send(
+              ElectronAPIEventKeys.LlamaManagerResponseData,
+              snapshot,
+            )
+            return
+          }
+
+          const accessToken =
+            await Authentication.verifyAccessToken(account)
+
+          if (!accessToken) {
+            entry.error = 'auth'
+            summary.accountsFailed += 1
+            summary.perAccount.push(entry)
+            return
+          }
+
+          let purchased = 0
+          const allRewards: Record<string, number> = {}
+
+          for (let i = 0; i < toBuy; i += 1) {
+            try {
+              try {
+                await populatePrerolledOffers({
+                  accessToken,
+                  accountId: account.accountId,
+                })
+              } catch {
+                //
+              }
+
+              const response = await purchaseCatalogEntry({
+                accessToken,
+                accountId: account.accountId,
+                offerId: offer.offerId,
+                currency: offer.currencyType ?? 'GameItem',
+                currencySubType: offer.currencySubType,
+                expectedTotalPrice: offer.price,
+                purchaseQuantity: 1,
+              })
+
+              purchased += 1
+
+              const rewards = extractRewards(
+                response.data.notifications ?? [],
+              )
+              Object.entries(rewards).forEach(([itemType, qty]) => {
+                allRewards[itemType] = (allRewards[itemType] ?? 0) + qty
+              })
+            } catch {
+              break
+            }
+          }
+
+          entry.purchased = purchased
+          summary.totalPurchased += purchased
+
+          if (purchased > 0) {
+            summary.accountsOk += 1
+            if (Object.keys(allRewards).length > 0) {
+              sendRewardsNotification({
+                accountId: account.accountId,
+                rewards: allRewards,
+              })
+            }
+          } else {
+            entry.error = 'purchase'
+            summary.accountsFailed += 1
+          }
+
+          summary.perAccount.push(entry)
+
+          const refreshed = await LlamaManager.fetchAccountData(account)
+          MainWindow.instance.webContents.send(
+            ElectronAPIEventKeys.LlamaManagerResponseData,
+            refreshed,
+          )
+        } catch {
+          entry.error = 'purchase'
+          summary.accountsFailed += 1
+          summary.perAccount.push(entry)
+        }
+      }),
+    )
+
+    summary.success = summary.totalPurchased > 0
+
+    if (!summary.success && !summary.error) {
+      summary.error = 'purchase'
+    }
+
+    MainWindow.instance.webContents.send(
+      ElectronAPIEventKeys.LlamaManagerBulkResult,
+      summary,
+    )
+  }
+
+  /** @deprecated use bulkPurchase */
+  static async bulkPurchaseMini(request: LlamaManagerBulkPurchaseRequest) {
+    await LlamaManager.bulkPurchase({
+      ...request,
+      kind: request.kind ?? 'mini',
+    })
   }
 
   static async openPacks(request: LlamaManagerOpenRequest) {

@@ -3,17 +3,30 @@ import type { MouseEventHandler, PropsWithChildren } from 'react'
 import { GitHubLogoIcon } from '@radix-ui/react-icons'
 import { Link } from '@tanstack/react-router'
 import {
+  ArrowLeftRight,
+  Bell,
   BookOpen,
   Bot,
   CarTaxiFront,
+  Coins,
   Copyright,
+  FileText,
+  Gamepad2,
+  Globe,
+  Key,
   KeyRound,
+  Laptop,
+  MonitorSmartphone,
   Package,
   PartyPopper,
   Pin,
+  Radar,
   ScrollText,
+  Settings,
   Sparkles,
+  Ticket,
   Unlock,
+  UserMinus,
   Zap,
 } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -114,7 +127,10 @@ export function SidebarMenu({
                 className: cn(activeClassName),
               }}
             >
-              {t('general:go-to-current-alerts')}
+              <span className="flex gap-2 items-center">
+                <Bell className="size-3.5 shrink-0 opacity-80" />
+                {t('general:go-to-current-alerts')}
+              </span>
             </Link>
           )}
 
@@ -130,7 +146,10 @@ export function SidebarMenu({
               }}
               onClick={goToPage}
             >
-              {t('games-launcher.title')}
+              <span className="flex gap-2 items-center">
+                <Gamepad2 className="size-3.5 shrink-0 opacity-80" />
+                {t('games-launcher.title')}
+              </span>
             </Link>
           )}
 
@@ -424,9 +443,12 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t(
-                          'account-management.options.vbucks-information',
-                        )}
+                        <span className="flex gap-2 items-center">
+                          <Coins className="size-3.5 shrink-0 opacity-80" />
+                          {t(
+                            'account-management.options.vbucks-information',
+                          )}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -441,7 +463,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('account-management.options.redeem-codes')}
+                        <span className="flex gap-2 items-center">
+                          <Ticket className="size-3.5 shrink-0 opacity-80" />
+                          {t('account-management.options.redeem-codes')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -463,7 +488,10 @@ export function SidebarMenu({
                         onAuxClick={whatIsThis()}
                         disabled={!areThereAccounts}
                       >
-                        {t('account-management.options.devices-auth')}
+                        <span className="flex gap-2 items-center">
+                          <MonitorSmartphone className="size-3.5 shrink-0 opacity-80" />
+                          {t('account-management.options.devices-auth')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -485,7 +513,10 @@ export function SidebarMenu({
                         onAuxClick={whatIsThis()}
                         disabled={!areThereAccounts}
                       >
-                        {t('account-management.options.epic-settings')}
+                        <span className="flex gap-2 items-center">
+                          <Settings className="size-3.5 shrink-0 opacity-80" />
+                          {t('account-management.options.epic-settings')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -507,7 +538,10 @@ export function SidebarMenu({
                         onAuxClick={whatIsThis()}
                         disabled={!areThereAccounts}
                       >
-                        EULA
+                        <span className="flex gap-2 items-center">
+                          <FileText className="size-3.5 shrink-0 opacity-80" />
+                          EULA
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -544,7 +578,10 @@ export function SidebarMenu({
                         onAuxClick={whatIsThis()}
                         disabled={!areThereAccounts}
                       >
-                        {t('advanced-mode.options.matchmaking-track')}
+                        <span className="flex gap-2 items-center">
+                          <Radar className="size-3.5 shrink-0 opacity-80" />
+                          {t('advanced-mode.options.matchmaking-track')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -559,7 +596,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('advanced-mode.options.world-info')}
+                        <span className="flex gap-2 items-center">
+                          <Globe className="size-3.5 shrink-0 opacity-80" />
+                          {t('advanced-mode.options.world-info')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -602,7 +642,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('accounts.options.auth')}
+                        <span className="flex gap-2 items-center">
+                          <Key className="size-3.5 shrink-0 opacity-80" />
+                          {t('accounts.options.auth')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -618,7 +661,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('accounts.options.exchange')}
+                        <span className="flex gap-2 items-center">
+                          <ArrowLeftRight className="size-3.5 shrink-0 opacity-80" />
+                          {t('accounts.options.exchange')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -634,7 +680,10 @@ export function SidebarMenu({
                         onClick={goToPage}
                         onAuxClick={whatIsThis()}
                       >
-                        {t('accounts.options.device')}
+                        <span className="flex gap-2 items-center">
+                          <Laptop className="size-3.5 shrink-0 opacity-80" />
+                          {t('accounts.options.device')}
+                        </span>
                       </Link>
                     </li>
                   )}
@@ -656,7 +705,10 @@ export function SidebarMenu({
                         onAuxClick={whatIsThis()}
                         disabled={!areThereAccounts}
                       >
-                        {t('accounts.options.remove')}
+                        <span className="flex gap-2 items-center">
+                          <UserMinus className="size-3.5 shrink-0 opacity-80" />
+                          {t('accounts.options.remove')}
+                        </span>
                       </Link>
                     </li>
                   )}

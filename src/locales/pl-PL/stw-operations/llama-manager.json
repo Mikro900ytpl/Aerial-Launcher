@@ -5,6 +5,12 @@
   "form": {
     "load": "Wczytaj lamy"
   },
+  "bulk": {
+    "mini": "Mini ×{{count}}",
+    "upgrade": "Upgrade ×{{count}}",
+    "mini-hint": "Kup Mini Reward Llama na wszystkich wybranych kontach (tokeny voucher_basicpack)",
+    "upgrade-hint": "Kup Upgrade / X-Ray lamy na wszystkich wybranych kontach (po 50 ticketów X-Ray)"
+  },
   "tabs": {
     "inventory": "Ekwipunek",
     "shop": "Sklep",
@@ -49,6 +55,8 @@
     "success": "Gotowe",
     "purchased": "Kupiono {{count}} lam(y)",
     "opened": "Otwarto {{count}} lam(y)",
+    "bulk-mini": "Kupiono {{count}} minilam(y) na {{accounts}} koncie/kontach (błędy: {{failed}})",
+    "bulk-upgrade": "Kupiono {{count}} upgrade lam(y) na {{accounts}} koncie/kontach (błędy: {{failed}})",
     "choice-only": "Te paczki wymagają wyboru — użyj zakładki Choice (CP).",
     "choice-empty": "Brak choice packów do otwarcia.",
     "error": "Akcja nieudana ({{context}})",
@@ -57,6 +65,11 @@
     "error_open": "Nie udało się otworzyć paczek",
     "error_open-choice": "Nie udało się otworzyć choice packa",
     "error_account": "Nie znaleziono konta",
+    "error_accounts": "Nie wybrano kont",
+    "error_no-mini-offer": "Brak oferty Mini Llama w sklepie",
+    "error_no-upgrade-offer": "Brak oferty Upgrade Llama w sklepie",
+    "error_no-tokens": "Za mało waluty / tokenów",
+    "error_limit": "Limit dzienny lub za mało waluty",
     "error_unknown": "Nieznany błąd"
   }
 }

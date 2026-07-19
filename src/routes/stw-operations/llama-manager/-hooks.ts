@@ -45,6 +45,8 @@ export function useLlamaManagerPage() {
   })
 
   const [quantities, setQuantities] = useState<Record<string, number>>({})
+  const [bulkMiniQty, setBulkMiniQty] = useState(1)
+  const [bulkUpgradeQty, setBulkUpgradeQty] = useState(1)
   const [choiceDialog, setChoiceDialog] = useState<{
     pack: LlamaManagerInventoryPack
     accountId: string
@@ -103,11 +105,40 @@ export function useLlamaManagerPage() {
         }
       },
     )
+    const bulkListener = window.electronAPI.llamaManagerBulkResult(
+      async (result) => {
+        updateActing(false)
+
+        if (result.success) {
+          const toastKey =
+            result.kind === 'upgrade'
+              ? 'llama-manager.toasts.bulk-upgrade'
+              : 'llama-manager.toasts.bulk-mini'
+          toast(
+            t(toastKey, {
+              count: result.totalPurchased,
+              accounts: result.accountsOk,
+              failed: result.accountsFailed,
+            }),
+          )
+        } else {
+          const errorKey = `llama-manager.toasts.error_${result.error ?? 'unknown'}`
+          toast(
+            t(errorKey, {
+              defaultValue: t('llama-manager.toasts.error', {
+                context: result.error ?? 'unknown',
+              }),
+            }),
+          )
+        }
+      },
+    )
 
     return () => {
       responseListener.removeListener()
       loadingListener.removeListener()
       resultListener.removeListener()
+      bulkListener.removeListener()
     }
   }, [t, updateActing, updateData, updateLoading, setLastResult])
 
@@ -170,6 +201,28 @@ export function useLlamaManagerPage() {
       currencyType: offer.currencyType,
     })
   }
+
+  const handleBulkPurchase = (kind: 'mini' | 'upgrade') => {
+    if (isActing) return
+
+    const selected = getAccounts()
+    if (selected.length <= 0) {
+      toast(t('form.accounts.no-linked', { ns: 'general' }))
+      return
+    }
+
+    const raw = kind === 'upgrade' ? bulkUpgradeQty : bulkMiniQty
+    const quantity = Math.max(1, Math.floor(raw || 1))
+    updateActing(true)
+    window.electronAPI.llamaManagerBulkPurchase({
+      accountIds: selected.map((account) => account.accountId),
+      quantity,
+      kind,
+    })
+  }
+
+  const handleBulkPurchaseMini = () => handleBulkPurchase('mini')
+  const handleBulkPurchaseUpgrade = () => handleBulkPurchase('upgrade')
 
   const handleOpenGroup = (
     accountId: string,
@@ -301,6 +354,8 @@ export function useLlamaManagerPage() {
     accountsData,
     lastResult,
     quantities,
+    bulkMiniQty,
+    bulkUpgradeQty,
     choiceDialog,
     manualSelectionIdx,
 
@@ -308,9 +363,13 @@ export function useLlamaManagerPage() {
     updateTags,
     setQuantity,
     getQuantity,
+    setBulkMiniQty,
+    setBulkUpgradeQty,
     setManualSelectionIdx,
     handleLoad,
     handlePurchase,
+    handleBulkPurchaseMini,
+    handleBulkPurchaseUpgrade,
     handleOpenAll,
     handleOpenTemplate,
     handleOpenGroup,

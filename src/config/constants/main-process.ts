@@ -261,6 +261,8 @@ export enum ElectronAPIEventKeys {
   LlamaManagerResponseData = 'llama-manager:response:data',
   LlamaManagerLoadingDone = 'llama-manager:loading:done',
   LlamaManagerPurchase = 'llama-manager:purchase',
+  LlamaManagerBulkPurchase = 'llama-manager:bulk:purchase',
+  LlamaManagerBulkResult = 'llama-manager:bulk:result',
   LlamaManagerOpenPacks = 'llama-manager:open:packs',
   LlamaManagerOpenChoice = 'llama-manager:open:choice',
   LlamaManagerActionResult = 'llama-manager:action:result',

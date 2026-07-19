@@ -104,6 +104,8 @@ function Content() {
     parsedSelectedTags,
     tagOptions,
     accountsData,
+    bulkMiniQty,
+    bulkUpgradeQty,
     choiceDialog,
     manualSelectionIdx,
 
@@ -111,9 +113,13 @@ function Content() {
     updateTags,
     setQuantity,
     getQuantity,
+    setBulkMiniQty,
+    setBulkUpgradeQty,
     setManualSelectionIdx,
     handleLoad,
     handlePurchase,
+    handleBulkPurchaseMini,
+    handleBulkPurchaseUpgrade,
     handleOpenAll,
     handleOpenTemplate,
     handleOpenGroup,
@@ -156,6 +162,70 @@ function Content() {
                 onUpdateAccounts={updateAccounts}
                 onUpdateTags={updateTags}
               />
+
+              <div className="bg-muted/40 border gap-2 grid p-2.5 rounded-lg sm:grid-cols-2">
+                <div className="flex gap-1.5 items-center">
+                  <Input
+                    id="bulk-mini-qty"
+                    type="number"
+                    min={1}
+                    max={9999}
+                    className="bg-background h-8 w-16 shrink-0"
+                    value={bulkMiniQty}
+                    onChange={(event) =>
+                      setBulkMiniQty(
+                        Math.max(1, Number(event.target.value) || 1),
+                      )
+                    }
+                    disabled={isActing}
+                    title={t('llama-manager.bulk.mini-hint')}
+                  />
+                  <Button
+                    size="sm"
+                    className="flex-1 h-8"
+                    variant="secondary"
+                    onClick={handleBulkPurchaseMini}
+                    disabled={isDisabledForm}
+                  >
+                    {isActing ? (
+                      <UpdateIcon className="animate-spin" />
+                    ) : (
+                      t('llama-manager.bulk.mini', { count: bulkMiniQty })
+                    )}
+                  </Button>
+                </div>
+                <div className="flex gap-1.5 items-center">
+                  <Input
+                    id="bulk-upgrade-qty"
+                    type="number"
+                    min={1}
+                    max={9999}
+                    className="bg-background h-8 w-16 shrink-0"
+                    value={bulkUpgradeQty}
+                    onChange={(event) =>
+                      setBulkUpgradeQty(
+                        Math.max(1, Number(event.target.value) || 1),
+                      )
+                    }
+                    disabled={isActing}
+                    title={t('llama-manager.bulk.upgrade-hint')}
+                  />
+                  <Button
+                    size="sm"
+                    className="flex-1 h-8"
+                    onClick={handleBulkPurchaseUpgrade}
+                    disabled={isDisabledForm}
+                  >
+                    {isActing ? (
+                      <UpdateIcon className="animate-spin" />
+                    ) : (
+                      t('llama-manager.bulk.upgrade', {
+                        count: bulkUpgradeQty,
+                      })
+                    )}
+                  </Button>
+                </div>
+              </div>
             </CardContent>
             <CardFooter className="border-t bg-muted/20">
               <Button

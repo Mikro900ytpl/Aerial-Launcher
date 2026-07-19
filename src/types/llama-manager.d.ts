@@ -62,6 +62,35 @@ export type LlamaManagerPurchaseRequest = {
   currencyType?: string
 }
 
+/** mini = Mini Reward Llama tokens; upgrade = Upgrade/X-Ray llama (50 tickets or bronze token) */
+export type LlamaManagerBulkKind = 'mini' | 'upgrade'
+
+/** Buy llamas on many accounts at once (one button). */
+export type LlamaManagerBulkPurchaseRequest = {
+  accountIds: Array<string>
+  quantity: number
+  kind: LlamaManagerBulkKind
+}
+
+export type LlamaManagerBulkPurchaseResult = {
+  success: boolean
+  kind: LlamaManagerBulkKind
+  totalPurchased: number
+  accountsOk: number
+  accountsFailed: number
+  perAccount: Array<{
+    accountId: string
+    purchased: number
+    error?: string
+  }>
+  error?: string
+}
+
+/** @deprecated use LlamaManagerBulkPurchaseRequest */
+export type LlamaManagerBulkMiniPurchaseRequest = LlamaManagerBulkPurchaseRequest
+/** @deprecated use LlamaManagerBulkPurchaseResult */
+export type LlamaManagerBulkMiniPurchaseResult = LlamaManagerBulkPurchaseResult
+
 export type LlamaManagerOpenRequest = {
   accountId: string
   itemIds: Array<string>

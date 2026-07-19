@@ -21,6 +21,7 @@ import type {
   CollectionBookUpgradeRequest,
 } from '../types/collection-book'
 import type {
+  LlamaManagerBulkPurchaseRequest,
   LlamaManagerOpenChoiceRequest,
   LlamaManagerOpenRequest,
   LlamaManagerPurchaseRequest,
@@ -806,6 +807,13 @@ const gotTheLock = app.requestSingleInstanceLock()
       ElectronAPIEventKeys.LlamaManagerPurchase,
       async (_, data: LlamaManagerPurchaseRequest) => {
         await LlamaManager.purchase(data)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.LlamaManagerBulkPurchase,
+      async (_, data: LlamaManagerBulkPurchaseRequest) => {
+        await LlamaManager.bulkPurchase(data)
       },
     )
 
