@@ -136,6 +136,8 @@ const gotTheLock = app.requestSingleInstanceLock()
       mainWindow.webContents.setUserAgent(manifest.UserAgent)
     }
 
+    MainWindow.setInstance(mainWindow)
+
     // and load the index.html of the app.
     if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
       mainWindow.webContents.openDevTools({
@@ -178,7 +180,24 @@ const gotTheLock = app.requestSingleInstanceLock()
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   app.on('ready', async () => {
-    DataDirectory.createDataResources().catch(() => {})
+    try {
+      await DataDirectory.createDataResources()
+      await AccountsManager.loadFromDisk()
+    } catch {
+      //
+    }
+
+    ipcMain.on(ElectronAPIEventKeys.RequestAccounts, async () => {
+      await AccountsManager.load()
+    })
+
+    ipcMain.on(ElectronAPIEventKeys.HomeWorldInfoRequest, async () => {
+      await WorldInfoManager.requestForHome()
+    })
+
+    ipcMain.on(ElectronAPIEventKeys.WorldInfoRequestData, async () => {
+      await WorldInfoManager.requestForAdvanceSection()
+    })
 
     MainWindow.setInstance(await createWindow())
 
@@ -207,10 +226,6 @@ const gotTheLock = app.requestSingleInstanceLock()
         await AppLanguage.update(language)
       },
     )
-
-    ipcMain.on(ElectronAPIEventKeys.RequestAccounts, async () => {
-      await AccountsManager.load()
-    })
 
     ipcMain.on(ElectronAPIEventKeys.RequestSettings, async () => {
       await SettingsManager.load()
@@ -560,14 +575,6 @@ const gotTheLock = app.requestSingleInstanceLock()
         await AlertsDone.fetchPlayerData(config)
       },
     )
-
-    ipcMain.on(ElectronAPIEventKeys.HomeWorldInfoRequest, async () => {
-      await WorldInfoManager.requestForHome()
-    })
-
-    ipcMain.on(ElectronAPIEventKeys.WorldInfoRequestData, async () => {
-      await WorldInfoManager.requestForAdvanceSection()
-    })
 
     ipcMain.on(
       ElectronAPIEventKeys.WorldInfoSaveFile,
