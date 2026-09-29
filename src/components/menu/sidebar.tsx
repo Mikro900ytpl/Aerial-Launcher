@@ -23,6 +23,7 @@ import {
   Radar,
   ScrollText,
   Settings,
+  ShoppingBag,
   Sparkles,
   Ticket,
   Unlock,
@@ -357,6 +358,24 @@ export function SidebarMenu({
                         <span className="flex gap-2 items-center">
                           <Sparkles className="size-3.5 shrink-0 opacity-80" />
                           {t('stw-operations.options.auto-llamas')}
+                        </span>
+                      </Link>
+                    </li>
+                  )}
+                  {getMenuOptionVisibility('itemShop') && (
+                    <li className="item">
+                      <Link
+                        to="/stw-operations/item-shop"
+                        className={currentClassNameHover}
+                        activeProps={{
+                          className: cn(activeClassName),
+                        }}
+                        onClick={goToPage}
+                        onAuxClick={whatIsThis()}
+                      >
+                        <span className="flex gap-2 items-center">
+                          <ShoppingBag className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.item-shop')}
                         </span>
                       </Link>
                     </li>

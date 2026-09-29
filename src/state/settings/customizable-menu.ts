@@ -47,6 +47,7 @@ export const customizableMenuSettingsRelations: Record<
     'autoPinUrns',
     'autoLlamas',
     'llamaManager',
+    'itemShop',
     'collectionBook',
     'unlock',
   ],

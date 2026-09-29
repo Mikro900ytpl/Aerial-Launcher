@@ -193,6 +193,79 @@ export function purchaseCatalogEntry({
   )
 }
 
+export function giftCatalogEntry({
+  accessToken,
+  accountId,
+  offerId,
+  receiverAccountIds,
+  expectedTotalPrice,
+  personalMessage = '',
+  giftWrapTemplateId = 'GiftBox:gb_default',
+  currency = 'MtxCurrency',
+  currencySubType = '',
+  purchaseQuantity = 1,
+}: {
+  accessToken: string
+  accountId: string
+  offerId: string
+  receiverAccountIds: Array<string>
+  expectedTotalPrice: number
+  personalMessage?: string
+  giftWrapTemplateId?: string
+  currency?: string
+  currencySubType?: string
+  purchaseQuantity?: number
+}) {
+  return baseGameService.post<MCPPurchaseCatalogEntryResponse>(
+    `/profile/${accountId}/client/GiftCatalogEntry`,
+    {
+      offerId,
+      currency,
+      currencySubType,
+      expectedTotalPrice,
+      purchaseQuantity,
+      receiverAccountIds,
+      giftWrapTemplateId,
+      personalMessage,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId: 'common_core',
+        rvn: -1,
+      },
+    }
+  )
+}
+
+export function setAffiliateName({
+  accessToken,
+  accountId,
+  affiliateName,
+}: {
+  accessToken: string
+  accountId: string
+  affiliateName: string
+}) {
+  return baseGameService.post<MCPQueryProfileMainProfile>(
+    `/profile/${accountId}/client/SetAffiliateName`,
+    {
+      affiliateName,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId: 'common_core',
+        rvn: -1,
+      },
+    }
+  )
+}
+
 export function setActivateConsumable({
   accessToken,
   accountId,
@@ -460,38 +533,6 @@ export function setSlotItemIntoCollectionBook({
     `/profile/${accountId}/client/SlotItemIntoCollectionBook`,
     {
       itemId,
-    },
-    {
-      headers: {
-        Authorization: `bearer ${accessToken}`,
-      },
-      params: {
-        profileId: 'campaign',
-        rvn: -1,
-      },
-    }
-  )
-}
-
-export function setClaimCollectionBookPageRewards({
-  accessToken,
-  accountId,
-  pageTemplateId,
-  sectionId = '',
-  selectedRewardIndex = 0,
-}: {
-  accessToken: string
-  accountId: string
-  pageTemplateId: string
-  sectionId?: string
-  selectedRewardIndex?: number
-}) {
-  return baseGameService.post<MCPQueryProfile>(
-    `/profile/${accountId}/client/ClaimCollectionBookPageRewards`,
-    {
-      pageTemplateId,
-      sectionId,
-      selectedRewardIndex,
     },
     {
       headers: {

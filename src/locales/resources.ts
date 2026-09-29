@@ -20,6 +20,7 @@ import enUS_stwOperations_XPBoosts from './en-US/stw-operations/xpboosts.json'
 import enUS_stwOperations_Llamas from './en-US/stw-operations/llamas.json'
 import enUS_stwOperations_LlamaManager from './en-US/stw-operations/llama-manager.json'
 import enUS_stwOperations_CollectionBook from './en-US/stw-operations/collection-book.json'
+import enUS_stwOperations_ItemShop from './en-US/stw-operations/item-shop.json'
 import enUS_stwOperations_Unlock from './en-US/stw-operations/unlock.json'
 import enUS_accountManagement_VBucksInformation from './en-US/account-management/vbucks-information.json'
 import enUS_accountManagement_EULA from './en-US/account-management/eula.json'
@@ -55,6 +56,7 @@ const enUS = {
     llamas: enUS_stwOperations_Llamas,
     'llama-manager': enUS_stwOperations_LlamaManager,
     'collection-book': enUS_stwOperations_CollectionBook,
+    'item-shop': enUS_stwOperations_ItemShop,
     unlock: enUS_stwOperations_Unlock,
   },
   'account-management': {
@@ -129,6 +131,7 @@ const es419 = {
     llamas: es419_stwOperations_Llamas,
     'llama-manager': enUS_stwOperations_LlamaManager,
     'collection-book': enUS_stwOperations_CollectionBook,
+    'item-shop': enUS_stwOperations_ItemShop,
     unlock: es419_stwOperations_Unlock,
   },
   'account-management': {
@@ -203,6 +206,7 @@ const zhCN = {
     llamas: zhCN_stwOperations_Llamas,
     'llama-manager': enUS_stwOperations_LlamaManager,
     'collection-book': enUS_stwOperations_CollectionBook,
+    'item-shop': enUS_stwOperations_ItemShop,
     unlock: zhCN_stwOperations_Unlock,
   },
   'account-management': {
@@ -277,6 +281,7 @@ const ruRU = {
     llamas: ruRU_stwOperations_Llamas,
     'llama-manager': enUS_stwOperations_LlamaManager,
     'collection-book': enUS_stwOperations_CollectionBook,
+    'item-shop': enUS_stwOperations_ItemShop,
     unlock: ruRU_stwOperations_Unlock,
   },
   'account-management': {
@@ -351,6 +356,7 @@ const ptBR = {
     llamas: ptBR_stwOperations_Llamas,
     'llama-manager': enUS_stwOperations_LlamaManager,
     'collection-book': enUS_stwOperations_CollectionBook,
+    'item-shop': enUS_stwOperations_ItemShop,
     unlock: ptBR_stwOperations_Unlock,
   },
   'account-management': {
@@ -393,6 +399,7 @@ import plPL_stwOperations_XPBoosts from './pl-PL/stw-operations/xpboosts.json'
 import plPL_stwOperations_Llamas from './pl-PL/stw-operations/llamas.json'
 import plPL_stwOperations_LlamaManager from './pl-PL/stw-operations/llama-manager.json'
 import plPL_stwOperations_CollectionBook from './pl-PL/stw-operations/collection-book.json'
+import plPL_stwOperations_ItemShop from './pl-PL/stw-operations/item-shop.json'
 import plPL_stwOperations_Unlock from './pl-PL/stw-operations/unlock.json'
 import plPL_accountManagement_VBucksInformation from './pl-PL/account-management/vbucks-information.json'
 import plPL_accountManagement_EULA from './pl-PL/account-management/eula.json'
@@ -428,6 +435,7 @@ const plPL = {
     llamas: plPL_stwOperations_Llamas,
     'llama-manager': plPL_stwOperations_LlamaManager,
     'collection-book': plPL_stwOperations_CollectionBook,
+    'item-shop': plPL_stwOperations_ItemShop,
     unlock: plPL_stwOperations_Unlock,
   },
   'account-management': {
@@ -502,6 +510,7 @@ const itIT = {
     llamas: itIT_stwOperations_Llamas,
     'llama-manager': enUS_stwOperations_LlamaManager,
     'collection-book': enUS_stwOperations_CollectionBook,
+    'item-shop': enUS_stwOperations_ItemShop,
     unlock: itIT_stwOperations_Unlock,
   },
   'account-management': {

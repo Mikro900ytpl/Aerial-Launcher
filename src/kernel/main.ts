@@ -21,6 +21,11 @@ import type {
   CollectionBookUpgradeRequest,
 } from '../types/collection-book'
 import type {
+  ItemShopCreatorCodeRequest,
+  ItemShopGiftRequest,
+  ItemShopPurchaseRequest,
+} from '../types/item-shop'
+import type {
   LlamaManagerBulkPurchaseRequest,
   LlamaManagerOpenChoiceRequest,
   LlamaManagerOpenRequest,
@@ -52,6 +57,11 @@ import { EULATracking } from './core/eula-tracking'
 import { FortniteLauncher } from './core/launcher'
 import { GamesLauncher } from './core/games-launcher'
 import { CollectionBookManager } from './core/collection-book'
+import { ItemShop } from './core/item-shop'
+import {
+  registerItemShopProtocol,
+  registerItemShopScheme,
+} from './core/item-shop-protocol'
 import { LlamaManager } from './core/llama-manager'
 import {
   MCPClientQuestLogin,
@@ -109,7 +119,11 @@ if (require('electron-squirrel-startup')) {
 
 const gotTheLock = app.requestSingleInstanceLock()
 
-;(() => {
+if (gotTheLock) {
+  registerItemShopScheme()
+}
+
+void (() => {
   if (!gotTheLock) {
     return app.quit()
   }
@@ -135,6 +149,17 @@ const gotTheLock = app.requestSingleInstanceLock()
     if (manifest) {
       mainWindow.webContents.setUserAgent(manifest.UserAgent)
     }
+
+    const browserUserAgent =
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+
+    mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+      { urls: ['https://fortnite-api.com/*'] },
+      (details, callback) => {
+        details.requestHeaders['User-Agent'] = browserUserAgent
+        callback({ requestHeaders: details.requestHeaders })
+      },
+    )
 
     MainWindow.setInstance(mainWindow)
 
@@ -198,6 +223,8 @@ const gotTheLock = app.requestSingleInstanceLock()
     ipcMain.on(ElectronAPIEventKeys.WorldInfoRequestData, async () => {
       await WorldInfoManager.requestForAdvanceSection()
     })
+
+    registerItemShopProtocol()
 
     MainWindow.setInstance(await createWindow())
 
@@ -553,6 +580,20 @@ const gotTheLock = app.requestSingleInstanceLock()
     )
 
     ipcMain.on(
+      ElectronAPIEventKeys.PartyLookupPlayerAction,
+      async (_, accounts: AccountDataList, displayName: string) => {
+        await Party.lookupPlayer(accounts, displayName)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.PartySendFriendRequestAction,
+      async (_, accounts: AccountDataList, friendId: string) => {
+        await Party.sendFriendRequests(accounts, friendId)
+      },
+    )
+
+    ipcMain.on(
       ElectronAPIEventKeys.PartyRemoveFriendAction,
       async (
         _,
@@ -835,6 +876,53 @@ const gotTheLock = app.requestSingleInstanceLock()
       ElectronAPIEventKeys.LlamaManagerOpenChoice,
       async (_, data: LlamaManagerOpenChoiceRequest) => {
         await LlamaManager.openChoicePack(data)
+      },
+    )
+
+    /**
+     * Item Shop
+     */
+
+    ipcMain.on(ElectronAPIEventKeys.ItemShopLoadCache, async () => {
+      await ItemShop.loadCachedCatalog()
+    })
+
+    ipcMain.on(ElectronAPIEventKeys.ItemShopGiftHistoryRequest, async () => {
+      await ItemShop.loadGiftHistory()
+    })
+
+    ipcMain.on(
+      ElectronAPIEventKeys.ItemShopCatalogRequest,
+      async (_, account: AccountData) => {
+        await ItemShop.requestCatalog(account)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.ItemShopAccountsRequest,
+      async (_, accounts: Array<AccountData>) => {
+        await ItemShop.requestAccounts(accounts)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.ItemShopCreatorCode,
+      async (_, data: ItemShopCreatorCodeRequest) => {
+        await ItemShop.applyCreatorCode(data)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.ItemShopPurchase,
+      async (_, data: ItemShopPurchaseRequest) => {
+        await ItemShop.purchase(data)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.ItemShopGift,
+      async (_, data: ItemShopGiftRequest) => {
+        await ItemShop.gift(data)
       },
     )
 

@@ -164,6 +164,10 @@ export enum ElectronAPIEventKeys {
   PartyAddNewFriendActionNotification = 'party:friend:add:notification',
   PartyInviteAction = 'party:invite',
   PartyInviteActionNotification = 'party:invite:notification',
+  PartySendFriendRequestAction = 'party:friend:request',
+  PartySendFriendRequestActionNotification = 'party:friend:request:notification',
+  PartyLookupPlayerAction = 'party:player:lookup',
+  PartyLookupPlayerActionNotification = 'party:player:lookup:notification',
   PartyRemoveFriendAction = 'party:friend:remove',
   PartyRemoveFriendActionNotification = 'party:friend:remove:notification',
 
@@ -266,6 +270,25 @@ export enum ElectronAPIEventKeys {
   LlamaManagerOpenPacks = 'llama-manager:open:packs',
   LlamaManagerOpenChoice = 'llama-manager:open:choice',
   LlamaManagerActionResult = 'llama-manager:action:result',
+
+  /**
+   * Item Shop
+   */
+
+  ItemShopCatalogRequest = 'item-shop:catalog:request',
+  ItemShopCatalogResponse = 'item-shop:catalog:response',
+  ItemShopLoadCache = 'item-shop:cache:load',
+  ItemShopGiftHistoryRequest = 'item-shop:gifts:request',
+  ItemShopGiftHistoryResponse = 'item-shop:gifts:response',
+  ItemShopAccountsRequest = 'item-shop:accounts:request',
+  ItemShopAccountResponse = 'item-shop:account:response',
+  ItemShopAccountsDone = 'item-shop:accounts:done',
+  ItemShopCreatorCode = 'item-shop:creator-code',
+  ItemShopCreatorCodeResult = 'item-shop:creator-code:result',
+  ItemShopPurchase = 'item-shop:purchase',
+  ItemShopPurchaseResult = 'item-shop:purchase:result',
+  ItemShopGift = 'item-shop:gift',
+  ItemShopGiftResult = 'item-shop:gift:result',
 
   /**
    * Collection Book Manager

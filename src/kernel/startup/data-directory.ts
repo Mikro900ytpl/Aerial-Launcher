@@ -47,6 +47,10 @@ export class DataDirectory {
     'aerial-launcher-data',
   )
 
+  static get rootPath() {
+    return DataDirectory.dataDirectoryPath
+  }
+
   private static worldInfoDirectoryPath = path.join(
     DataDirectory.dataDirectoryPath,
     'world-info',

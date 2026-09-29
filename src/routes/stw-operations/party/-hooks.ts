@@ -1,12 +1,14 @@
+import type { ChangeEventHandler, FormEventHandler } from 'react'
 import type {
   ComboboxOption,
   ComboboxProps,
 } from '../../../components/ui/extended/combobox/hooks'
 import type { PartyCommonSelectorState } from '../../../state/stw-operations/party'
 import type { AccountData } from '../../../types/accounts'
+import type { PartyPlayerLookupResponse } from '../../../types/party'
 
 import { useTranslation } from 'react-i18next'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useGetAccounts } from '../../../hooks/accounts'
 import { useGetGroups } from '../../../hooks/groups'
@@ -14,6 +16,7 @@ import { useClaimedRewards } from '../../../hooks/stw-operations/claimed-rewards
 import {
   useInviteFriendsForm,
   usePartyFriendsForm,
+  useSendFriendRequestForm,
 } from '../../../hooks/stw-operations/party'
 
 import { checkIfCustomDisplayNameIsValid } from '../../../lib/validations/properties'
@@ -215,7 +218,7 @@ export function useInviteActions({
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isInviting, setIsInviting] = useState(false)
-  const [inputSearchValue, setInputSearchValue] = useState('')
+  const [friendsListVersion, setFriendsListVersion] = useState(0)
   const { friends } = usePartyFriendsForm()
   const { setValue, value } = useInviteFriendsForm()
 
@@ -231,7 +234,7 @@ export function useInviteActions({
     const listener = window.electronAPI.notificationAddNewFriend(
       async ({ displayName, errorMessage, success }) => {
         if (success) {
-          setInputSearchValue('')
+          setFriendsListVersion((version) => version + 1)
         }
 
         setIsSubmitting(false)
@@ -369,7 +372,7 @@ export function useInviteActions({
   }
 
   return {
-    inputSearchValue,
+    friendsListVersion,
     isInviting,
     isSubmitting,
     friendOptions,
@@ -378,6 +381,170 @@ export function useInviteActions({
     handleAddNewFriend,
     handleInvite,
     handleRemoveFriend,
-    setInputSearchValue,
+  }
+}
+
+export function useFriendRequestActions() {
+  const { t } = useTranslation(['stw-operations', 'general'])
+  const { accountList } = useGetAccounts()
+  const { hasValues, setValue, value } = useSendFriendRequestForm()
+  const { customFilter, options } = useComboboxAccounts({
+    value,
+  })
+
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [inputSearchDisplayName, setInputSearchDisplayName] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
+  const [pendingAccountId, setPendingAccountId] = useState<string | null>(
+    null
+  )
+  const pendingActionRef = useRef<'send' | 'accept' | null>(null)
+  const [searchedUser, setSearchedUser] =
+    useState<PartyPlayerLookupResponse | null>(null)
+
+  const selectedAccounts = value
+    .map((option) => accountList[option.value])
+    .filter((account) => account !== undefined)
+
+  const isBusy = isSearching || pendingAccountId !== null
+
+  const inputSearchButtonIsDisabled =
+    isBusy ||
+    inputSearchDisplayName.trim() === '' ||
+    selectedAccounts.length <= 0
+
+  useEffect(() => {
+    const listener = window.electronAPI.notificationLookupPartyPlayer(
+      async (response) => {
+        setIsSearching(false)
+        setSearchedUser(response)
+      }
+    )
+
+    return () => {
+      listener.removeListener()
+    }
+  }, [])
+
+  useEffect(() => {
+    const listener = window.electronAPI.notificationSendFriendRequests(
+      async (response) => {
+        const action = pendingActionRef.current
+
+        pendingActionRef.current = null
+        setPendingAccountId(null)
+
+        if (response.length <= 0) {
+          toast(t('party.friends.notifications.request.error'))
+        } else if (action === 'accept') {
+          toast(t('party.friend-requests.sheet.accepted'))
+        } else {
+          toast(
+            t('party.friends.notifications.request.sent', {
+              count: response.length,
+            })
+          )
+        }
+
+        const accounts = value
+          .map((option) => accountList[option.value])
+          .filter((account) => account !== undefined)
+
+        if (accounts.length > 0 && inputSearchDisplayName.trim() !== '') {
+          setIsSearching(true)
+          window.electronAPI.lookupPartyPlayer(
+            accounts,
+            inputSearchDisplayName
+          )
+        }
+      }
+    )
+
+    return () => {
+      listener.removeListener()
+    }
+  }, [accountList, inputSearchDisplayName, t, value])
+
+  const handleChangeSearchDisplayName: ChangeEventHandler<
+    HTMLInputElement
+  > = (event) => {
+    setInputSearchDisplayName(event.target.value)
+  }
+
+  const handleSearchUser: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault()
+
+    if (inputSearchButtonIsDisabled) {
+      return
+    }
+
+    setIsSearching(true)
+    setSearchedUser(null)
+    window.electronAPI.lookupPartyPlayer(
+      selectedAccounts,
+      inputSearchDisplayName
+    )
+  }
+
+  const handleAccountAction = (accountId: string) => {
+    if (!searchedUser?.success || pendingAccountId !== null) {
+      return
+    }
+
+    const friendship = searchedUser.data.friendships.find(
+      (item) => item.accountId === accountId
+    )
+    const account = accountList[accountId]
+
+    if (
+      !account ||
+      !friendship ||
+      (friendship.status !== 'not-friends' &&
+        friendship.status !== 'incoming')
+    ) {
+      return
+    }
+
+    const action = friendship.status === 'incoming' ? 'accept' : 'send'
+
+    pendingActionRef.current = action
+    setPendingAccountId(accountId)
+    window.electronAPI.sendFriendRequests(
+      [account],
+      searchedUser.data.lookup.id
+    )
+  }
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setDialogOpen(open)
+
+    if (!open) {
+      setSearchedUser(null)
+      setInputSearchDisplayName('')
+      pendingActionRef.current = null
+      setPendingAccountId(null)
+    }
+  }
+
+  return {
+    customFilter,
+    dialogOpen,
+    hasValues,
+    inputSearchButtonIsDisabled,
+    inputSearchDisplayName,
+    isBusy,
+    isSearching,
+    options,
+    pendingAccountId,
+    searchedUser,
+    selectedAccounts,
+    value,
+
+    handleAccountAction,
+    handleChangeSearchDisplayName,
+    handleDialogOpenChange,
+    handleSearchUser,
+    setDialogOpen,
+    setValue,
   }
 }

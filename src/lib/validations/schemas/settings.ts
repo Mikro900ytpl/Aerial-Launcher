@@ -69,6 +69,7 @@ export const customizableMenuSettingsSchema = z
     autoPinUrns: z.boolean().default(true),
     autoLlamas: z.boolean().default(true),
     llamaManager: z.boolean().default(true),
+    itemShop: z.boolean().default(true),
     collectionBook: z.boolean().default(true),
     unlock: z.boolean().default(true),
 

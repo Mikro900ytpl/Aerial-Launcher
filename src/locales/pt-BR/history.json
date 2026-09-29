@@ -3,6 +3,18 @@
     "note": "Nota: Este é um histórico temporário.",
     "empty": "Histórico de Recompensas Resgatadas"
   },
+  "gifts": {
+    "title": "Shop",
+    "empty": "No gifts or purchases yet",
+    "from": "From {{name}}",
+    "to": "To {{name}}",
+    "bought-on": "Bought on {{name}}",
+    "kind-gift": "Gift",
+    "kind-purchase": "Purchase",
+    "price": "{{price}} V-Bucks",
+    "creator": "Creator code: {{code}}",
+    "none-creator": "No creator code"
+  },
   "summary": {
     "note": "Nota: Este resumo é baseado no seu histórico temporário.",
     "empty": "Resumo do Histórico de Recompensas Resgatadas",

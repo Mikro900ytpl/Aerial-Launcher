@@ -20,6 +20,7 @@ import { LoadAccounts } from './bootstrap/components/load-accounts'
 import { LoadAutoLlamas } from './bootstrap/components/load-auto-llamas'
 import { LoadAutomation } from './bootstrap/components/load-automation'
 import { LoadFriends } from './bootstrap/components/load-friends'
+import { LoadItemShop } from './bootstrap/components/load-item-shop'
 import { LoadGroups } from './bootstrap/components/load-groups'
 import { LoadSettings } from './bootstrap/components/load-settings'
 import { LoadTags } from './bootstrap/components/load-tags'
@@ -50,6 +51,7 @@ root.render(
       <LoadGroups />
       <LoadAccounts />
       <LoadFriends />
+      <LoadItemShop />
       <LoadHomeWorldInfo />
       <LoadWorldInfoData />
       {/* <LoadWorldInfoFiles /> */}

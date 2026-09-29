@@ -4,6 +4,7 @@ import type { FriendRecord } from '../../types/friends'
 import type {
   AddNewFriendNotification,
   InviteNotification,
+  PartyPlayerLookupResponse,
 } from '../../types/party'
 
 import { ipcRenderer } from 'electron'
@@ -57,6 +58,28 @@ export function invite(account: AccountData, accountIds: Array<string>) {
     ElectronAPIEventKeys.PartyInviteAction,
     account,
     accountIds
+  )
+}
+
+export function lookupPartyPlayer(
+  accounts: AccountDataList,
+  displayName: string
+) {
+  ipcRenderer.send(
+    ElectronAPIEventKeys.PartyLookupPlayerAction,
+    accounts,
+    displayName
+  )
+}
+
+export function sendFriendRequests(
+  accounts: AccountDataList,
+  friendId: string
+) {
+  ipcRenderer.send(
+    ElectronAPIEventKeys.PartySendFriendRequestAction,
+    accounts,
+    friendId
   )
 }
 
@@ -190,6 +213,52 @@ export function notificationInvite(
     removeListener: () =>
       rendererInstance.removeListener(
         ElectronAPIEventKeys.PartyInviteActionNotification,
+        customCallback
+      ),
+  }
+}
+
+export function notificationLookupPartyPlayer(
+  callback: (value: PartyPlayerLookupResponse) => Promise<void>
+) {
+  const customCallback = (
+    _: IpcRendererEvent,
+    value: PartyPlayerLookupResponse
+  ) => {
+    callback(value).catch(() => {})
+  }
+  const rendererInstance = ipcRenderer.on(
+    ElectronAPIEventKeys.PartyLookupPlayerActionNotification,
+    customCallback
+  )
+
+  return {
+    removeListener: () =>
+      rendererInstance.removeListener(
+        ElectronAPIEventKeys.PartyLookupPlayerActionNotification,
+        customCallback
+      ),
+  }
+}
+
+export function notificationSendFriendRequests(
+  callback: (value: Array<InviteNotification>) => Promise<void>
+) {
+  const customCallback = (
+    _: IpcRendererEvent,
+    value: Array<InviteNotification>
+  ) => {
+    callback(value).catch(() => {})
+  }
+  const rendererInstance = ipcRenderer.on(
+    ElectronAPIEventKeys.PartySendFriendRequestActionNotification,
+    customCallback
+  )
+
+  return {
+    removeListener: () =>
+      rendererInstance.removeListener(
+        ElectronAPIEventKeys.PartySendFriendRequestActionNotification,
         customCallback
       ),
   }

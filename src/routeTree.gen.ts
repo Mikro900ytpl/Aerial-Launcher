@@ -21,6 +21,7 @@ import { Route as StwOperationsTaxiServiceRouteImport } from './routes/stw-opera
 import { Route as StwOperationsSaveQuestsRouteImport } from './routes/stw-operations/save-quests/route'
 import { Route as StwOperationsPartyRouteImport } from './routes/stw-operations/party/route'
 import { Route as StwOperationsLlamaManagerRouteImport } from './routes/stw-operations/llama-manager/route'
+import { Route as StwOperationsItemShopRouteImport } from './routes/stw-operations/item-shop/route'
 import { Route as StwOperationsHomebaseNameRouteImport } from './routes/stw-operations/homebase-name/route'
 import { Route as StwOperationsDailyQuestsRouteImport } from './routes/stw-operations/daily-quests/route'
 import { Route as StwOperationsCollectionBookRouteImport } from './routes/stw-operations/collection-book/route'
@@ -93,6 +94,13 @@ const StwOperationsLlamaManagerRouteRoute =
     path: '/stw-operations/llama-manager',
     getParentRoute: () => rootRoute,
   } as any)
+
+const StwOperationsItemShopRouteRoute = StwOperationsItemShopRouteImport.update(
+  {
+    path: '/stw-operations/item-shop',
+    getParentRoute: () => rootRoute,
+  } as any,
+)
 
 const StwOperationsHomebaseNameRouteRoute =
   StwOperationsHomebaseNameRouteImport.update({
@@ -255,6 +263,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StwOperationsHomebaseNameRouteImport
       parentRoute: typeof rootRoute
     }
+    '/stw-operations/item-shop': {
+      preLoaderRoute: typeof StwOperationsItemShopRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/stw-operations/llama-manager': {
       preLoaderRoute: typeof StwOperationsLlamaManagerRouteImport
       parentRoute: typeof rootRoute
@@ -310,6 +322,7 @@ export const routeTree = rootRoute.addChildren([
   StwOperationsCollectionBookRouteRoute,
   StwOperationsDailyQuestsRouteRoute,
   StwOperationsHomebaseNameRouteRoute,
+  StwOperationsItemShopRouteRoute,
   StwOperationsLlamaManagerRouteRoute,
   StwOperationsPartyRouteRoute,
   StwOperationsSaveQuestsRouteRoute,

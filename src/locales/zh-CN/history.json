@@ -3,6 +3,18 @@
     "note": "注意：这是一个临时历史记录，每次关闭后重置",
     "empty": "已领取奖励的历史记录"
   },
+  "gifts": {
+    "title": "Shop",
+    "empty": "No gifts or purchases yet",
+    "from": "From {{name}}",
+    "to": "To {{name}}",
+    "bought-on": "Bought on {{name}}",
+    "kind-gift": "Gift",
+    "kind-purchase": "Purchase",
+    "price": "{{price}} V-Bucks",
+    "creator": "Creator code: {{code}}",
+    "none-creator": "No creator code"
+  },
   "summary": {
     "note": "注意：此摘要基于您的临时历史记录。",
     "empty": "已领取奖励历史记录的摘要",

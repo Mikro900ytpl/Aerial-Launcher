@@ -21,6 +21,7 @@ import {
 
 import { KickAllPartyCard } from './-kick-all-party'
 import { ClaimRewardsCard } from './-claim-rewards'
+import { FriendRequestCard } from './-friend-request'
 import { InviteCard } from './-invite'
 import { LeavePartyCard } from './-leave-party'
 
@@ -65,6 +66,7 @@ export function RouteComponent() {
             </div>
 
             <InviteCard />
+            <FriendRequestCard />
 
             <Alert className="border-0 border-l-4 max-w-lg rounded-none w-full">
               <Info className="h-4 w-4" />

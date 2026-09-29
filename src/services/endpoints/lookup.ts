@@ -5,6 +5,27 @@ import type {
 
 import { publicAccountService } from '../config/public-account'
 
+export function findUsersByAccountIds({
+  accessToken,
+  accountIds,
+}: {
+  accessToken: string
+  accountIds: Array<string>
+}) {
+  const query = accountIds
+    .map((accountId) => `accountId=${encodeURIComponent(accountId)}`)
+    .join('&')
+
+  return publicAccountService.get<Array<LookupFindOneByDisplayNameResponse>>(
+    `?${query}`,
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+    }
+  )
+}
+
 export function findUserByAccountId({
   accessToken,
   accountId,
@@ -46,7 +67,7 @@ export function findUserByExternalDisplayName({
 }: {
   accessToken: string
   displayName: string
-  externalAuthType: 'psn' | 'xbl'
+  externalAuthType: 'psn' | 'xbl' | 'nintendo' | 'steam'
 }) {
   return publicAccountService.get<LookupFindManyByDisplayNameResponse>(
     `/lookup/externalAuth/${externalAuthType}/displayName/${displayName}?caseInsensitive=true`,

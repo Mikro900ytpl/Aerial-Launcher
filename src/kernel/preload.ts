@@ -16,6 +16,7 @@ import * as eventActions from './preload-actions/events'
 import * as gamesLauncherActions from './preload-actions/games-launcher'
 import * as generalActions from './preload-actions/general'
 import * as launcherActions from './preload-actions/launcher'
+import * as itemShopActions from './preload-actions/item-shop'
 import * as llamaManagerActions from './preload-actions/llama-manager'
 import * as matchmakingActions from './preload-actions/matchmaking'
 import * as mcpActions from './preload-actions/mcp'
@@ -43,6 +44,7 @@ export const availableElectronAPIs = {
   ...gamesLauncherActions,
   ...generalActions,
   ...launcherActions,
+  ...itemShopActions,
   ...llamaManagerActions,
   ...partyActions,
   ...redeemCodesActions,
