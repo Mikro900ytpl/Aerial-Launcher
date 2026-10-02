@@ -14,6 +14,7 @@ import enUS_stwOperations_TaxiService from './en-US/stw-operations/taxi-service.
 import enUS_stwOperations_HomebaseName from './en-US/stw-operations/homebase-name.json'
 import enUS_stwOperations_SaveQuests from './en-US/stw-operations/save-quests.json'
 import enUS_stwOperations_DailyQuests from './en-US/stw-operations/daily-quests.json'
+import enUS_stwOperations_DqWeapons from './en-US/stw-operations/dq-weapons.json'
 import enUS_stwOperations_Party from './en-US/stw-operations/party.json'
 import enUS_stwOperations_Urns from './en-US/stw-operations/urns.json'
 import enUS_stwOperations_XPBoosts from './en-US/stw-operations/xpboosts.json'
@@ -50,6 +51,7 @@ const enUS = {
     'homebase-name': enUS_stwOperations_HomebaseName,
     'save-quests': enUS_stwOperations_SaveQuests,
     'daily-quests': enUS_stwOperations_DailyQuests,
+    'dq-weapons': enUS_stwOperations_DqWeapons,
     party: enUS_stwOperations_Party,
     urns: enUS_stwOperations_Urns,
     xpboosts: enUS_stwOperations_XPBoosts,
@@ -125,6 +127,7 @@ const es419 = {
     'homebase-name': es419_stwOperations_HomebaseName,
     'save-quests': es419_stwOperations_SaveQuests,
     'daily-quests': es419_stwOperations_DailyQuests,
+    'dq-weapons': enUS_stwOperations_DqWeapons,
     party: es419_stwOperations_Party,
     urns: es419_stwOperations_Urns,
     xpboosts: es419_stwOperations_XPBoosts,
@@ -200,6 +203,7 @@ const zhCN = {
     'homebase-name': zhCN_stwOperations_HomebaseName,
     'save-quests': zhCN_stwOperations_SaveQuests,
     'daily-quests': zhCN_stwOperations_DailyQuests,
+    'dq-weapons': enUS_stwOperations_DqWeapons,
     party: zhCN_stwOperations_Party,
     urns: zhCN_stwOperations_Urns,
     xpboosts: zhCN_stwOperations_XPBoosts,
@@ -275,6 +279,7 @@ const ruRU = {
     'homebase-name': ruRU_stwOperations_HomebaseName,
     'save-quests': ruRU_stwOperations_SaveQuests,
     'daily-quests': ruRU_stwOperations_DailyQuests,
+    'dq-weapons': enUS_stwOperations_DqWeapons,
     party: ruRU_stwOperations_Party,
     urns: ruRU_stwOperations_Urns,
     xpboosts: ruRU_stwOperations_XPBoosts,
@@ -350,6 +355,7 @@ const ptBR = {
     'homebase-name': ptBR_stwOperations_HomebaseName,
     'save-quests': ptBR_stwOperations_SaveQuests,
     'daily-quests': ptBR_stwOperations_DailyQuests,
+    'dq-weapons': enUS_stwOperations_DqWeapons,
     party: ptBR_stwOperations_Party,
     urns: ptBR_stwOperations_Urns,
     xpboosts: ptBR_stwOperations_XPBoosts,
@@ -429,6 +435,7 @@ const plPL = {
     'homebase-name': plPL_stwOperations_HomebaseName,
     'save-quests': plPL_stwOperations_SaveQuests,
     'daily-quests': plPL_stwOperations_DailyQuests,
+    'dq-weapons': enUS_stwOperations_DqWeapons,
     party: plPL_stwOperations_Party,
     urns: plPL_stwOperations_Urns,
     xpboosts: plPL_stwOperations_XPBoosts,
@@ -504,6 +511,7 @@ const itIT = {
     'homebase-name': itIT_stwOperations_HomebaseName,
     'save-quests': itIT_stwOperations_SaveQuests,
     'daily-quests': itIT_stwOperations_DailyQuests,
+    'dq-weapons': enUS_stwOperations_DqWeapons,
     party: itIT_stwOperations_Party,
     urns: itIT_stwOperations_Urns,
     xpboosts: itIT_stwOperations_XPBoosts,

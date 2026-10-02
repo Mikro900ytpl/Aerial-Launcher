@@ -23,7 +23,10 @@ import { Authentication } from './authentication'
 import { lookupAffiliateSlug } from '../../services/endpoints/affiliate'
 import {
   fetchPublicItemShop,
+  fetchPublicItemShopWithFallback,
+  ITEM_SHOP_SEARCH_LANGUAGES,
   type FortniteApiShopEntry,
+  type FortniteApiShopItem,
 } from '../../services/endpoints/fortnite-api'
 import {
   giftCatalogEntry,
@@ -41,7 +44,29 @@ const SKIP_STOREFRONTS = new Set([
   'CardPackStorePreroll',
   'CardPackStoreGameplay',
   'FoundersPack',
+  'CurrencyStorefront',
+  'STWRotationalEventStorefront',
+  'STWSpecialEventStorefront',
 ])
+
+const GRANT_TYPE_LABELS: Record<string, string> = {
+  athenacharacter: 'Outfit',
+  athenabackpack: 'Back Bling',
+  athenapickaxe: 'Pickaxe',
+  athenaglider: 'Glider',
+  athenadance: 'Emote',
+  athenaitemwrap: 'Wrap',
+  athenamusicpack: 'Music',
+  athenaloadingscreen: 'Loading Screen',
+  athenaskydivecontrail: 'Contrail',
+  athenashoes: 'Kicks',
+  sparkssong: 'Jam Track',
+  sparksguitar: 'Guitar',
+  sparksbass: 'Bass',
+  sparksdrum: 'Drums',
+  sparkskeyboard: 'Keytar',
+  sparksmicrophone: 'Microphone',
+}
 
 type RawPrice = {
   currencyType?: string
@@ -175,11 +200,160 @@ function firstPublicItem(entry: FortniteApiShopEntry) {
   )
 }
 
+function itemDisplayName(item: FortniteApiShopItem | null) {
+  return item?.name?.trim() || item?.title?.trim() || ''
+}
+
+function uniqueSearchNames(values: Array<string | null | undefined>) {
+  const seen = new Set<string>()
+  const names: Array<string> = []
+
+  values.forEach((value) => {
+    const name = value?.trim()
+
+    if (!name) {
+      return
+    }
+
+    const key = name.toLowerCase()
+
+    if (seen.has(key)) {
+      return
+    }
+
+    seen.add(key)
+    names.push(name)
+  })
+
+  return names
+}
+
+function entryItemLists(entry: FortniteApiShopEntry) {
+  return [
+    entry.brItems,
+    entry.items,
+    entry.tracks,
+    entry.instruments,
+    entry.cars,
+    entry.legoKits,
+  ]
+}
+
+function collectEntrySearchNames(entry: FortniteApiShopEntry) {
+  const names: Array<string> = []
+
+  entryItemLists(entry).forEach((items) => {
+    items?.forEach((item) => {
+      names.push(itemDisplayName(item), item.artist ?? '')
+    })
+  })
+
+  return uniqueSearchNames(names)
+}
+
+function entrySearchKeys(entry: FortniteApiShopEntry) {
+  const keys: Array<string> = []
+  const first = firstPublicItem(entry)
+
+  if (entry.offerId) {
+    keys.push(entry.offerId)
+  }
+
+  if (first?.id) {
+    keys.push(first.id)
+  }
+
+  entryItemLists(entry).forEach((items) => {
+    items?.forEach((item) => {
+      if (item.id) {
+        keys.push(item.id)
+      }
+    })
+  })
+
+  return keys
+}
+
+async function fetchShopSearchNames() {
+  const namesByKey = new Map<string, Set<string>>()
+
+  const addNames = (keys: Array<string>, names: Array<string>) => {
+    keys.forEach((key) => {
+      let bucket = namesByKey.get(key)
+
+      if (!bucket) {
+        bucket = new Set<string>()
+        namesByKey.set(key, bucket)
+      }
+
+      names.forEach((name) => bucket?.add(name))
+    })
+  }
+
+  const languages = [...ITEM_SHOP_SEARCH_LANGUAGES]
+  const workers = Math.min(2, languages.length)
+
+  await Promise.all(
+    Array.from({ length: workers }, async () => {
+      while (languages.length > 0) {
+        const language = languages.shift()
+
+        if (!language) {
+          return
+        }
+
+        try {
+          const response = await fetchPublicItemShop(language)
+          const entries = response.data.data?.entries ?? []
+
+          entries.forEach((entry) => {
+            addNames(entrySearchKeys(entry), collectEntrySearchNames(entry))
+          })
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          //
+        }
+      }
+    })
+  )
+
+  return namesByKey
+}
+
+function withSearchNames(
+  offers: Array<ItemShopOffer>,
+  namesByKey: Map<string, Set<string>>
+) {
+  return offers.map((offer) => {
+    const extra: Array<string> = []
+
+    const take = (key?: string) => {
+      if (!key) {
+        return
+      }
+
+      namesByKey.get(key)?.forEach((name) => extra.push(name))
+    }
+
+    take(offer.offerId)
+    offer.grants.forEach((grant) => take(grant.templateId))
+
+    return {
+      ...offer,
+      searchNames: uniqueSearchNames([
+        ...(offer.searchNames ?? []),
+        ...extra,
+      ]),
+    }
+  })
+}
+
 function entryIconUrl(entry: FortniteApiShopEntry) {
   const first = firstPublicItem(entry)
   const image =
     first?.images?.icon ??
     first?.images?.smallIcon ??
+    first?.albumArt ??
     entry.newDisplayAsset?.renderImages?.[0]?.image ??
     null
 
@@ -197,26 +371,28 @@ function offersFromPublicShop(
 
   publicEntries.forEach((entry) => {
     const first = firstPublicItem(entry)
+    const title = itemDisplayName(first)
 
-    if (!first?.name) {
+    if (!title) {
       return
     }
 
     offers.push({
-      offerId: entry.offerId ?? first.id ?? first.name,
-      title: first.name,
-      description: first.description ?? '',
+      offerId: entry.offerId ?? first?.id ?? title,
+      title,
+      description: first?.description ?? '',
       section: entry.layout?.name ?? entry.layoutId ?? 'Shop',
       storefront: 'BRShop',
-      type: first.type?.displayValue ?? first.type?.value ?? 'Item',
-      rarity: first.rarity?.value ?? first.rarity?.displayValue ?? 'common',
+      type: first?.type?.displayValue ?? first?.type?.value ?? 'Item',
+      rarity: first?.rarity?.value ?? first?.rarity?.displayValue ?? 'common',
       imageUrl: entryIconUrl(entry),
+      searchNames: collectEntrySearchNames(entry),
       price: entry.finalPrice ?? 0,
       regularPrice: entry.regularPrice ?? entry.finalPrice ?? 0,
       currencyType: 'MtxCurrency',
       currencySubType: '',
       giftable: entry.giftable ?? false,
-      grants: first.id ? [{ templateId: first.id, quantity: 1 }] : [],
+      grants: first?.id ? [{ templateId: first.id, quantity: 1 }] : [],
     })
   })
 
@@ -227,13 +403,242 @@ function offersFromPublicShop(
     }
   })
 
-  return Array.from(unique.values()).sort((a, b) => {
+  return sortOffers(Array.from(unique.values()))
+}
+
+function sortOffers(offers: Array<ItemShopOffer>) {
+  return [...offers].sort((a, b) => {
     if (a.section !== b.section) {
       return a.section.localeCompare(b.section)
     }
 
     return a.title.localeCompare(b.title)
   })
+}
+
+function catalogSections(offers: Array<ItemShopOffer>) {
+  return [...new Set(offers.map((offer) => offer.section))].sort((a, b) =>
+    a.localeCompare(b)
+  )
+}
+
+function isCosmeticGrant(templateId: string) {
+  const prefix = (templateId.split(':')[0] ?? '').toLowerCase()
+
+  return !['currency', 'accountresource', 'cardpack', 'token'].includes(prefix)
+}
+
+function grantDisplayType(templateId: string) {
+  const prefix = (templateId.split(':')[0] ?? '').toLowerCase()
+
+  if (GRANT_TYPE_LABELS[prefix]) {
+    return GRANT_TYPE_LABELS[prefix]
+  }
+
+  if (prefix.startsWith('vehiclecosmetics')) {
+    return 'Car'
+  }
+
+  if (prefix.startsWith('juno') || prefix.startsWith('lego')) {
+    return 'Lego'
+  }
+
+  return 'Item'
+}
+
+function grantCosmeticId(templateId: string) {
+  return (templateId.split(':')[1] ?? templateId).trim()
+}
+
+function grantIconUrl(templateId: string) {
+  const id = grantCosmeticId(templateId).toLowerCase()
+
+  if (!id) {
+    return null
+  }
+
+  return `https://fortnite-api.com/images/cosmetics/br/${encodeURIComponent(id)}/icon.png`
+}
+
+function humanizeGrantId(templateId: string) {
+  const id = grantCosmeticId(templateId)
+    .replace(
+      /^(character|cid|bid|pickaxe|glider|eid|wrap|musicpack|sid|spid)_/i,
+      ''
+    )
+    .replace(/_/g, ' ')
+
+  return id
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ')
+}
+
+function parseEpicDevName(devName?: string) {
+  if (!devName) {
+    return ''
+  }
+
+  const virtual = devName.match(
+    /^\s*(?:\[VIRTUAL\])?\s*\d+\s*x\s*(.+?)\s+for\s+\d+/i
+  )
+  const raw = (virtual?.[1] ?? devName).trim()
+  const withId = raw.match(/^(.+?)\s*\(([^)]+)\)\s*$/)
+
+  if (withId) {
+    const name = withId[1].trim()
+
+    if (name && name.toUpperCase() !== 'TBD') {
+      return name
+    }
+
+    return withId[2].trim()
+  }
+
+  return raw
+}
+
+function looksLikeLocKey(value: string) {
+  return value.includes('.') && !value.includes(' ')
+}
+
+function metaString(entry: RawEntry, key: string) {
+  const fromMeta = entry.meta?.[key]
+
+  if (typeof fromMeta === 'string' && fromMeta.trim()) {
+    return fromMeta.trim()
+  }
+
+  const info = entry.metaInfo?.find(
+    (item) => item.key?.toLowerCase() === key.toLowerCase()
+  )
+
+  return info?.value?.trim() || ''
+}
+
+function epicEntrySection(storefront: RawStorefront, entry: RawEntry) {
+  return (
+    metaString(entry, 'sectionDisplayName') ||
+    metaString(entry, 'SectionDisplayName') ||
+    metaString(entry, 'sectionId') ||
+    metaString(entry, 'SectionId') ||
+    entry.categories?.[0] ||
+    storefront.name ||
+    'Shop'
+  )
+}
+
+function offerFromEpicEntry(
+  storefront: RawStorefront,
+  entry: RawEntry,
+  mtxPrice: RawPrice
+): ItemShopOffer | null {
+  if (!entry.offerId) {
+    return null
+  }
+
+  const grants = (entry.itemGrants ?? [])
+    .filter((grant) => typeof grant.templateId === 'string')
+    .map((grant) => ({
+      templateId: grant.templateId as string,
+      quantity: grant.quantity ?? 1,
+    }))
+
+  const cosmeticGrant = grants.find((grant) => isCosmeticGrant(grant.templateId))
+  const titleSource =
+    (entry.title && !looksLikeLocKey(entry.title) ? entry.title : '') ||
+    parseEpicDevName(entry.devName) ||
+    (cosmeticGrant ? humanizeGrantId(cosmeticGrant.templateId) : '')
+
+  const title = titleSource.trim()
+
+  if (!title || title === entry.offerId) {
+    return null
+  }
+
+  return {
+    offerId: entry.offerId,
+    title,
+    description: '',
+    section: epicEntrySection(storefront, entry),
+    storefront: storefront.name ?? 'BRShop',
+    type: cosmeticGrant ? grantDisplayType(cosmeticGrant.templateId) : 'Item',
+    rarity: 'unknown',
+    imageUrl: cosmeticGrant ? grantIconUrl(cosmeticGrant.templateId) : null,
+    searchNames: uniqueSearchNames([
+      title,
+      parseEpicDevName(entry.devName),
+      cosmeticGrant ? grantCosmeticId(cosmeticGrant.templateId) : '',
+      ...grants.map((grant) => humanizeGrantId(grant.templateId)),
+    ]),
+    price: mtxPrice.finalPrice ?? 0,
+    regularPrice: mtxPrice.regularPrice ?? mtxPrice.finalPrice ?? 0,
+    currencyType: 'MtxCurrency',
+    currencySubType: mtxPrice.currencySubType ?? '',
+    giftable: entry.giftable ?? false,
+    grants,
+  }
+}
+
+function mergeEpicCatalog(
+  offers: Array<ItemShopOffer>,
+  storefronts: Array<RawStorefront>
+) {
+  const byId = new Map(offers.map((offer) => [offer.offerId, offer]))
+
+  storefronts.forEach((storefront) => {
+    if (SKIP_STOREFRONTS.has(storefront.name ?? '')) {
+      return
+    }
+
+    const catalogEntries = storefront.catalogEntries ?? []
+
+    catalogEntries.forEach((entry) => {
+      if (!entry.offerId?.startsWith('v2:/')) {
+        return
+      }
+
+      const mtxPrice = entry.prices?.find(
+        (price) => price.currencyType === 'MtxCurrency'
+      )
+
+      if (!mtxPrice) {
+        return
+      }
+
+      const grants = (entry.itemGrants ?? [])
+        .filter((grant) => typeof grant.templateId === 'string')
+        .map((grant) => ({
+          templateId: grant.templateId as string,
+          quantity: grant.quantity ?? 1,
+        }))
+
+      const existing = byId.get(entry.offerId)
+
+      if (existing) {
+        byId.set(entry.offerId, {
+          ...existing,
+          grants: grants.length > 0 ? grants : existing.grants,
+          price: mtxPrice.finalPrice ?? existing.price,
+          regularPrice:
+            mtxPrice.regularPrice ?? mtxPrice.finalPrice ?? existing.regularPrice,
+          currencySubType:
+            mtxPrice.currencySubType ?? existing.currencySubType,
+          giftable: entry.giftable ?? existing.giftable,
+        })
+        return
+      }
+
+      const created = offerFromEpicEntry(storefront, entry, mtxPrice)
+
+      if (created) {
+        byId.set(entry.offerId, created)
+      }
+    })
+  })
+
+  return sortOffers(Array.from(byId.values()))
 }
 
 export class ItemShop {
@@ -299,28 +704,64 @@ export class ItemShop {
       })
     }
 
+    const payload: ItemShopCatalogResponse = {
+      shopDate: getDate(),
+      expiration: null,
+      fetchedAt: getDateWithDefaultFormat(),
+      newShopAvailable: false,
+      offers: [],
+      sections: [],
+    }
+
+    let applyQueue = Promise.resolve()
+    const applyExclusive = (task: () => Promise<void>) => {
+      const next = applyQueue.then(task, task)
+      applyQueue = next.then(
+        () => undefined,
+        () => undefined
+      )
+      return next
+    }
+
     try {
-      const publicShop = await fetchPublicItemShop()
+      const publicShop = await fetchPublicItemShopWithFallback()
       const publicData = publicShop.data.data
       const publicEntries = publicData?.entries ?? []
-      const offers = offersFromPublicShop(publicEntries)
 
-      const payload: ItemShopCatalogResponse = {
-        shopDate: publicData?.date ? getDate(publicData.date) : getDate(),
-        expiration: null,
-        fetchedAt: getDateWithDefaultFormat(),
-        newShopAvailable: false,
-        offers,
-        sections: [...new Set(offers.map((offer) => offer.section))].sort(
-          (a, b) => a.localeCompare(b)
-        ),
+      payload.shopDate = publicData?.date ? getDate(publicData.date) : getDate()
+      payload.offers = offersFromPublicShop(publicEntries)
+      payload.sections = catalogSections(payload.offers)
+
+      if (payload.offers.length > 0) {
+        await send(payload)
       }
 
-      await send(payload)
+      void fetchShopSearchNames()
+        .then((namesByKey) =>
+          applyExclusive(async () => {
+            if (namesByKey.size === 0) {
+              return
+            }
 
+            payload.offers = withSearchNames(payload.offers, namesByKey)
+            payload.sections = catalogSections(payload.offers)
+            await send(payload)
+          })
+        )
+        .catch(() => {})
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      // fortnite-api / snapshot can lag after a patch; Epic catalog is live
+    }
+
+    try {
       const accessToken = await Authentication.verifyAccessToken(account)
 
       if (!accessToken) {
+        if (payload.offers.length === 0) {
+          throw new Error('item shop auth')
+        }
+
         return
       }
 
@@ -328,72 +769,37 @@ export class ItemShop {
       payload.expiration = catalog.data.expiration ?? null
       payload.newShopAvailable = isNewShopAvailable(payload.expiration)
 
-      const epicByOfferId = new Map<string, ItemShopOffer['grants']>()
-      const epicPriceByOfferId = new Map<
-        string,
-        { price: number; regularPrice: number; currencySubType: string }
-      >()
-
       const storefronts = (catalog.data.storefronts ??
         []) as Array<RawStorefront>
 
-      storefronts.forEach((storefront) => {
-        if (SKIP_STOREFRONTS.has(storefront.name ?? '')) {
-          return
-        }
-
-        const catalogEntries = storefront.catalogEntries ?? []
-
-        catalogEntries.forEach((entry) => {
-          if (!entry.offerId) {
-            return
-          }
-
-          const mtxPrice = entry.prices?.find(
-            (price) => price.currencyType === 'MtxCurrency'
-          )
-
-          if (!mtxPrice) {
-            return
-          }
-
-          const grants = (entry.itemGrants ?? [])
-            .filter((grant) => typeof grant.templateId === 'string')
-            .map((grant) => ({
-              templateId: grant.templateId as string,
-              quantity: grant.quantity ?? 1,
-            }))
-
-          epicByOfferId.set(entry.offerId, grants)
-          epicPriceByOfferId.set(entry.offerId, {
-            price: mtxPrice.finalPrice ?? 0,
-            regularPrice: mtxPrice.regularPrice ?? mtxPrice.finalPrice ?? 0,
-            currencySubType: mtxPrice.currencySubType ?? '',
-          })
-        })
+      await applyExclusive(async () => {
+        payload.offers = mergeEpicCatalog(payload.offers, storefronts)
+        payload.sections = catalogSections(payload.offers)
+        await send(payload)
       })
+    } catch {
+      if (payload.offers.length > 0) {
+        return
+      }
 
-      payload.offers = payload.offers.map((offer) => {
-        const grants = epicByOfferId.get(offer.offerId)
-        const price = epicPriceByOfferId.get(offer.offerId)
+      const cached = await readCachedCatalog()
 
-        if (!grants && !price) {
-          return offer
-        }
+      if (cached && cached.offers.length > 0) {
+        MainWindow.instance.webContents.send(
+          ElectronAPIEventKeys.ItemShopCatalogResponse,
+          {
+            shopDate: cached.shopDate,
+            expiration: cached.expiration,
+            fetchedAt: cached.fetchedAt,
+            newShopAvailable: isNewShopAvailable(cached.expiration),
+            offers: cached.offers,
+            sections: cached.sections,
+            fromCache: true,
+          }
+        )
+        return
+      }
 
-        return {
-          ...offer,
-          grants: grants ?? offer.grants,
-          price: price?.price ?? offer.price,
-          regularPrice: price?.regularPrice ?? offer.regularPrice,
-          currencySubType: price?.currencySubType ?? offer.currencySubType,
-        }
-      })
-
-      await send(payload)
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
       MainWindow.instance.webContents.send(
         ElectronAPIEventKeys.ItemShopCatalogResponse,
         emptyCatalog()

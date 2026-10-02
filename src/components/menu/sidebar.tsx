@@ -25,6 +25,7 @@ import {
   Settings,
   ShoppingBag,
   Sparkles,
+  Swords,
   Ticket,
   Unlock,
   UserMinus,
@@ -286,6 +287,24 @@ export function SidebarMenu({
                         <span className="flex gap-2 items-center">
                           <ScrollText className="size-3.5 shrink-0 opacity-80" />
                           {t('stw-operations.options.daily-quests')}
+                        </span>
+                      </Link>
+                    </li>
+                  )}
+                  {getMenuOptionVisibility('dqWeapons') && (
+                    <li className="item">
+                      <Link
+                        to="/stw-operations/dq-weapons"
+                        className={currentClassNameHover}
+                        activeProps={{
+                          className: cn(activeClassName),
+                        }}
+                        onClick={goToPage}
+                        onAuxClick={whatIsThis()}
+                      >
+                        <span className="flex gap-2 items-center">
+                          <Swords className="size-3.5 shrink-0 opacity-80" />
+                          {t('stw-operations.options.dq-weapons')}
                         </span>
                       </Link>
                     </li>

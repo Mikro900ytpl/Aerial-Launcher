@@ -124,6 +124,9 @@ export enum ElectronAPIEventKeys {
   DailyQuestReroll = 'daily-quests:reroll',
   DailyQuestRerollNotification = 'daily-quests:reroll:notification',
 
+  DqWeaponsRequest = 'dq-weapons:request',
+  DqWeaponsNotification = 'dq-weapons:notification',
+
   SetHombaseName = 'homebase-name:set',
   HomebaseNameNotification = 'homebase-name:notification',
 

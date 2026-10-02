@@ -17,7 +17,7 @@ import {
 import { cn } from '../../../lib/utils'
 
 export function CustomizableMenu() {
-  const { t } = useTranslation(['settings'])
+  const { t } = useTranslation(['settings', 'sidebar'])
 
   return (
     <Card className="w-full">
@@ -182,6 +182,19 @@ function STWOperationsSection() {
             id="daily-quests"
             checked={getMenuOptionVisibility('dailyQuests')}
             onCheckedChange={updateMenuOption('dailyQuests')}
+          />
+        </div>
+        <div className="item">
+          <Label
+            className="title"
+            htmlFor="dq-weapons"
+          >
+            {t('stw-operations.options.dq-weapons')}
+          </Label>
+          <Switch
+            id="dq-weapons"
+            checked={getMenuOptionVisibility('dqWeapons')}
+            onCheckedChange={updateMenuOption('dqWeapons')}
           />
         </div>
         <div className="item">

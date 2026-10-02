@@ -42,6 +42,7 @@ export const customizableMenuSettingsRelations: Record<
     'party',
     'saveQuests',
     'dailyQuests',
+    'dqWeapons',
     'homebaseName',
     'xpBoosts',
     'autoPinUrns',

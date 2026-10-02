@@ -1,0 +1,24 @@
+{
+  "description": "Check which accounts have 6-perk chain lightning weapons for daily kill quests.",
+  "form": {
+    "submit-button": "Load"
+  },
+  "list": {
+    "empty": "No data loaded yet.",
+    "ready": "{{count}}/6",
+    "missing": "Missing",
+    "owned": "{{name}} · {{power}}"
+  },
+  "inspect": {
+    "schematic": "Schematic",
+    "level": "LV {{level}}"
+  },
+  "kinds": {
+    "smg": "SMG",
+    "pistol": "Pistol",
+    "assault": "Assault",
+    "shotgun": "Shotgun",
+    "sniper": "Sniper",
+    "melee": "Melee"
+  }
+}

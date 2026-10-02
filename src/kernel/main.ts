@@ -66,6 +66,7 @@ import { LlamaManager } from './core/llama-manager'
 import {
   MCPClientQuestLogin,
   MCPDailyQuests,
+  MCPDqWeapons,
   MCPHomebaseName,
 } from './core/mcp'
 import { MatchmakingTrack } from './core/matchmaking-track'
@@ -464,6 +465,13 @@ void (() => {
       ElectronAPIEventKeys.DailyQuestReroll,
       async (_, account: AccountData, questId: string) => {
         await MCPDailyQuests.reroll(account, questId)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.DqWeaponsRequest,
+      async (_, accounts: Array<AccountData>) => {
+        await MCPDqWeapons.request(accounts)
       },
     )
 

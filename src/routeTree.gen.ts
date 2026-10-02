@@ -23,6 +23,7 @@ import { Route as StwOperationsPartyRouteImport } from './routes/stw-operations/
 import { Route as StwOperationsLlamaManagerRouteImport } from './routes/stw-operations/llama-manager/route'
 import { Route as StwOperationsItemShopRouteImport } from './routes/stw-operations/item-shop/route'
 import { Route as StwOperationsHomebaseNameRouteImport } from './routes/stw-operations/homebase-name/route'
+import { Route as StwOperationsDqWeaponsRouteImport } from './routes/stw-operations/dq-weapons/route'
 import { Route as StwOperationsDailyQuestsRouteImport } from './routes/stw-operations/daily-quests/route'
 import { Route as StwOperationsCollectionBookRouteImport } from './routes/stw-operations/collection-book/route'
 import { Route as StwOperationsAutomationRouteImport } from './routes/stw-operations/automation/route'
@@ -105,6 +106,12 @@ const StwOperationsItemShopRouteRoute = StwOperationsItemShopRouteImport.update(
 const StwOperationsHomebaseNameRouteRoute =
   StwOperationsHomebaseNameRouteImport.update({
     path: '/stw-operations/homebase-name',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const StwOperationsDqWeaponsRouteRoute =
+  StwOperationsDqWeaponsRouteImport.update({
+    path: '/stw-operations/dq-weapons',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -259,6 +266,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StwOperationsDailyQuestsRouteImport
       parentRoute: typeof rootRoute
     }
+    '/stw-operations/dq-weapons': {
+      preLoaderRoute: typeof StwOperationsDqWeaponsRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/stw-operations/homebase-name': {
       preLoaderRoute: typeof StwOperationsHomebaseNameRouteImport
       parentRoute: typeof rootRoute
@@ -321,6 +332,7 @@ export const routeTree = rootRoute.addChildren([
   StwOperationsAutomationRouteRoute,
   StwOperationsCollectionBookRouteRoute,
   StwOperationsDailyQuestsRouteRoute,
+  StwOperationsDqWeaponsRouteRoute,
   StwOperationsHomebaseNameRouteRoute,
   StwOperationsItemShopRouteRoute,
   StwOperationsLlamaManagerRouteRoute,

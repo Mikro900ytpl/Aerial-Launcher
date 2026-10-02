@@ -2,7 +2,7 @@
   "title": "Item Shop",
   "description": "Browse the current shop, apply a creator code to selected accounts, buy items, and send gifts.",
   "load": "Load shop",
-  "search": "Search items",
+  "search": "Search items or price",
   "section-all": "All sections",
   "empty": "No shop items loaded. Select accounts and load the shop.",
   "empty-filter": "No items match this filter.",

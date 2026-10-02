@@ -2,7 +2,7 @@
   "title": "Sklep",
   "description": "Przeglądaj aktualny sklep, nakładaj kod twórcy na wybrane konta, kupuj przedmioty i wysyłaj podarunki.",
   "load": "Wczytaj sklep",
-  "search": "Szukaj przedmiotów",
+  "search": "Szukaj przedmiotów lub ceny",
   "section-all": "Wszystkie sekcje",
   "empty": "Brak przedmiotów. Wybierz konta i wczytaj sklep.",
   "empty-filter": "Brak przedmiotów dla tego filtra.",

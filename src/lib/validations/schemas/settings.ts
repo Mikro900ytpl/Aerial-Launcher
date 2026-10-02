@@ -64,6 +64,7 @@ export const customizableMenuSettingsSchema = z
     party: z.boolean().default(true),
     saveQuests: z.boolean().default(true),
     dailyQuests: z.boolean().default(true),
+    dqWeapons: z.boolean().default(true),
     homebaseName: z.boolean().default(true),
     xpBoosts: z.boolean().default(true),
     autoPinUrns: z.boolean().default(true),

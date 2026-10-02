@@ -10,6 +10,7 @@ export type ItemShopOffer = {
   rarity: string
   imageUrl: string | null
   iconFile?: string | null
+  searchNames?: Array<string>
   price: number
   regularPrice: number
   currencyType: string

@@ -16,6 +16,10 @@ import {
   useGetDailyQuestsData,
 } from '../../../hooks/stw-operations/daily-quests'
 import {
+  useGetDqWeaponsActions,
+  useGetDqWeaponsData,
+} from '../../../hooks/stw-operations/dq-weapons'
+import {
   useGetSaveQuestsActions,
   useGetSaveQuestsData,
 } from '../../../hooks/stw-operations/save-quests'
@@ -131,6 +135,9 @@ export function useFormUpdate({ rawData }: { rawData: Tag }) {
   const dailyQuestsData = useGetDailyQuestsData()
   const { rawDailyQuestsUpdateTags } = useGetDailyQuestsActions()
 
+  const dqWeaponsData = useGetDqWeaponsData()
+  const { rawDqWeaponsUpdateTags } = useGetDqWeaponsActions()
+
   const homebaseNameData = useGetHomebaseNameData()
   const { rawHomebaseNameUpdateTags } = useGetHomebaseNameActions()
 
@@ -210,6 +217,11 @@ export function useFormUpdate({ rawData }: { rawData: Tag }) {
         currentTag === rawData.name ? newData.name : currentTag
       )
     )
+    rawDqWeaponsUpdateTags(
+      dqWeaponsData.selectedTags.map((currentTag) =>
+        currentTag === rawData.name ? newData.name : currentTag
+      )
+    )
     rawHomebaseNameUpdateTags(
       homebaseNameData.selectedTags.map((currentTag) =>
         currentTag === rawData.name ? newData.name : currentTag
@@ -250,6 +262,11 @@ export function useFormUpdate({ rawData }: { rawData: Tag }) {
     )
     rawDailyQuestsUpdateTags(
       dailyQuestsData.selectedTags.filter(
+        (currentTag) => currentTag !== tagName
+      )
+    )
+    rawDqWeaponsUpdateTags(
+      dqWeaponsData.selectedTags.filter(
         (currentTag) => currentTag !== tagName
       )
     )

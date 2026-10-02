@@ -1,5 +1,6 @@
 export * from './claim-rewards'
 export * from './client-quest-login'
 export * from './daily-quests'
+export * from './dq-weapons'
 export * from './homebase-name'
 export * from './unlock'

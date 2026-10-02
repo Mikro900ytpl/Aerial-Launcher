@@ -71,11 +71,27 @@ export function useItemShopPage() {
         return true
       }
 
-      return (
-        offer.title.toLowerCase().includes(query) ||
-        offer.type.toLowerCase().includes(query) ||
-        offer.section.toLowerCase().includes(query)
-      )
+      const numericQuery = Number(query.replace(/[,\s]/g, ''))
+      const isPriceQuery =
+        query !== '' &&
+        Number.isFinite(numericQuery) &&
+        /^\d+([.,]\d+)?$/.test(query.replace(/\s/g, ''))
+
+      if (
+        isPriceQuery &&
+        (offer.price === numericQuery || offer.regularPrice === numericQuery)
+      ) {
+        return true
+      }
+
+      const fields = [
+        offer.title,
+        offer.type,
+        offer.section,
+        ...(offer.searchNames ?? []),
+      ]
+
+      return fields.some((value) => value.toLowerCase().includes(query))
     })
   }, [catalog.offers, search, section])
 
