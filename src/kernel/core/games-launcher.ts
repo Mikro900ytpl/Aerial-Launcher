@@ -4,7 +4,7 @@ import type { EpicGameEntry } from '../../types/games-launcher'
 import childProcess from 'node:child_process'
 import path from 'node:path'
 
-import { app, nativeImage } from 'electron'
+import { app, dialog, nativeImage } from 'electron'
 
 import { ElectronAPIEventKeys } from '../../config/constants/main-process'
 
@@ -18,9 +18,19 @@ import { DataDirectory } from '../startup/data-directory'
 import { Authentication } from './authentication'
 
 export class GamesLauncher {
+  static async pickEpicDir() {
+    const result = await dialog.showOpenDialog({
+      properties: ['openDirectory'],
+    })
+    return result.canceled ? null : result.filePaths[0] ?? null
+  }
+
   static async scan(): Promise<EpicGameEntry[]> {
     const { settings } = await DataDirectory.getSettingsFile()
-    const scanned = scanEpicGames(settings.epicGamesDir)
+    const scanned = scanEpicGames(
+      settings.epicGamesDir,
+      settings.epicGamesExtraDirs ?? [],
+    )
 
     const games: EpicGameEntry[] = []
     for (const game of scanned) {
@@ -45,6 +55,9 @@ export class GamesLauncher {
         workingDir: game.workingDir,
         launchExe: game.launchExe,
         exchangeLaunch: game.exchangeLaunch,
+        editor: game.editor,
+        catalogNamespace: game.catalogNamespace,
+        launchCommand: game.launchCommand,
         icon,
       })
     }
@@ -84,15 +97,19 @@ export class GamesLauncher {
         'start',
         '""',
         `"${exeName}"`,
+        game.launchCommand?.trim(),
         '-AUTH_LOGIN=unused',
         `-AUTH_PASSWORD=${exchangeCode}`,
         '-AUTH_TYPE=exchangecode',
         `-epicapp=${game.appName}`,
         '-epicenv=Prod',
         '-EpicPortal',
+        game.catalogNamespace ? `-epicsandboxid=${game.catalogNamespace}` : undefined,
         `-epicusername="${displayName.replace(/"/g, '\\"')}"`,
         `-epicuserid=${account.accountId}`,
-      ].join(' ')
+      ]
+        .filter((part): part is string => Boolean(part))
+        .join(' ')
 
       childProcess.exec(command, { cwd: game.workingDir })
       sendResult(true)

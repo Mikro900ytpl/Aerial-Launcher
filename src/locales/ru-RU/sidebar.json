@@ -1,4 +1,4 @@
-{
+﻿{
   "games-launcher": {
     "title": "Games Launcher"
   },
@@ -10,7 +10,9 @@
       "party": "Управление Группой",
       "save-quests": "Сохранить Квесты",
       "daily-quests": "Ежедневные задания",
+      "auto-daily-quests": "Auto Daily Quests",
       "dq-weapons": "DQ Weapons",
+      "storm-shields": "Storm Shields",
       "homebase-name": "Имя Главной Базы",
       "xp-boosts": "Усилители Опыта",
       "auto-pin-urns": "Авто Закреп Урн",
@@ -18,6 +20,7 @@
       "llama-manager": "Менеджер лам",
       "item-shop": "Магазин",
       "collection-book": "Книга коллекции",
+      "account-info": "Account Information",
       "unlock": "Скип щитов"
     },
     "auto-kick-status": {
@@ -29,6 +32,8 @@
     "title": "Управление Аккаунтом",
     "options": {
       "vbucks-information": "Информацию о В-баксах",
+      "cloud-storage": "Cloud Storage",
+      "account-export": "Account Export",
       "redeem-codes": "Активация Кодов",
       "devices-auth": "Аутентификация Устройств",
       "epic-settings": "Настройки Epic Games"

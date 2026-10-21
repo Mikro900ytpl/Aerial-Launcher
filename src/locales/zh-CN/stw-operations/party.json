@@ -88,7 +88,14 @@
       "mutual-empty": "所选账号没有共同好友",
       "friends-with-accounts": "已与 {{names}} 成为好友",
       "selected-accounts": "所选账号",
-      "friendship-with": "与所选账号的好友关系"
+      "friendship-with": "与所选账号的好友关系",
+      "tabs-search": "Search",
+      "tabs-incoming": "Incoming",
+      "incoming-count": "{{count}} incoming",
+      "incoming-loading": "Loading incoming requests",
+      "incoming-empty": "No incoming friend requests",
+      "incoming-accept-all": "Accept all",
+      "incoming-accepted": "Accepted {{count}} friend request(s)"
     }
   }
 }

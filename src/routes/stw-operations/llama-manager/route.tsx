@@ -12,6 +12,7 @@ import { Route as RootRoute } from '../../__root'
 import { HomeBreadcrumb } from '../../../components/navigations/breadcrumb/home'
 import { AccountSelectors } from '../../../components/selectors/accounts'
 import { GoToTop } from '../../../components/go-to-top'
+import { RewardIcon } from '../../../components/reward-icon'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -47,6 +48,7 @@ import {
 import { Badge } from '../../../components/ui/badge'
 import { Separator } from '../../../components/ui/separator'
 
+import { Content as AutoLlamasContent } from '../auto-llamas/route'
 import {
   groupInventory,
   useLlamaManagerPage,
@@ -86,7 +88,33 @@ export const Route = createRoute({
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <Content />
+        <Tabs
+          defaultValue="manager"
+          className="flex flex-grow flex-col"
+        >
+          <div className="flex justify-center px-2">
+            <TabsList>
+              <TabsTrigger value="manager">
+                {t('stw-operations.options.llama-manager')}
+              </TabsTrigger>
+              <TabsTrigger value="auto">
+                {t('stw-operations.options.auto-llamas')}
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent
+            value="manager"
+            className="mt-4 flex-grow"
+          >
+            <Content />
+          </TabsContent>
+          <TabsContent
+            value="auto"
+            className="mt-4 flex-grow"
+          >
+            <AutoLlamasContent />
+          </TabsContent>
+        </Tabs>
       </>
     )
   },
@@ -303,9 +331,11 @@ function Content() {
                           setManualSelectionIdx(option.index)
                         }
                       >
-                        <img
+                        <RewardIcon
                           src={parsed.imgUrl}
+                          fallback={parsed.fallbackUrl}
                           alt=""
+                          title={parsed.name}
                           className="size-8"
                         />
                         <div className="min-w-0">
@@ -743,9 +773,11 @@ function AccountLlamaPanel({
                                   className="bg-muted/50 flex gap-1 items-center px-1.5 py-0.5 rounded text-[0.7rem]"
                                   title={parsed.name}
                                 >
-                                  <img
+                                  <RewardIcon
                                     src={parsed.imgUrl}
+                                    fallback={parsed.fallbackUrl}
                                     alt=""
+                                    title={parsed.name}
                                     className="size-4"
                                   />
                                   <span className="max-w-[8rem] truncate">

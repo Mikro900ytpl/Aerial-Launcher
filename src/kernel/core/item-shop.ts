@@ -94,6 +94,14 @@ type RawEntry = {
   metaInfo?: Array<{ key?: string; value?: string }>
 }
 
+function publicEntryOutDate(entry: FortniteApiShopEntry) {
+  return entry.outDate || entry.offerDates?.out || null
+}
+
+function publicEntryInDate(entry: FortniteApiShopEntry) {
+  return entry.inDate || entry.offerDates?.in || null
+}
+
 type RawStorefront = {
   name?: string
   catalogEntries?: Array<RawEntry>
@@ -392,6 +400,8 @@ function offersFromPublicShop(
       currencyType: 'MtxCurrency',
       currencySubType: '',
       giftable: entry.giftable ?? false,
+      inDate: publicEntryInDate(entry),
+      outDate: publicEntryOutDate(entry),
       grants: first?.id ? [{ templateId: first.id, quantity: 1 }] : [],
     })
   })
@@ -577,6 +587,8 @@ function offerFromEpicEntry(
     currencyType: 'MtxCurrency',
     currencySubType: mtxPrice.currencySubType ?? '',
     giftable: entry.giftable ?? false,
+    inDate: null,
+    outDate: null,
     grants,
   }
 }
@@ -626,6 +638,8 @@ function mergeEpicCatalog(
           currencySubType:
             mtxPrice.currencySubType ?? existing.currencySubType,
           giftable: entry.giftable ?? existing.giftable,
+          inDate: existing.inDate ?? null,
+          outDate: existing.outDate ?? null,
         })
         return
       }

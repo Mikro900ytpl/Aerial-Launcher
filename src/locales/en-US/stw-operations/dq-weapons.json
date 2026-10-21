@@ -1,7 +1,14 @@
 {
   "description": "Check which accounts have 6-perk chain lightning weapons for daily kill quests.",
   "form": {
-    "submit-button": "Load"
+    "submit-button": "Load",
+    "favorite-button": "Favorite shown"
+  },
+  "favorite": {
+    "done": "Added {{count}} daily quest weapons to favorites",
+    "already": "Daily quest weapons are already in favorites",
+    "empty": "No daily quest weapons to favorite",
+    "error": "Could not add weapons to favorites"
   },
   "list": {
     "empty": "No data loaded yet.",

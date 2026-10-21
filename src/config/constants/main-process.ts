@@ -30,6 +30,7 @@ export enum ElectronAPIEventKeys {
   CustomizableMenuSettingsRequest = 'customizable-menu-settings:request',
   CustomizableMenuSettingsResponse = 'customizable-menu-settings:response',
   CustomizableMenuSettingsUpdate = 'customizable-menu-settings:update',
+  CustomizableMenuSettingsUpdateLayout = 'customizable-menu-settings:update-layout',
 
   RequestTags = 'request:tags',
   OnLoadTags = 'on:load:tags',
@@ -106,11 +107,13 @@ export enum ElectronAPIEventKeys {
    */
 
   LauncherStart = 'launcher:start',
+  LauncherGenerateCmd = 'launcher:generate-cmd',
   LauncherNotification = 'launcher:notification',
 
   GamesLauncherScan = 'games-launcher:scan',
   GamesLauncherStart = 'games-launcher:start',
   GamesLauncherNotification = 'games-launcher:notification',
+  GamesLauncherPickDir = 'games-launcher:pick-dir',
 
   /**
    * STW Operations
@@ -126,6 +129,29 @@ export enum ElectronAPIEventKeys {
 
   DqWeaponsRequest = 'dq-weapons:request',
   DqWeaponsNotification = 'dq-weapons:notification',
+  DqWeaponsFavoriteRequest = 'dq-weapons:favorite:request',
+  DqWeaponsFavoriteNotification = 'dq-weapons:favorite:notification',
+
+  StormShieldsRequest = 'storm-shields:request',
+  StormShieldsNotification = 'storm-shields:notification',
+
+  AccountInfoRequest = 'account-info:request',
+  AccountInfoNotification = 'account-info:notification',
+  AccountInfoRecycleRequest = 'account-info:recycle:request',
+  AccountInfoUpgradeRequest = 'account-info:upgrade:request',
+  AccountInfoActionNotification = 'account-info:action:notification',
+
+  CloudStorageListRequest = 'cloud-storage:list:request',
+  CloudStorageListNotification = 'cloud-storage:list:notification',
+  CloudStorageDownloadRequest = 'cloud-storage:download:request',
+  CloudStorageDownloadNotification = 'cloud-storage:download:notification',
+  CloudStoragePickRequest = 'cloud-storage:pick:request',
+  CloudStoragePickNotification = 'cloud-storage:pick:notification',
+  CloudStorageApplyRequest = 'cloud-storage:apply:request',
+  CloudStorageApplyNotification = 'cloud-storage:apply:notification',
+
+  AccountExportRequest = 'account-export:request',
+  AccountExportNotification = 'account-export:notification',
 
   SetHombaseName = 'homebase-name:set',
   HomebaseNameNotification = 'homebase-name:notification',
@@ -171,8 +197,18 @@ export enum ElectronAPIEventKeys {
   PartySendFriendRequestActionNotification = 'party:friend:request:notification',
   PartyLookupPlayerAction = 'party:player:lookup',
   PartyLookupPlayerActionNotification = 'party:player:lookup:notification',
+  PartyIncomingFriendRequestsRequest = 'party:friend:incoming:request',
+  PartyIncomingFriendRequestsNotification = 'party:friend:incoming:notification',
+  PartyAcceptIncomingFriendRequests = 'party:friend:incoming:accept',
+  PartyAcceptIncomingFriendRequestsNotification = 'party:friend:incoming:accept:notification',
   PartyRemoveFriendAction = 'party:friend:remove',
   PartyRemoveFriendActionNotification = 'party:friend:remove:notification',
+  PartyStatusRequest = 'party:status:request',
+  PartyStatusNotification = 'party:status:notification',
+  PartyStatusKickMember = 'party:status:kick-member',
+  PartyStatusPromoteMember = 'party:status:promote-member',
+  PartyStatusLeave = 'party:status:leave',
+  PartyStatusActionNotification = 'party:status:action:notification',
 
   /**
    * Advanced Mode
@@ -182,7 +218,10 @@ export enum ElectronAPIEventKeys {
   HomeWorldInfoResponse = 'home:world-info:response',
   HomeFetchPlayerRequest = 'home:fetch-player:request',
   HomeFetchPlayerResponse = 'home:fetch-player:response',
+  AlertsDoneCheckRequest = 'alerts-done:check:request',
+  AlertsDoneCheckNotification = 'alerts-done:check:notification',
 
+  WorldInfoGetSwapSources = 'advanced-mode:world-info:swap-sources',
   WorldInfoRequestData = 'advanced-mode:world-info:request:data',
   WorldInfoResponseData = 'advanced-mode:world-info:response:data',
   WorldInfoSaveFile = 'advanced-mode:world-info:save:file',
@@ -215,6 +254,11 @@ export enum ElectronAPIEventKeys {
   AutomationServiceRemoveNotification = 'automation:service:remove:notification',
   AutomationServiceActionUpdate = 'automation:service:action:update',
   AutomationServiceActionUpdateNotification = 'automation:service:action:update:notification',
+
+  AutomationLogFileRequest = 'automation:logfile:request',
+  AutomationLogFileUpdate = 'automation:logfile:update',
+  AutomationLogFilePick = 'automation:logfile:pick',
+  AutomationLogFileNotification = 'automation:logfile:notification',
 
   /**
    * Taxi Service
@@ -270,6 +314,9 @@ export enum ElectronAPIEventKeys {
   LlamaManagerPurchase = 'llama-manager:purchase',
   LlamaManagerBulkPurchase = 'llama-manager:bulk:purchase',
   LlamaManagerBulkResult = 'llama-manager:bulk:result',
+  /** @deprecated kept for older builds */
+  LlamaManagerBulkPurchaseMini = 'llama-manager:bulk:purchase:mini',
+  LlamaManagerBulkMiniResult = 'llama-manager:bulk:mini:result',
   LlamaManagerOpenPacks = 'llama-manager:open:packs',
   LlamaManagerOpenChoice = 'llama-manager:open:choice',
   LlamaManagerActionResult = 'llama-manager:action:result',

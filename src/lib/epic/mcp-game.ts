@@ -93,7 +93,7 @@ async function issueFortnitePcUserAccessToken(): Promise<string> {
   const account = AccountsManager.getAccounts().first()
   if (!account?.accountId || !account.deviceId || !account.secret) {
     throw new Error(
-      'Brak konta device_auth — world/info wymaga tokenu użytkownika'
+      'No device_auth account — world/info requires a user token'
     )
   }
 

@@ -5,7 +5,10 @@ import type {
 } from '../../../components/ui/extended/combobox/hooks'
 import type { PartyCommonSelectorState } from '../../../state/stw-operations/party'
 import type { AccountData } from '../../../types/accounts'
-import type { PartyPlayerLookupResponse } from '../../../types/party'
+import type {
+  PartyIncomingFriendRequest,
+  PartyPlayerLookupResponse,
+} from '../../../types/party'
 
 import { useTranslation } from 'react-i18next'
 import { useEffect, useRef, useState } from 'react'
@@ -393,6 +396,7 @@ export function useFriendRequestActions() {
   })
 
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [sheetTab, setSheetTab] = useState<'search' | 'incoming'>('search')
   const [inputSearchDisplayName, setInputSearchDisplayName] = useState('')
   const [isSearching, setIsSearching] = useState(false)
   const [pendingAccountId, setPendingAccountId] = useState<string | null>(
@@ -401,12 +405,23 @@ export function useFriendRequestActions() {
   const pendingActionRef = useRef<'send' | 'accept' | null>(null)
   const [searchedUser, setSearchedUser] =
     useState<PartyPlayerLookupResponse | null>(null)
+  const [incomingRequests, setIncomingRequests] = useState<
+    Array<PartyIncomingFriendRequest>
+  >([])
+  const [isIncomingLoading, setIsIncomingLoading] = useState(false)
+  const [pendingIncomingKey, setPendingIncomingKey] = useState<
+    string | null
+  >(null)
+  const incomingLoadedRef = useRef(false)
 
   const selectedAccounts = value
     .map((option) => accountList[option.value])
     .filter((account) => account !== undefined)
 
-  const isBusy = isSearching || pendingAccountId !== null
+  const isBusy =
+    isSearching ||
+    pendingAccountId !== null ||
+    pendingIncomingKey !== null
 
   const inputSearchButtonIsDisabled =
     isBusy ||
@@ -433,6 +448,7 @@ export function useFriendRequestActions() {
 
         pendingActionRef.current = null
         setPendingAccountId(null)
+        setPendingIncomingKey(null)
 
         if (response.length <= 0) {
           toast(t('party.friends.notifications.request.error'))
@@ -457,6 +473,11 @@ export function useFriendRequestActions() {
             inputSearchDisplayName
           )
         }
+
+        if (accounts.length > 0 && incomingLoadedRef.current) {
+          setIsIncomingLoading(true)
+          window.electronAPI.requestIncomingFriendRequests(accounts)
+        }
       }
     )
 
@@ -464,6 +485,20 @@ export function useFriendRequestActions() {
       listener.removeListener()
     }
   }, [accountList, inputSearchDisplayName, t, value])
+
+  useEffect(() => {
+    const listener = window.electronAPI.notificationIncomingFriendRequests(
+      async (requests) => {
+        setIncomingRequests(requests)
+        setIsIncomingLoading(false)
+        incomingLoadedRef.current = true
+      }
+    )
+
+    return () => {
+      listener.removeListener()
+    }
+  }, [])
 
   const handleChangeSearchDisplayName: ChangeEventHandler<
     HTMLInputElement
@@ -515,6 +550,35 @@ export function useFriendRequestActions() {
     )
   }
 
+  const loadIncomingRequests = () => {
+    if (selectedAccounts.length <= 0) {
+      return
+    }
+
+    setIsIncomingLoading(true)
+    window.electronAPI.requestIncomingFriendRequests(selectedAccounts)
+  }
+
+  const handleSheetTabChange = (tab: 'search' | 'incoming') => {
+    setSheetTab(tab)
+
+    if (tab === 'incoming' && !incomingLoadedRef.current) {
+      loadIncomingRequests()
+    }
+  }
+
+  const handleAcceptIncoming = (request: PartyIncomingFriendRequest) => {
+    const account = accountList[request.accountId]
+
+    if (!account || pendingIncomingKey !== null || pendingAccountId !== null) {
+      return
+    }
+
+    pendingActionRef.current = 'accept'
+    setPendingIncomingKey(`${request.accountId}:${request.friendId}`)
+    window.electronAPI.sendFriendRequests([account], request.friendId)
+  }
+
   const handleDialogOpenChange = (open: boolean) => {
     setDialogOpen(open)
 
@@ -523,6 +587,11 @@ export function useFriendRequestActions() {
       setInputSearchDisplayName('')
       pendingActionRef.current = null
       setPendingAccountId(null)
+      setSheetTab('search')
+      setIncomingRequests([])
+      setIsIncomingLoading(false)
+      setPendingIncomingKey(null)
+      incomingLoadedRef.current = false
     }
   }
 
@@ -530,20 +599,26 @@ export function useFriendRequestActions() {
     customFilter,
     dialogOpen,
     hasValues,
+    incomingRequests,
     inputSearchButtonIsDisabled,
     inputSearchDisplayName,
     isBusy,
+    isIncomingLoading,
     isSearching,
     options,
     pendingAccountId,
+    pendingIncomingKey,
     searchedUser,
     selectedAccounts,
+    sheetTab,
     value,
 
+    handleAcceptIncoming,
     handleAccountAction,
     handleChangeSearchDisplayName,
     handleDialogOpenChange,
     handleSearchUser,
+    handleSheetTabChange,
     setDialogOpen,
     setValue,
   }

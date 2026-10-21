@@ -147,6 +147,7 @@ function Content() {
               />
               <div className="flex flex-wrap gap-2 items-center">
                 <Button
+                  id="item-shop-load-button"
                   size="sm"
                   onClick={handleLoad}
                   disabled={isDisabledForm || isLoadingCatalog}
@@ -267,13 +268,14 @@ function Content() {
             <OfferGrid
               offers={offers}
               disabled={isBusy}
+              catalogExpiration={catalog.expiration}
               onBuy={setBuyOffer}
               onGift={setGiftOffer}
             />
           )}
         </div>
       </div>
-      <GoToTop />
+      <GoToTop containerId="item-shop-load-button" />
 
       <Dialog
         open={buyOffer !== null}

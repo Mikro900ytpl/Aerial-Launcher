@@ -92,7 +92,14 @@
       "mutual-empty": "Brak wspólnych znajomych na wybranych kontach",
       "friends-with-accounts": "Znajomi z: {{names}}",
       "selected-accounts": "Wybrane konta",
-      "friendship-with": "Znajomość z wybranymi kontami"
+      "friendship-with": "Znajomość z wybranymi kontami",
+      "tabs-search": "Szukaj",
+      "tabs-incoming": "Przychodzące",
+      "incoming-count": "{{count}} przychodzących",
+      "incoming-loading": "Ładowanie przychodzących zaproszeń",
+      "incoming-empty": "Brak przychodzących zaproszeń",
+      "incoming-accept-all": "Przyjmij wszystkie",
+      "incoming-accepted": "Przyjęto {{count}} zaproszeń"
     }
   }
 }

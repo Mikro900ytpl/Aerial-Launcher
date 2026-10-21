@@ -67,3 +67,41 @@ export type PartyPlayerLookupResponse =
       errorMessage: null
       success: true
     }
+
+export type PartyIncomingFriendRequest = {
+  accountDisplayName: string
+  accountId: string
+  created: string | null
+  friendDisplayName: string
+  friendId: string
+}
+
+export type PartyStatusMember = {
+  accountId: string
+  displayName: string
+  role: 'CAPTAIN' | 'MEMBER'
+  isYou: boolean
+}
+
+export type PartyStatusAccountData = {
+  accountId: string
+  available: boolean
+  errorMessage?: string
+  inParty: boolean
+  isLeader: boolean
+  partyId: string | null
+  memberCount: number
+  maxSize: number
+  members: Array<PartyStatusMember>
+}
+
+export type PartyStatusAction = 'kick' | 'promote' | 'leave'
+
+export type PartyStatusActionResponse = {
+  accountId: string
+  success: boolean
+  errorMessage?: string
+  data?: PartyStatusAccountData
+  action?: PartyStatusAction
+  memberName?: string
+}

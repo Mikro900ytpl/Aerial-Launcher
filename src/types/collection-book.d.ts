@@ -1,36 +1,60 @@
 export type CollectionBookSectionId =
-  | 'heroes-commando'
-  | 'heroes-constructor'
-  | 'heroes-ninja'
-  | 'heroes-outlander'
-  | 'heroes-other'
-  | 'weapons-assault'
-  | 'weapons-shotgun'
-  | 'weapons-sniper'
-  | 'weapons-pistol'
-  | 'weapons-explosive'
-  | 'weapons-melee'
-  | 'weapons-neon'
-  | 'weapons-expansion'
-  | 'weapons-other'
-  | 'traps'
-  | 'defenders'
-  | 'survivors'
+  | 'heroes-soldiers'
+  | 'heroes-constructors'
+  | 'heroes-ninjas'
+  | 'heroes-outlanders'
+  | 'personnel-defenders'
+  | 'personnel-survivors'
+  | 'personnel-leads'
+  | 'ranged-assault'
+  | 'ranged-shotgun'
+  | 'ranged-sniper'
+  | 'ranged-pistol'
+  | 'ranged-explosive'
+  | 'melee-sword'
+  | 'melee-axe'
+  | 'melee-scythe'
+  | 'melee-spear'
+  | 'melee-hardware'
+  | 'traps-wall'
+  | 'traps-ceiling'
+  | 'traps-floor'
+  | 'starter-packs'
+  | 'event-people'
+  | 'event-schematics'
+  | 'expansion-people'
+  | 'expansion-schematics'
   | 'other'
+
+export type CollectionBookCostKind =
+  | 'hero'
+  | 'defender'
+  | 'survivor'
+  | 'lead'
+  | 'weapon'
+  | 'trap'
+
+export type CollectionBookItemState = 'book' | 'armory' | 'missing'
 
 export type CollectionBookItem = {
   itemId: string
+  cardKey: string
   templateId: string
   name: string
   type: 'hero' | 'schematic' | 'defender' | 'worker' | 'other'
+  costKind: CollectionBookCostKind
   sectionId: CollectionBookSectionId
   level: number
   maxLevel: number
   starTier: number
+  /** Rarity code: c, uc, r, vr, sr, ur */
   rarity: string
   favorite: boolean
-  isSlotted: boolean
+  state: CollectionBookItemState
+  profileId: string
+  armoryCount: number
   imageUrl?: string
+  fallbackUrl?: string
 }
 
 export type CollectionBookSection = {
@@ -40,11 +64,27 @@ export type CollectionBookSection = {
   items: Array<CollectionBookItem>
 }
 
+export type CollectionBookResources = {
+  peopleXp: number
+  schematicXp: number
+  rain: number
+  lightning: number
+  eye: number
+  shard: number
+  trainingManuals: number
+  schematicManuals: number
+  heroSupercharger: number
+  survivorSupercharger: number
+  weaponSupercharger: number
+  trapSupercharger: number
+}
+
 export type CollectionBookAccountData = {
   accountId: string
   collectionBookLevel: number
   accountLevel: number
   accountXp: number
+  resources: CollectionBookResources
   items: Array<CollectionBookItem>
   sections: Array<CollectionBookSection>
   error?: string
@@ -52,10 +92,10 @@ export type CollectionBookAccountData = {
 
 export type CollectionBookUpgradeRequest = {
   accountId: string
-  /** Specific item IDs; if empty, use sectionId / all */
+  /** Specific item IDs. One card upgrades one copy. */
   itemIds?: Array<string>
-  /** Upgrade only this section */
-  sectionId?: CollectionBookSectionId | 'all'
+  /** A page id, a parent tab id, or all */
+  sectionId?: string
   targetLevel: number
 }
 

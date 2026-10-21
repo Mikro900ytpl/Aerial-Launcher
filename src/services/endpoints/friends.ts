@@ -61,6 +61,34 @@ export function getFriendsSummary({
   )
 }
 
+export function getFriendsBlocklist({
+  accessToken,
+  accountId,
+}: {
+  accessToken: string
+  accountId: string
+}) {
+  return friendsService.get(`/${accountId}/blocklist`, {
+    headers: {
+      Authorization: `bearer ${accessToken}`,
+    },
+  })
+}
+
+export function getFriendsSettings({
+  accessToken,
+  accountId,
+}: {
+  accessToken: string
+  accountId: string
+}) {
+  return friendsService.get(`/${accountId}/settings`, {
+    headers: {
+      Authorization: `bearer ${accessToken}`,
+    },
+  })
+}
+
 export function removeFriend({
   accessToken,
   accountId,

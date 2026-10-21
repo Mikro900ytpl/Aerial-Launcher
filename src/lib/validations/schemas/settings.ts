@@ -43,8 +43,11 @@ export const settingsSchema = z.object({
     .trim()
     .min(1)
     .default('C:\\Program Files\\Epic Games'),
+  epicGamesExtraDirs: z.array(z.string().trim()).default([]),
   systemTray: z.boolean().default(false),
   userAgent: z.string().trim().min(1),
+  customProxyEnabled: z.boolean().default(false),
+  customProxyPort: z.string().trim().default('8080'),
 })
 
 export const devSettingsSchema = z
@@ -57,14 +60,15 @@ export const customizableMenuSettingsSchema = z
   .object({
     currentAlerts: z.boolean().default(true),
     gamesLauncher: z.boolean().default(true),
+    general: z.boolean().default(true),
 
     stwOperations: z.boolean().default(true),
     autoKick: z.boolean().default(true),
     taxiService: z.boolean().default(true),
     party: z.boolean().default(true),
-    saveQuests: z.boolean().default(true),
     dailyQuests: z.boolean().default(true),
     dqWeapons: z.boolean().default(true),
+    stormShields: z.boolean().default(true),
     homebaseName: z.boolean().default(true),
     xpBoosts: z.boolean().default(true),
     autoPinUrns: z.boolean().default(true),
@@ -72,10 +76,13 @@ export const customizableMenuSettingsSchema = z
     llamaManager: z.boolean().default(true),
     itemShop: z.boolean().default(true),
     collectionBook: z.boolean().default(true),
+    accountInfo: z.boolean().default(true),
     unlock: z.boolean().default(true),
 
     accountManagement: z.boolean().default(true),
     vbucksInformation: z.boolean().default(true),
+    cloudStorage: z.boolean().default(true),
+    accountExport: z.boolean().default(true),
     redeemCodes: z.boolean().default(true),
     devicesAuth: z.boolean().default(true),
     epicGamesSettings: z.boolean().default(true),
@@ -91,6 +98,8 @@ export const customizableMenuSettingsSchema = z
     exchangeCode: z.boolean().default(true),
     deviceAuth: z.boolean().default(true),
     removeAccount: z.boolean().default(true),
+
+    categories: z.array(z.unknown()).optional(),
   })
   .partial()
 

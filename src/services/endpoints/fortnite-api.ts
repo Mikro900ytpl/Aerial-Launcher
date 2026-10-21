@@ -49,6 +49,12 @@ export type FortniteApiShopEntry = {
   offerId?: string
   devName?: string
   giftable?: boolean
+  inDate?: string
+  outDate?: string
+  offerDates?: {
+    in?: string
+    out?: string
+  }
   layoutId?: string
   layout?: {
     id?: string

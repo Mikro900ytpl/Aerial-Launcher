@@ -1,3 +1,5 @@
+import { epicAssetFileName } from './item-icons'
+
 export const DQ_WEAPON_KINDS = [
   'smg',
   'pistol',
@@ -13,6 +15,7 @@ export type SchematicRarity = 'c' | 'uc' | 'r' | 'vr' | 'sr' | 'ur'
 
 export type DqWeaponMatch = {
   kind: DqWeaponKind
+  itemId: string
   name: string
   templateId: string
   perkCount: number
@@ -21,6 +24,8 @@ export type DqWeaponMatch = {
   rarity: SchematicRarity | null
   star: number
   alterations: Array<string>
+  alterationBaseRarities: Array<string>
+  imageUrl: string
 }
 
 export type WeaponPerkRow = {
@@ -42,6 +47,24 @@ export const SCHEMATIC_RARITY_LABELS: Record<SchematicRarity, string> = {
 
 export const LAMP_PERK_TEXT =
   'Eliminating an enemy with this weapon causes chain lightning to strike up to 6 enemies.'
+
+const SID_PATH_FIXES: Array<[RegExp, string]> = [
+  [/^sid_pistol_auto_vacuumtube_/, 'sid_pistol_vacuumtube_auto_'],
+]
+
+export function schematicIconUrl(templateId: string) {
+  const colon = templateId.indexOf(':')
+  let raw = (colon >= 0 ? templateId.slice(colon + 1) : templateId).toLowerCase()
+
+  raw = raw.replace(/^wid_/, 'sid_').replace(/^tid_/, 'sid_')
+  raw = raw.replace(/_(ore|crystal)_t\d+$/, '_ore_t01')
+
+  SID_PATH_FIXES.forEach(([from, to]) => {
+    raw = raw.replace(from, to)
+  })
+
+  return `https://api.miadsc.xyz/assets/stw/schematics/${epicAssetFileName(raw)}.png`
+}
 
 const EMPTY_SLOT = /^(none|null|undefined)?$/i
 
@@ -129,6 +152,19 @@ export function itemAlterations(attributes?: Record<string, unknown>) {
     (value): value is string =>
       typeof value === 'string' && !EMPTY_SLOT.test(value.trim())
   )
+}
+
+export function itemAlterationBaseRarities(
+  attributes?: Record<string, unknown>
+) {
+  if (!attributes) {
+    return []
+  }
+
+  const raw = attributes.alteration_base_rarities
+  const list = Array.isArray(raw) ? raw : []
+
+  return list.filter((value): value is string => typeof value === 'string')
 }
 
 export function isChainLightningAlteration(alteration: string) {
@@ -441,14 +477,38 @@ const SIXTH_PERK_TEXT: Array<{ test: RegExp; label: string }> = [
   },
 ]
 
-function perkRarityFromId(id: string): SchematicRarity | null {
-  const match = id.match(/_(c|uc|r|vr|sr|ur)$/i)
+export const PERK_PIP_COLOR: Record<SchematicRarity, string> = {
+  c: 'bg-zinc-400',
+  uc: 'bg-green-500',
+  r: 'bg-blue-500',
+  vr: 'bg-purple-500',
+  sr: 'bg-yellow-400',
+  ur: 'bg-yellow-400',
+}
 
-  if (!match?.[1]) {
-    return null
+const TIER_TO_RARITY: Record<string, SchematicRarity> = {
+  '1': 'c',
+  '2': 'uc',
+  '3': 'r',
+  '4': 'vr',
+  '5': 'sr',
+  '6': 'ur',
+}
+
+function perkRarityFromId(id: string): SchematicRarity | null {
+  const tier = id.match(/_t0?([1-6])$/i)
+
+  if (tier?.[1] && TIER_TO_RARITY[tier[1]]) {
+    return TIER_TO_RARITY[tier[1]]
   }
 
-  return match[1].toLowerCase() as SchematicRarity
+  const letter = id.match(/_(ur|sr|vr|uc|c|r)$/i)
+
+  if (letter?.[1]) {
+    return letter[1].toLowerCase() as SchematicRarity
+  }
+
+  return null
 }
 
 function perkValue(key: string, rarity: SchematicRarity | null) {
@@ -467,7 +527,8 @@ function titleFromId(id: string) {
   const cleaned = id
     .replace(/^alteration:/i, '')
     .replace(/^aid_/i, '')
-    .replace(/_(c|uc|r|vr|sr|ur)$/i, '')
+    .replace(/_(ur|sr|vr|uc|c|r)(?:_t0?[1-6])?$/i, '')
+    .replace(/_t0?[1-6]$/i, '')
     .replace(/_/g, ' ')
     .trim()
 
@@ -481,10 +542,10 @@ function titleFromId(id: string) {
 export function formatWeaponPerk(alteration: string): WeaponPerkRow {
   const id = alteration.toLowerCase().replace(/[^a-z0-9_:]/g, '')
   const compact = id.replace(/[^a-z0-9]/g, '')
-  const rarity = perkRarityFromId(id.replace(/^alteration:/, ''))
-  const filled = rarity ? Math.min(6, RARITY_RANK[rarity] + 1) : 5
-
   const sixth = SIXTH_PERK_TEXT.find((entry) => entry.test.test(compact))
+  const rarity =
+    perkRarityFromId(id.replace(/^alteration:/, '')) ?? (sixth ? 'sr' : null)
+  const filled = rarity ? Math.min(5, RARITY_RANK[rarity] + 1) : 5
 
   if (sixth) {
     return {
@@ -548,9 +609,78 @@ export function formatWeaponPerk(alteration: string): WeaponPerkRow {
 }
 
 export function inspectPerks(alterations: Array<string>) {
-  const rows = alterations.map(formatWeaponPerk)
+  const rows = alterations.slice(0, 6).map((alteration) =>
+    formatWeaponPerk(alteration)
+  )
   const lamp = rows.find((row) => row.isLamp) ?? null
   const perks = rows.filter((row) => !row.isLamp)
 
   return { perks, lamp }
+}
+
+type CampaignItem = {
+  templateId?: string
+  attributes?: object | null
+}
+
+function itemLevel(attributes: Record<string, unknown>) {
+  const levelRaw = attributes.level
+
+  if (typeof levelRaw === 'number') {
+    return levelRaw
+  }
+
+  if (typeof levelRaw === 'string') {
+    return Number.parseInt(levelRaw, 10) || 0
+  }
+
+  return 0
+}
+
+/** One lamp schematic per daily-quest kind: highest power, same rule as the list. */
+export function bestLampWeapons(items: Record<string, CampaignItem>) {
+  const weapons = emptyKindMap()
+
+  Object.entries(items).forEach(([itemId, item]) => {
+    const templateId = item.templateId ?? ''
+    const kind = classifyDqWeapon(templateId)
+
+    if (!kind) {
+      return
+    }
+
+    const attributes = (item.attributes ?? {}) as Record<string, unknown>
+    const alterations = itemAlterations(attributes)
+
+    if (!isLampWeapon(alterations)) {
+      return
+    }
+
+    const level = itemLevel(attributes)
+    const next: DqWeaponMatch = {
+      kind,
+      itemId,
+      name: schematicDisplayName(templateId),
+      templateId,
+      perkCount: alterations.length,
+      level,
+      power: schematicPowerLevel(templateId, level),
+      rarity: parseSchematicRarity(templateId),
+      star: parseSchematicStar(templateId, level),
+      alterations: alterations.slice(0, 6),
+      alterationBaseRarities: itemAlterationBaseRarities(attributes),
+      imageUrl: schematicIconUrl(templateId),
+    }
+    const current = weapons[kind]
+
+    weapons[kind] = current ? pickBetterMatch(current, next) : next
+  })
+
+  return weapons
+}
+
+export function collectLampWeaponItemIds(items: Record<string, CampaignItem>) {
+  return Object.values(bestLampWeapons(items))
+    .filter((match): match is DqWeaponMatch => match !== null)
+    .map((match) => match.itemId)
 }

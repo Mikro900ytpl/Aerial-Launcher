@@ -13,6 +13,7 @@ import {
   SheetContent,
   SheetHeader,
 } from '../../../components/ui/sheet'
+import { Tabs, TabsList, TabsTrigger } from '../../../components/ui/tabs'
 
 import { useCustomizableMenuSettingsVisibility } from '../../../hooks/settings'
 import { useInputPaddingButton } from '../../../hooks/ui/inputs'
@@ -23,6 +24,7 @@ import { assets } from '../../../lib/repository'
 import { cn } from '../../../lib/utils'
 
 import type {
+  PartyIncomingFriendRequest,
   PartyPlayerFriendship,
   PartyPlayerFriendshipStatus,
   PartyPlayerLookupData,
@@ -47,19 +49,25 @@ export function FriendRequestCard() {
     customFilter,
     dialogOpen,
     hasValues,
+    incomingRequests,
     inputSearchButtonIsDisabled,
     inputSearchDisplayName,
     isBusy,
+    isIncomingLoading,
     isSearching,
     options,
     pendingAccountId,
+    pendingIncomingKey,
     searchedUser,
+    sheetTab,
     value,
 
+    handleAcceptIncoming,
     handleAccountAction,
     handleChangeSearchDisplayName,
     handleDialogOpenChange,
     handleSearchUser,
+    handleSheetTabChange,
     setDialogOpen,
     setValue,
   } = useFriendRequestActions()
@@ -69,40 +77,39 @@ export function FriendRequestCard() {
 
   return (
     <>
-      <Card className="flex flex-col flex-shrink-0 h-36 justify-center max-w-72 w-full">
-        <CardContent className="block pt-6 space-y-4">
-          <div className="flex flex-col gap-4">
-            <Combobox
-              placeholder={t('form.accounts.select', {
-                ns: 'general',
-              })}
-              placeholderSearch={t('form.accounts.placeholder', {
-                ns: 'general',
-                context: !getMenuOptionVisibility('showTotalAccounts')
-                  ? 'private'
-                  : undefined,
-                total: options.length,
-              })}
-              emptyContent={t('form.accounts.search-empty', {
-                ns: 'general',
-              })}
-              options={options}
-              value={value}
-              customFilter={customFilter}
-              onChange={setValue}
-              isMulti
-            />
-            <Button
-              className="px-0.5 w-full"
-              size="sm"
-              onClick={() => setDialogOpen(true)}
-              disabled={!hasValues}
-            >
-              <span className="flex-shrink-0 leading-4 text-balance truncate">
-                {t('party.friend-requests.form.submit-button')}
-              </span>
-            </Button>
-          </div>
+      <Card className="flex min-w-0 flex-1 flex-col justify-center">
+        <CardContent className="flex flex-col gap-2 p-2 pt-2">
+          <Combobox
+            className="h-8"
+            placeholder={t('form.accounts.select', {
+              ns: 'general',
+            })}
+            placeholderSearch={t('form.accounts.placeholder', {
+              ns: 'general',
+              context: !getMenuOptionVisibility('showTotalAccounts')
+                ? 'private'
+                : undefined,
+              total: options.length,
+            })}
+            emptyContent={t('form.accounts.search-empty', {
+              ns: 'general',
+            })}
+            options={options}
+            value={value}
+            customFilter={customFilter}
+            onChange={setValue}
+            isMulti
+          />
+          <Button
+            className="h-8 w-full px-0.5"
+            size="sm"
+            onClick={() => setDialogOpen(true)}
+            disabled={!hasValues}
+          >
+            <span className="flex-shrink-0 leading-4 text-balance truncate">
+              {t('party.friend-requests.form.submit-button')}
+            </span>
+          </Button>
         </CardContent>
       </Card>
 
@@ -122,65 +129,187 @@ export function FriendRequestCard() {
               {t('party.friend-requests.sheet.title')}
             </div>
           </SheetHeader>
-          <form className="space-y-1" onSubmit={handleSearchUser}>
-            <Label
-              className="text-xs"
-              htmlFor="party-friend-request-search"
-            >
-              {t('party.friend-requests.sheet.label')}
-            </Label>
-            <div className="flex items-center relative">
-              <Input
-                placeholder={t(
-                  'party.friend-requests.sheet.search-placeholder'
-                )}
-                className="pr-[var(--pr-button-width)] pl-3 py-1"
-                value={inputSearchDisplayName}
-                onChange={handleChangeSearchDisplayName}
-                disabled={isBusy}
-                id="party-friend-request-search"
-                ref={$updateInput}
-              />
-              <Button
-                type="submit"
-                className="absolute h-8 px-2 py-1.5 right-1 text-sm w-16"
-                disabled={inputSearchButtonIsDisabled}
-                ref={$updateButton}
-              >
-                {isSearching ? (
-                  <UpdateIcon className="animate-spin h-4" />
-                ) : (
-                  t('actions.search', {
-                    ns: 'general',
-                  })
-                )}
-              </Button>
-            </div>
-          </form>
+          <Tabs
+            value={sheetTab}
+            onValueChange={(value) =>
+              handleSheetTabChange(value as 'search' | 'incoming')
+            }
+          >
+            <TabsList className="grid h-8 w-full grid-cols-2">
+              <TabsTrigger className="h-7 text-xs" value="search">
+                {t('party.friend-requests.sheet.tabs-search')}
+              </TabsTrigger>
+              <TabsTrigger className="h-7 text-xs" value="incoming">
+                {t('party.friend-requests.sheet.tabs-incoming')}
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
 
-          {searchedUser && !searchedUser.success && (
-            <div className="break-all py-8 text-center text-muted-foreground">
-              {searchedUser.errorMessage
-                ? searchedUser.errorMessage
-                : t('form.player.search-empty', {
-                    ns: 'general',
-                  })}
-            </div>
+          {sheetTab === 'search' && (
+            <>
+              <form className="space-y-1" onSubmit={handleSearchUser}>
+                <Label
+                  className="text-xs"
+                  htmlFor="party-friend-request-search"
+                >
+                  {t('party.friend-requests.sheet.label')}
+                </Label>
+                <div className="flex items-center relative">
+                  <Input
+                    placeholder={t(
+                      'party.friend-requests.sheet.search-placeholder'
+                    )}
+                    className="pr-[var(--pr-button-width)] pl-3 py-1"
+                    value={inputSearchDisplayName}
+                    onChange={handleChangeSearchDisplayName}
+                    disabled={isBusy}
+                    id="party-friend-request-search"
+                    ref={$updateInput}
+                  />
+                  <Button
+                    type="submit"
+                    className="absolute h-8 px-2 py-1.5 right-1 text-sm w-16"
+                    disabled={inputSearchButtonIsDisabled}
+                    ref={$updateButton}
+                  >
+                    {isSearching ? (
+                      <UpdateIcon className="animate-spin h-4" />
+                    ) : (
+                      t('actions.search', {
+                        ns: 'general',
+                      })
+                    )}
+                  </Button>
+                </div>
+              </form>
+
+              {searchedUser && !searchedUser.success && (
+                <div className="break-all py-8 text-center text-muted-foreground">
+                  {searchedUser.errorMessage
+                    ? searchedUser.errorMessage
+                    : t('form.player.search-empty', {
+                        ns: 'general',
+                      })}
+                </div>
+              )}
+
+              {searchedUser?.success && (
+                <div className="min-h-0 overflow-y-auto flex-1 pb-4">
+                  <PlayerLookupResult
+                    data={searchedUser.data}
+                    pendingAccountId={pendingAccountId}
+                    onAccountAction={handleAccountAction}
+                  />
+                </div>
+              )}
+            </>
           )}
 
-          {searchedUser?.success && (
-            <div className="min-h-0 overflow-y-auto flex-1 pb-4">
-              <PlayerLookupResult
-                data={searchedUser.data}
-                pendingAccountId={pendingAccountId}
-                onAccountAction={handleAccountAction}
-              />
-            </div>
+          {sheetTab === 'incoming' && (
+            <IncomingRequestsList
+              isLoading={isIncomingLoading}
+              pendingKey={pendingIncomingKey}
+              requests={incomingRequests}
+              onAccept={handleAcceptIncoming}
+            />
           )}
         </SheetContent>
       </Sheet>
     </>
   )
+}
+
+function IncomingRequestsList({
+  isLoading,
+  pendingKey,
+  requests,
+  onAccept,
+}: {
+  isLoading: boolean
+  pendingKey: string | null
+  requests: Array<PartyIncomingFriendRequest>
+  onAccept: (request: PartyIncomingFriendRequest) => void
+}) {
+  const { t } = useTranslation(['stw-operations'])
+  const groups = groupIncomingRequests(requests)
+
+  if (isLoading && requests.length <= 0) {
+    return (
+      <div className="break-all py-8 text-center text-muted-foreground">
+        <UpdateIcon className="mr-2 inline animate-spin" />
+        {t('party.friend-requests.sheet.incoming-loading')}
+      </div>
+    )
+  }
+
+  if (requests.length <= 0) {
+    return (
+      <div className="break-all py-8 text-center text-muted-foreground">
+        {t('party.friend-requests.sheet.incoming-empty')}
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-0 overflow-y-auto flex-1 pb-4">
+      <div className="flex flex-col gap-3 pr-1 pb-2">
+        {groups.map((group) => (
+          <div className="flex flex-col gap-1.5" key={group.accountId}>
+            <div className="font-semibold text-[#e9c4cc] text-sm truncate">
+              {group.accountDisplayName}
+            </div>
+            {group.requests.map((request) => {
+              const key = `${request.accountId}:${request.friendId}`
+
+              return (
+                <AccountFriendshipCard
+                  friendship={{
+                    accountId: request.friendId,
+                    created: request.created,
+                    displayName: request.friendDisplayName,
+                    status: 'incoming',
+                  }}
+                  isPending={pendingKey === key}
+                  key={key}
+                  onAction={() => onAccept(request)}
+                />
+              )
+            })}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function groupIncomingRequests(
+  requests: Array<PartyIncomingFriendRequest>
+) {
+  const groups: Array<{
+    accountDisplayName: string
+    accountId: string
+    requests: Array<PartyIncomingFriendRequest>
+  }> = []
+  const indexByAccount = new Map<string, number>()
+
+  requests.forEach((request) => {
+    const existing = indexByAccount.get(request.accountId)
+
+    if (existing === undefined) {
+      indexByAccount.set(request.accountId, groups.length)
+      groups.push({
+        accountDisplayName: request.accountDisplayName,
+        accountId: request.accountId,
+        requests: [request],
+      })
+
+      return
+    }
+
+    groups[existing].requests.push(request)
+  })
+
+  return groups
 }
 
 function PlayerLookupResult({

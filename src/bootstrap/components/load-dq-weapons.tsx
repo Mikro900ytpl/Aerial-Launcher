@@ -17,5 +17,18 @@ export function LoadDqWeapons() {
     }
   }, [])
 
+  useEffect(() => {
+    const listener = window.electronAPI.notificationDqWeaponsFavorite(
+      async () => {
+        const store = useDqWeaponsStore.getState()
+        store.setFavoriting(false)
+      }
+    )
+
+    return () => {
+      listener.removeListener()
+    }
+  }, [])
+
   return null
 }

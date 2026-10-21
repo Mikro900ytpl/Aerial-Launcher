@@ -88,7 +88,14 @@
       "mutual-empty": "Sem amigos em comum nas contas selecionadas",
       "friends-with-accounts": "Amigos com {{names}}",
       "selected-accounts": "Contas selecionadas",
-      "friendship-with": "Amizade com as contas selecionadas"
+      "friendship-with": "Amizade com as contas selecionadas",
+      "tabs-search": "Search",
+      "tabs-incoming": "Incoming",
+      "incoming-count": "{{count}} incoming",
+      "incoming-loading": "Loading incoming requests",
+      "incoming-empty": "No incoming friend requests",
+      "incoming-accept-all": "Accept all",
+      "incoming-accepted": "Accepted {{count}} friend request(s)"
     }
   }
 }

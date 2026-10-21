@@ -16,9 +16,11 @@ import { useAccountsInputTagsCustomFilter } from './hooks'
 
 export function AccountSelectors({
   accounts,
+  accountsPlaceholder,
   className,
   customFilters,
   isDisabled,
+  hideTags = false,
   layout = 'stack',
   tags,
   onUpdateAccounts,
@@ -28,12 +30,14 @@ export function AccountSelectors({
     options: Array<SelectOption>
     value: Array<SelectOption>
   }
+  accountsPlaceholder?: string
   className?: string
   customFilters?: Partial<{
     accounts: SelectCustomFilter
     tags: SelectCustomFilter
   }>
   isDisabled?: boolean
+  hideTags?: boolean
   layout?: 'stack' | 'row'
   tags: {
     options: Array<SelectOption>
@@ -53,7 +57,9 @@ export function AccountSelectors({
 
   const accountsInput = (
     <InputTags
-      placeholder={t('form.multi.select.accounts')}
+      placeholder={
+        accountsPlaceholder ?? t('form.multi.select.accounts')
+      }
       options={accounts.options}
       value={accounts.value}
       onChange={onUpdateAccounts ?? (() => {})}
@@ -87,12 +93,13 @@ export function AccountSelectors({
     return (
       <div
         className={cn(
-          'grid min-w-0 flex-1 grid-cols-2 gap-2',
+          'grid min-w-0 flex-1 gap-2',
+          hideTags ? 'grid-cols-1' : 'grid-cols-2',
           className,
         )}
       >
         <div className="min-w-0">{accountsInput}</div>
-        {tagsInput}
+        {hideTags ? null : tagsInput}
       </div>
     )
   }
@@ -100,8 +107,12 @@ export function AccountSelectors({
   return (
     <div className={cn('grid gap-4', className)}>
       {accountsInput}
-      <SeparatorWithTitle>{t('separators.or')}</SeparatorWithTitle>
-      {tagsInput}
+      {hideTags ? null : (
+        <>
+          <SeparatorWithTitle>{t('separators.or')}</SeparatorWithTitle>
+          {tagsInput}
+        </>
+      )}
     </div>
   )
 }

@@ -1,11 +1,13 @@
 import type {
   SaveWorldInfoData,
+  WorldInfoDailyFile,
   WorldInfoDeleteResponse,
   WorldInfoExportResponse,
   WorldInfoFileData,
   WorldInfoOpenResponse,
   WorldInfoParsed,
   WorldInfoResponse,
+  WorldInfoSwapSources,
 } from '../../types/data/advanced-mode/world-info'
 
 import crypto from 'node:crypto'
@@ -33,6 +35,10 @@ import {
 } from '../../lib/epic/mcp-game'
 
 import { localeCompareForSorting } from '../../lib/utils'
+import {
+  getWorldInfoMissionDay,
+  shiftUtcDate,
+} from '../../lib/misje/world-info-day'
 
 export class WorldInfoManager {
   static async requestForHome() {
@@ -82,6 +88,85 @@ export class WorldInfoManager {
         data: null,
         status: false,
       } as WorldInfoResponse
+    )
+  }
+
+  static async getSwapSources(todayDate?: string): Promise<WorldInfoSwapSources> {
+    await DataDirectory.checkOrCreateWorldInfoDirectory()
+    const directory = DataDirectory.getWorldInfoDirectoryPath()
+    const files = await WorldInfoManager.listDailyFiles()
+    const currentDay =
+      todayDate && /^\d{4}-\d{2}-\d{2}$/.test(todayDate)
+        ? todayDate
+        : files.at(-1)?.date
+
+    const today =
+      files.find((file) => file.filename === currentDay) ??
+      files.findLast((file) => file.date === currentDay) ??
+      null
+
+    const yesterdayDate = currentDay
+      ? shiftUtcDate(currentDay, -1)
+      : undefined
+    const yesterday = yesterdayDate
+      ? (files.find((file) => file.filename === yesterdayDate) ??
+        files.findLast((file) => file.date === yesterdayDate) ??
+        null)
+      : null
+
+    return {
+      directory,
+      today,
+      yesterday,
+    }
+  }
+
+  static async autoSaveDaily(data: WorldInfoParsed | typeof defaultWorldInfo) {
+    if (!WorldInfoManager.isPopulated(data)) {
+      return null
+    }
+
+    await DataDirectory.checkOrCreateWorldInfoDirectory()
+    const filename = getWorldInfoMissionDay(data)
+    const filePath = path.join(
+      DataDirectory.getWorldInfoDirectoryPath(),
+      `${filename}.json`,
+    )
+
+    await writeFile(filePath, `${JSON.stringify(data, null, 2)}\n`, {
+      encoding: 'utf8',
+    })
+
+    await WorldInfoManager.pruneOldDailyFiles(filename)
+
+    return filePath
+  }
+
+  private static async pruneOldDailyFiles(today: string) {
+    const yesterday = shiftUtcDate(today, -1)
+    const keep = new Set(
+      [`${today}.json`, `${yesterday}.json`].map((name) => name.toLowerCase()),
+    )
+    const directory = DataDirectory.getWorldInfoDirectoryPath()
+    const names = await readdir(directory)
+
+    await Promise.all(
+      names.map(async (name) => {
+        if (!name.toLowerCase().endsWith('.json')) {
+          return
+        }
+
+        if (keep.has(name.toLowerCase())) {
+          return
+        }
+
+        try {
+          await rm(path.join(directory, name), { force: true })
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+          //
+        }
+      }),
     )
   }
 
@@ -352,13 +437,55 @@ export class WorldInfoManager {
       return WorldInfoManager.requestInFlight
     }
 
-    WorldInfoManager.requestInFlight = WorldInfoManager.requestWithRetry().finally(
-      () => {
+    WorldInfoManager.requestInFlight = WorldInfoManager.requestWithRetry()
+      .then(async (data) => {
+        if (WorldInfoManager.isPopulated(data)) {
+          await WorldInfoManager.autoSaveDaily(data)
+        }
+
+        return data
+      })
+      .finally(() => {
         WorldInfoManager.requestInFlight = null
-      }
-    )
+      })
 
     return WorldInfoManager.requestInFlight
+  }
+
+  private static async listDailyFiles() {
+    const directory = DataDirectory.getWorldInfoDirectoryPath()
+    const names = await readdir(directory)
+    const files: Array<WorldInfoDailyFile> = []
+
+    for (const name of names) {
+      if (!name.toLowerCase().endsWith('.json')) {
+        continue
+      }
+
+      if (name.toLowerCase().includes('swap')) {
+        continue
+      }
+
+      const match = name.match(/^(\d{4}-\d{2}-\d{2})/)
+
+      if (!match) {
+        continue
+      }
+
+      files.push({
+        date: match[1],
+        filename: name.replace(/\.json$/i, ''),
+        path: path.join(directory, name),
+      })
+    }
+
+    files.sort(
+      (fileA, fileB) =>
+        fileA.date.localeCompare(fileB.date) ||
+        fileA.filename.localeCompare(fileB.filename),
+    )
+
+    return files
   }
 
   private static isPopulated(data: WorldInfoParsed | typeof defaultWorldInfo) {

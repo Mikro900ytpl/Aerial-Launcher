@@ -16,6 +16,12 @@ export function gamesLauncherScan() {
   ) as Promise<EpicGameEntry[]>
 }
 
+export function gamesLauncherPickDir() {
+  return ipcRenderer.invoke(
+    ElectronAPIEventKeys.GamesLauncherPickDir,
+  ) as Promise<string | null>
+}
+
 export function gamesLauncherStart(payload: GamesLauncherStartPayload) {
   ipcRenderer.send(ElectronAPIEventKeys.GamesLauncherStart, payload)
 }

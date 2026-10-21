@@ -19,8 +19,15 @@ import {
 import { LoadAccounts } from './bootstrap/components/load-accounts'
 import { LoadAutoLlamas } from './bootstrap/components/load-auto-llamas'
 import { LoadAutomation } from './bootstrap/components/load-automation'
-import { LoadFriends } from './bootstrap/components/load-friends'
+import { LoadDailyQuests } from './bootstrap/components/load-daily-quests'
 import { LoadDqWeapons } from './bootstrap/components/load-dq-weapons'
+import { LoadPartyStatus } from './bootstrap/components/load-party-status'
+import { LoadAlertsDoneCheck } from './bootstrap/components/load-alerts-done-check'
+import { LoadAccountExport } from './bootstrap/components/load-account-export'
+import { LoadCloudStorage } from './bootstrap/components/load-cloud-storage'
+import { LoadAccountInfo } from './bootstrap/components/load-account-info'
+import { LoadStormShields } from './bootstrap/components/load-storm-shields'
+import { LoadFriends } from './bootstrap/components/load-friends'
 import { LoadItemShop } from './bootstrap/components/load-item-shop'
 import { LoadGroups } from './bootstrap/components/load-groups'
 import { LoadSettings } from './bootstrap/components/load-settings'
@@ -59,7 +66,14 @@ root.render(
       <LoadMatchmakingPath />
       <LoadAutomation />
       <LoadAutoLlamas />
+      <LoadDailyQuests />
       <LoadDqWeapons />
+      <LoadStormShields />
+      <LoadAccountInfo />
+      <LoadAlertsDoneCheck />
+      <LoadCloudStorage />
+      <LoadAccountExport />
+      <LoadPartyStatus />
 
       <RouterProvider
         router={router}

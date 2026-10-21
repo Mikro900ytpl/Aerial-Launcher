@@ -68,6 +68,58 @@ export function getQueryProfileMainProfile({
   )
 }
 
+export function queryProfile({
+  accessToken,
+  accountId,
+  profileId,
+}: {
+  accessToken: string
+  accountId: string
+  profileId: string
+}) {
+  return baseGameService.post(
+    `/profile/${accountId}/client/QueryProfile`,
+    {},
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId,
+        rvn: -1,
+      },
+    },
+  )
+}
+
+export function getAccountPrivacy({
+  accessToken,
+  accountId,
+}: {
+  accessToken: string
+  accountId: string
+}) {
+  return baseGameService.get(`/privacy/account/${accountId}`, {
+    headers: {
+      Authorization: `bearer ${accessToken}`,
+    },
+  })
+}
+
+export function getBrInventory({
+  accessToken,
+  accountId,
+}: {
+  accessToken: string
+  accountId: string
+}) {
+  return baseGameService.get(`/br-inventory/account/${accountId}`, {
+    headers: {
+      Authorization: `bearer ${accessToken}`,
+    },
+  })
+}
+
 export function getQueryProfileStorageProfile({
   accessToken,
   accountId,
@@ -414,6 +466,91 @@ export function setClientQuestLogin({
   )
 }
 
+export function recycleItemBatch({
+  accessToken,
+  accountId,
+  targetItemIds,
+  profileId = 'campaign',
+}: {
+  accessToken: string
+  accountId: string
+  targetItemIds: Array<string>
+  profileId?: string
+}) {
+  return baseGameService.post(
+    `/profile/${accountId}/client/RecycleItemBatch`,
+    {
+      targetItemIds,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId,
+        rvn: -1,
+      },
+    }
+  )
+}
+
+export function upgradeItem({
+  accessToken,
+  accountId,
+  targetItemId,
+  profileId = 'campaign',
+}: {
+  accessToken: string
+  accountId: string
+  targetItemId: string
+  profileId?: string
+}) {
+  return baseGameService.post(
+    `/profile/${accountId}/client/UpgradeItem`,
+    {
+      targetItemId,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId,
+        rvn: -1,
+      },
+    }
+  )
+}
+
+export function setItemFavoriteStatusBatch({
+  accessToken,
+  accountId,
+  itemIds,
+  itemFavStatus,
+}: {
+  accessToken: string
+  accountId: string
+  itemIds: Array<string>
+  itemFavStatus: Array<boolean>
+}) {
+  return baseGameService.post(
+    `/profile/${accountId}/client/SetItemFavoriteStatusBatch`,
+    {
+      itemIds,
+      itemFavStatus,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId: 'campaign',
+        rvn: -1,
+      },
+    }
+  )
+}
+
 export function setHomebaseName({
   accessToken,
   accountId,
@@ -498,10 +635,12 @@ export function setUpgradeItem({
   accessToken,
   accountId,
   targetItemId,
+  profileId = 'campaign',
 }: {
   accessToken: string
   accountId: string
   targetItemId: string
+  profileId?: string
 }) {
   return baseGameService.post<MCPQueryProfile>(
     `/profile/${accountId}/client/UpgradeItem`,
@@ -513,7 +652,131 @@ export function setUpgradeItem({
         Authorization: `bearer ${accessToken}`,
       },
       params: {
-        profileId: 'campaign',
+        profileId,
+        rvn: -1,
+      },
+    }
+  )
+}
+
+export function setUpgradeSlottedItem({
+  accessToken,
+  accountId,
+  targetItemId,
+  desiredLevel,
+  profileId,
+}: {
+  accessToken: string
+  accountId: string
+  targetItemId: string
+  desiredLevel: number
+  profileId: string
+}) {
+  return baseGameService.post(
+    `/profile/${accountId}/client/UpgradeSlottedItem`,
+    {
+      targetItemId,
+      desiredLevel,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId,
+        rvn: -1,
+      },
+    }
+  )
+}
+
+export function setUpgradeItemBulk({
+  accessToken,
+  accountId,
+  targetItemId,
+  desiredLevel,
+  profileId = 'campaign',
+}: {
+  accessToken: string
+  accountId: string
+  targetItemId: string
+  desiredLevel: number
+  profileId?: string
+}) {
+  return baseGameService.post(
+    `/profile/${accountId}/client/UpgradeItemBulk`,
+    {
+      targetItemId,
+      desiredLevel,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId,
+        rvn: -1,
+      },
+    }
+  )
+}
+
+export function setConvertItem({
+  accessToken,
+  accountId,
+  targetItemId,
+  conversionIndex,
+  profileId = 'campaign',
+}: {
+  accessToken: string
+  accountId: string
+  targetItemId: string
+  conversionIndex: number
+  profileId?: string
+}) {
+  return baseGameService.post(
+    `/profile/${accountId}/client/ConvertItem`,
+    {
+      targetItemId,
+      conversionIndex,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId,
+        rvn: -1,
+      },
+    }
+  )
+}
+
+export function setConvertSlottedItem({
+  accessToken,
+  accountId,
+  targetItemId,
+  conversionIndex,
+  profileId,
+}: {
+  accessToken: string
+  accountId: string
+  targetItemId: string
+  conversionIndex: number
+  profileId: string
+}) {
+  return baseGameService.post(
+    `/profile/${accountId}/client/ConvertSlottedItem`,
+    {
+      targetItemId,
+      conversionIndex,
+    },
+    {
+      headers: {
+        Authorization: `bearer ${accessToken}`,
+      },
+      params: {
+        profileId,
         rvn: -1,
       },
     }

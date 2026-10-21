@@ -16,6 +16,8 @@ export type ItemShopOffer = {
   currencyType: string
   currencySubType: string
   giftable: boolean
+  inDate?: string | null
+  outDate?: string | null
   grants: Array<{
     templateId: string
     quantity: number

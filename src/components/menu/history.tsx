@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '../ui/accordion'
+import { RewardIcon } from '../reward-icon'
 import { ScrollArea } from '../ui/scroll-area'
 import { SheetClose } from '../ui/sheet'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
@@ -297,6 +298,14 @@ function RewardSection({ data }: { data: RewardsNotification }) {
         {t(parseCustomDisplayName(accountList[data.accountId]))}:
       </div>
       <ul className="space-y-1">
+        {data.endurance?.map((row) => (
+          <li
+            key={`${row.zone}-${row.wave}`}
+            className="text-sm"
+          >
+            {row.zone} Endurance · Wave {row.wave}
+          </li>
+        ))}
         <RewardItems rewards={data.rewards} />
         <AccoladesItem accolades={data.accolades} />
       </ul>
@@ -316,10 +325,12 @@ function RewardItems({ rewards }: Pick<RewardsNotification, 'rewards'>) {
   return items.map((item) => (
     <li key={item.itemType}>
       <figure className="flex gap-1 items-center">
-        <img
+        <RewardIcon
           src={item.imgUrl}
+          fallback={item.fallbackUrl}
           className="size-6"
           alt={item.name}
+          title={item.name}
         />
         <figcaption className="break-all">
           {numberWithCommaSeparator(item.quantity)} &times; {item.name}

@@ -36,7 +36,7 @@ export function LoadWorldInfoData() {
 }
 
 export function LoadHomeWorldInfo() {
-  const { setWorldInfoData, updateWorldInfoLoading } =
+  const { setWorldInfoData, setRawWorldInfoData, updateWorldInfoLoading } =
     useWorldInfoActions()
   const { initPagination } = useAlertsOverviewPaginationInit()
 
@@ -57,6 +57,7 @@ export function LoadHomeWorldInfo() {
 
         initPagination(worldInfo.keys().toArray())
         setWorldInfoData(worldInfo)
+        setRawWorldInfoData(response)
 
         return result
       } catch {
@@ -65,6 +66,7 @@ export function LoadHomeWorldInfo() {
         )
 
         setWorldInfoData(worldInfo)
+        setRawWorldInfoData(null)
 
         return defaultWorldInfo
       }

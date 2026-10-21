@@ -10,10 +10,7 @@ import {
 import { useGetAccounts } from '../../../hooks/accounts'
 
 import { toast } from '../../../lib/notifications'
-import type {
-  CollectionBookItem,
-  CollectionBookSectionId,
-} from '../../../types/collection-book'
+import type { CollectionBookSectionId } from '../../../types/collection-book'
 
 export function useCollectionBookPage() {
   const { t } = useTranslation(['stw-operations', 'general'])
@@ -26,7 +23,6 @@ export function useCollectionBookPage() {
     isActing,
     data,
     lastResult,
-    targetLevel,
   } = useGetCollectionBookData()
   const {
     updateAccounts,
@@ -36,7 +32,6 @@ export function useCollectionBookPage() {
     updateData,
     clearData,
     setLastResult,
-    setTargetLevel,
   } = useGetCollectionBookActions()
 
   const {
@@ -76,34 +71,6 @@ export function useCollectionBookPage() {
       window.electronAPI.collectionBookActionResult(async (result) => {
         updateActing(false)
         setLastResult(result)
-
-        if (result.success) {
-          if (result.upgraded) {
-            toast(
-              t('collection-book.toasts.upgraded', {
-                count: result.upgraded,
-                failed: result.failed ?? 0,
-              }),
-            )
-          } else if (result.slotted) {
-            toast(
-              t('collection-book.toasts.slotted', {
-                count: result.slotted,
-              }),
-            )
-          } else {
-            toast(t('collection-book.toasts.success'))
-          }
-        } else {
-          const errorKey = `collection-book.toasts.error_${result.error ?? 'unknown'}`
-          toast(
-            t(errorKey, {
-              defaultValue: t('collection-book.toasts.error', {
-                context: result.error ?? 'unknown',
-              }),
-            }),
-          )
-        }
       })
 
     return () => {
@@ -111,7 +78,7 @@ export function useCollectionBookPage() {
       loadingListener.removeListener()
       resultListener.removeListener()
     }
-  }, [t, updateActing, updateData, updateLoading, setLastResult])
+  }, [updateActing, updateData, updateLoading, setLastResult])
 
   const handleLoad = () => {
     if (isDisabledForm) {
@@ -132,39 +99,31 @@ export function useCollectionBookPage() {
     window.electronAPI.collectionBookRequestData(selected)
   }
 
-  const handleUpgradeAll = (accountId: string) => {
-    if (isActing) return
+  const handleUpgradeItems = (
+    accountId: string,
+    itemIds: Array<string>,
+    level: number,
+  ) => {
+    if (isActing || itemIds.length <= 0) return
     updateActing(true)
     window.electronAPI.collectionBookUpgrade({
       accountId,
-      sectionId: 'all',
-      targetLevel,
+      itemIds,
+      targetLevel: level,
     })
   }
 
   const handleUpgradeSection = (
     accountId: string,
-    sectionId: CollectionBookSectionId,
+    sectionId: string,
+    level: number,
   ) => {
     if (isActing) return
     updateActing(true)
     window.electronAPI.collectionBookUpgrade({
       accountId,
       sectionId,
-      targetLevel,
-    })
-  }
-
-  const handleUpgradeItem = (
-    accountId: string,
-    item: CollectionBookItem,
-  ) => {
-    if (isActing) return
-    updateActing(true)
-    window.electronAPI.collectionBookUpgrade({
-      accountId,
-      itemIds: [item.itemId],
-      targetLevel,
+      targetLevel: level,
     })
   }
 
@@ -186,7 +145,12 @@ export function useCollectionBookPage() {
     if (!accountData) return
 
     const itemIds = accountData.items
-      .filter((item) => item.sectionId === sectionId)
+      .filter(
+        (item) =>
+          item.sectionId === sectionId &&
+          item.state === 'armory' &&
+          Boolean(item.itemId),
+      )
       .map((item) => item.itemId)
 
     if (itemIds.length <= 0) return
@@ -210,15 +174,12 @@ export function useCollectionBookPage() {
     tagOptions,
     accountsData,
     lastResult,
-    targetLevel,
 
     updateAccounts,
     updateTags,
-    setTargetLevel,
     handleLoad,
-    handleUpgradeAll,
     handleUpgradeSection,
-    handleUpgradeItem,
+    handleUpgradeItems,
     handleSlotItem,
     handleSlotSection,
   }

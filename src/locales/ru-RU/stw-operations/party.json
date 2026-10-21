@@ -88,7 +88,14 @@
       "mutual-empty": "Нет общих друзей на выбранных аккаунтах",
       "friends-with-accounts": "В друзьях с {{names}}",
       "selected-accounts": "Выбранные аккаунты",
-      "friendship-with": "Дружба с выбранными аккаунтами"
+      "friendship-with": "Дружба с выбранными аккаунтами",
+      "tabs-search": "Search",
+      "tabs-incoming": "Incoming",
+      "incoming-count": "{{count}} incoming",
+      "incoming-loading": "Loading incoming requests",
+      "incoming-empty": "No incoming friend requests",
+      "incoming-accept-all": "Accept all",
+      "incoming-accepted": "Accepted {{count}} friend request(s)"
     }
   }
 }

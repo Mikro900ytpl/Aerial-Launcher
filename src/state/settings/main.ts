@@ -24,15 +24,16 @@ export const useSettingsStore = create<SettingsState>()(
     missionInterval: '',
     path: '',
     epicGamesDir: 'C:\\Program Files\\Epic Games',
+    epicGamesExtraDirs: [],
     systemTray: false,
     userAgent: '',
+    customProxyEnabled: false,
+    customProxyPort: '8080',
 
     customProcessIsRunning: false,
 
     updateSettings: (settings) => {
-      const newData: Partial<
-        Record<keyof Settings, boolean | number | string>
-      > = {}
+      const newData: Partial<Settings> = {}
 
       if (settings.autoDailyQuests !== undefined) {
         newData.autoDailyQuests = settings.autoDailyQuests
@@ -54,12 +55,24 @@ export const useSettingsStore = create<SettingsState>()(
         newData.epicGamesDir = settings.epicGamesDir
       }
 
+      if (settings.epicGamesExtraDirs !== undefined) {
+        newData.epicGamesExtraDirs = settings.epicGamesExtraDirs
+      }
+
       if (settings.systemTray !== undefined) {
         newData.systemTray = settings.systemTray
       }
 
       if (settings.userAgent !== undefined) {
         newData.userAgent = settings.userAgent
+      }
+
+      if (settings.customProxyEnabled !== undefined) {
+        newData.customProxyEnabled = settings.customProxyEnabled
+      }
+
+      if (settings.customProxyPort !== undefined) {
+        newData.customProxyPort = settings.customProxyPort
       }
 
       const total = Object.keys(newData).length

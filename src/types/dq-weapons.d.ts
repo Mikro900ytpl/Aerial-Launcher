@@ -8,3 +8,10 @@ export type DqWeaponsAccountData = {
   haveCount: number
   complete: boolean
 }
+
+export type DqWeaponsFavoriteAccountResult = {
+  accountId: string
+  already: number
+  errorMessage?: string
+  favorited: number
+}

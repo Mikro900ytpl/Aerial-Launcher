@@ -28,8 +28,8 @@ export function InviteCard() {
   const { isInviting, handleInvite } = actions
 
   return (
-    <Card className="max-w-lg w-full">
-      <CardContent className="grid gap-2 pt-6">
+    <Card className="w-full">
+      <CardContent className="grid gap-2 p-3 pt-3">
         <CardDescription className="font-medium text-foreground">
           {t('party.friends.form.title')}
         </CardDescription>

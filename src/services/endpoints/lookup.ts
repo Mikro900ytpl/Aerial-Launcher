@@ -26,6 +26,20 @@ export function findUsersByAccountIds({
   )
 }
 
+export function getAccountExternalAuths({
+  accessToken,
+  accountId,
+}: {
+  accessToken: string
+  accountId: string
+}) {
+  return publicAccountService.get<unknown>(`/${accountId}/externalAuths`, {
+    headers: {
+      Authorization: `bearer ${accessToken}`,
+    },
+  })
+}
+
 export function findUserByAccountId({
   accessToken,
   accountId,
@@ -51,7 +65,7 @@ export function findUserByDisplayName({
   displayName: string
 }) {
   return publicAccountService.get<LookupFindOneByDisplayNameResponse>(
-    `/displayName/${displayName}`,
+    `/displayName/${encodeURIComponent(displayName)}`,
     {
       headers: {
         Authorization: `bearer ${accessToken}`,
@@ -70,7 +84,7 @@ export function findUserByExternalDisplayName({
   externalAuthType: 'psn' | 'xbl' | 'nintendo' | 'steam'
 }) {
   return publicAccountService.get<LookupFindManyByDisplayNameResponse>(
-    `/lookup/externalAuth/${externalAuthType}/displayName/${displayName}?caseInsensitive=true`,
+    `/lookup/externalAuth/${externalAuthType}/displayName/${encodeURIComponent(displayName)}?caseInsensitive=true`,
     {
       headers: {
         Authorization: `bearer ${accessToken}`,

@@ -8,6 +8,8 @@
   "empty-filter": "Brak przedmiotów dla tego filtra.",
   "show-more": "Pokaż więcej (zostało {{count}})",
   "expiration": "Zmiana {{time}}",
+  "leaves": "Zostaje jeszcze {{time}}",
+  "leaves-soon": "Wkrótce znika",
   "shop-date": "Sklep z {{date}}",
   "from-cache": "z pamięci",
   "new-shop-available": "Jest nowy sklep. Wczytaj sklep, żeby go pobrać.",

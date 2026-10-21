@@ -1,78 +1,100 @@
 {
-  "title": "Menedżer księgi kolekcji",
-  "description": "Ulepszaj postacie, bronie, pułapki i inne do wybranego poziomu — jeden przedmiot, cała sekcja albo wszystko naraz. Sekcje odpowiadają układowi Księgi Kolekcji.",
-  "note": "Zużywa PD konta. Max poziom zależy od gwiazdek (np. 5★ = 50). Supercharge pozwala iść wyżej. Slotowanie wrzuca przedmiot do Księgi na stałe dla danego szablonu.",
+  "title": "Księga kolekcji",
+  "description": "Te same strony co w grze. Kliknij przedmiot, żeby podnieść poziom i zobaczyć koszt. Prawy przycisk na zakładce ulepsza całą kategorię.",
+  "note": "Jedna karta na przedmiot i rzadkość. Kopie ze zbrojowni się nie powtarzają. Przedmioty w księdze ulepszają się w księdze. Obrońcy zostają przy ikonie klasy.",
   "form": {
-    "load": "Wczytaj ekwipunek",
-    "target-level": "Docelowy poziom",
-    "upgrade-all": "Ulepsz wszystko do {{level}}",
-    "filter": "Szukaj przedmiotów…",
-    "only-below": "Tylko poniżej celu",
-    "presets": {
-      "10": "Poz. 10",
-      "20": "Poz. 20",
-      "30": "Poz. 30",
-      "40": "Poz. 40",
-      "50": "Poz. 50"
-    }
+    "load": "Wczytaj",
+    "filter": "Szukaj…",
+    "hide-maxed": "Ukryj max"
   },
   "stats": {
-    "items": "{{count}} przedmiotów",
-    "below": "{{count}} poniżej celu",
+    "book": "{{count}} w księdze",
+    "armory": "{{count}} w zbrojowni",
+    "below": "{{count}} poniżej max",
     "cb-level": "KK poz. {{level}}",
-    "account-level": "Konto poz. {{level}}",
-    "xp": "{{xp}} PD"
+    "to-max": "Na max",
+    "short": "Brakuje"
   },
-  "sections": {
-    "heroes-commando": "Postacie · Żołnierze (Commando)",
-    "heroes-constructor": "Postacie · Budowniczowie",
-    "heroes-ninja": "Postacie · Ninja",
-    "heroes-outlander": "Postacie · Odkrywcy",
-    "heroes-other": "Postacie · Inne",
-    "weapons-assault": "Bronie · Szturmowe",
-    "weapons-shotgun": "Bronie · Strzelby",
-    "weapons-sniper": "Bronie · Snajperki / Łuki",
-    "weapons-pistol": "Bronie · Pistolety",
-    "weapons-explosive": "Bronie · Wybuchowe",
-    "weapons-melee": "Bronie · Białe",
-    "weapons-neon": "Bronie · Neon / Lampowe",
-    "weapons-expansion": "Bronie · Rozszerzeń / Event",
-    "weapons-other": "Bronie · Inne",
-    "traps": "Pułapki",
-    "defenders": "Obrońcy",
-    "survivors": "Ocaleńcy",
-    "other": "Inne"
+  "nav": {
+    "heroes": "Heroes",
+    "heroes-soldiers": "Soldiers",
+    "heroes-constructors": "Constructors",
+    "heroes-ninjas": "Ninjas",
+    "heroes-outlanders": "Outlanders",
+    "personnel": "Personnel",
+    "personnel-defenders": "Defenders",
+    "personnel-survivors": "Survivors",
+    "personnel-leads": "Leads",
+    "ranged": "Ranged Weapons",
+    "ranged-assault": "Assault Rifles",
+    "ranged-shotgun": "Shotguns",
+    "ranged-sniper": "Snipers",
+    "ranged-pistol": "Pistols",
+    "ranged-explosive": "Explosives",
+    "melee": "Melee Weapons",
+    "melee-sword": "Swords",
+    "melee-axe": "Axes",
+    "melee-scythe": "Scythes",
+    "melee-spear": "Spears",
+    "melee-hardware": "Hardware",
+    "traps": "Traps",
+    "traps-wall": "Wall",
+    "traps-ceiling": "Ceiling",
+    "traps-floor": "Floor",
+    "starter-packs": "Starter Packs",
+    "event-people": "Event People",
+    "event-schematics": "Event Schematics",
+    "expansion-people": "Expansion People",
+    "expansion-schematics": "Expansion Schematics",
+    "other": "Other"
   },
-  "groups": {
-    "heroes": "Postacie",
-    "weapons": "Bronie",
-    "other": "Inne"
+  "state": {
+    "book": "W księdze",
+    "armory": "W zbrojowni, nie w księdze",
+    "missing": "Nie masz"
   },
-  "item": {
-    "level": "Poz. {{level}} / {{max}}",
-    "stars": "{{count}}★",
-    "upgrade": "Ulepsz",
-    "slot": "Do księgi"
+  "upgrade": {
+    "title": "Ulepsz",
+    "level": "Poziom {{level}}",
+    "confirm": "Ulepsz",
+    "empty": "W tej kategorii nie ma czego ulepszać.",
+    "cost": "Koszt",
+    "items": "{{count}} przedmiotów",
+    "slot": "Włóż do księgi",
+    "have": "Masz {{count}}",
+    "short": "Brakuje {{amount}}"
+  },
+  "resources": {
+    "peopleXp": "People XP",
+    "schematicXp": "Schematic XP",
+    "rain": "Pure Drop of Rain",
+    "lightning": "Lightning in a Bottle",
+    "eye": "Eye of the Storm",
+    "shard": "Storm Shard",
+    "trainingManuals": "Training Manual",
+    "schematicManuals": "Schematic Manual",
+    "heroSupercharger": "Hero Supercharger",
+    "survivorSupercharger": "Survivor Supercharger",
+    "weaponSupercharger": "Weapon Supercharger",
+    "trapSupercharger": "Trap Supercharger"
   },
   "actions": {
-    "upgrade-section": "Ulepsz sekcję do {{level}}",
-    "slot-section": "Slotuj całą sekcję",
-    "empty": "Brak przedmiotów w tej sekcji."
+    "empty": "Brak przedmiotów na tej stronie."
   },
   "errors": {
-    "auth": "Błąd logowania",
-    "fetch": "Błąd wczytywania"
+    "auth": "Logowanie nieudane",
+    "fetch": "Nie udało się wczytać"
   },
   "toasts": {
     "success": "Gotowe",
-    "upgraded": "Wykonano {{count}} ulepszeń (błędy: {{failed}})",
-    "slotted": "Włożono {{count}} przedmiot(ów) do KK",
+    "upgraded": "Podniesiono poziom {{count}} razy (błędy: {{failed}})",
+    "slotted": "Włożono {{count}}",
     "error": "Akcja nieudana ({{context}})",
-    "error_auth": "Błąd uwierzytelniania",
-    "error_upgrade": "Ulepszenie nieudane (brak PD lub zablokowany przedmiot)",
-    "error_slot": "Nie udało się włożyć do Księgi Kolekcji",
-    "error_nothing": "Nic do ulepszenia na ten poziom",
-    "error_account": "Nie znaleziono konta",
+    "error_auth": "Logowanie nieudane",
+    "error_upgrade": "Ulepszenie nieudane (za mało PD albo przedmiot zablokowany)",
+    "error_slot": "Nie udało się włożyć do księgi",
+    "error_nothing": "Nie ma czego ulepszać na ten poziom",
+    "error_account": "Nie ma konta",
     "error_unknown": "Nieznany błąd"
   }
 }

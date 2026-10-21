@@ -88,7 +88,35 @@
       "mutual-empty": "No shared friends on the selected accounts",
       "friends-with-accounts": "Friends with {{names}}",
       "selected-accounts": "Selected accounts",
-      "friendship-with": "Friendship with selected accounts"
+      "friendship-with": "Friendship with selected accounts",
+      "tabs-search": "Search",
+      "tabs-incoming": "Incoming",
+      "incoming-count": "{{count}} incoming",
+      "incoming-loading": "Loading incoming requests",
+      "incoming-empty": "No incoming friend requests",
+      "incoming-accept-all": "Accept all",
+      "incoming-accepted": "Accepted {{count}} friend request(s)"
     }
+  },
+  "status": {
+    "form": {
+      "submit-button": "Load"
+    },
+    "empty": "No party data loaded yet.",
+    "not-in-party": "Not in a party",
+    "leader": "Leader",
+    "member": "Member",
+    "you": "You",
+    "size": "{{current}}/{{max}}",
+    "leave": "Leave",
+    "manage": "Manage member",
+    "promote": "Promote to leader",
+    "kick": "Kick from party",
+    "cancel": "Cancel",
+    "need-leader": "Promote and Kick need the party leader added in Aerial.",
+    "kick-success": "Kicked {{name}}",
+    "promote-success": "{{name}} is now party leader",
+    "leave-success": "Left the party",
+    "action-error": "Could not update the party"
   }
 }

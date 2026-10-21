@@ -8,6 +8,8 @@
   "empty-filter": "No items match this filter.",
   "show-more": "Show more ({{count}} left)",
   "expiration": "Rotates {{time}}",
+  "leaves": "Leaves in {{time}}",
+  "leaves-soon": "Leaving soon",
   "shop-date": "Shop of {{date}}",
   "from-cache": "cached",
   "new-shop-available": "A new shop is available. Load shop to download it.",

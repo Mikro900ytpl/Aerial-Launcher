@@ -3,8 +3,8 @@ import type { DqWeaponsAccountData } from '../../../types/dq-weapons'
 
 import { UpdateIcon } from '@radix-ui/react-icons'
 import { createRoute } from '@tanstack/react-router'
-import { Check, X } from 'lucide-react'
-import { useState } from 'react'
+import { X } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Route as RootRoute } from '../../__root'
@@ -32,6 +32,7 @@ import {
 import {
   DQ_WEAPON_KINDS,
   LAMP_PERK_TEXT,
+  PERK_PIP_COLOR,
   SCHEMATIC_RARITY_LABELS,
   inspectPerks,
 } from '../../../lib/stw/dq-weapons'
@@ -76,13 +77,16 @@ function Content() {
     accounts,
     accountList,
     results,
+    favoriteButtonIsDisabled,
     fetchButtonIsDisabled,
+    isFavoriting,
     isLoading,
     parsedSelectedAccounts,
     parsedSelectedTags,
     tags,
     dqWeaponsUpdateAccounts,
     dqWeaponsUpdateTags,
+    handleFavorite,
     handleFetch,
   } = useDqWeaponsPage()
 
@@ -115,6 +119,17 @@ function Content() {
                   <UpdateIcon className="animate-spin" />
                 ) : (
                   t('dq-weapons.form.submit-button')
+                )}
+              </Button>
+              <Button
+                className="shrink-0"
+                onClick={handleFavorite}
+                disabled={favoriteButtonIsDisabled}
+              >
+                {isFavoriting ? (
+                  <UpdateIcon className="animate-spin" />
+                ) : (
+                  t('dq-weapons.form.favorite-button')
                 )}
               </Button>
             </div>
@@ -184,10 +199,7 @@ function AccountWeapons({ account }: { account: DqWeaponsAccountData }) {
   const match = openKind ? account.weapons[openKind] : null
 
   return (
-    <div
-      className="mt-2"
-      onMouseLeave={() => setOpenKind(null)}
-    >
+    <div className="mt-2">
       <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3 md:grid-cols-6">
         {DQ_WEAPON_KINDS.map((kind) => (
           <KindCell
@@ -195,16 +207,50 @@ function AccountWeapons({ account }: { account: DqWeaponsAccountData }) {
             kind={kind}
             match={account.weapons[kind]}
             active={openKind === kind}
-            onHover={() => {
-              if (account.weapons[kind]) {
-                setOpenKind(kind)
+            onSelect={() => {
+              if (!account.weapons[kind]) {
+                return
               }
+
+              setOpenKind((current) => (current === kind ? null : kind))
             }}
           />
         ))}
       </div>
-      {match ? <InspectDrawer match={match} /> : null}
+      {match ? (
+        <InspectDrawer
+          key={match.itemId || `${account.accountId}-${openKind}`}
+          match={match}
+        />
+      ) : null}
     </div>
+  )
+}
+
+function StwIcon({
+  src,
+  className,
+}: {
+  src: string
+  className?: string
+}) {
+  const [failed, setFailed] = useState(false)
+
+  useEffect(() => {
+    setFailed(false)
+  }, [src])
+
+  if (!src || failed) {
+    return null
+  }
+
+  return (
+    <img
+      src={src}
+      alt=""
+      className={cn('pointer-events-none object-contain', className)}
+      onError={() => setFailed(true)}
+    />
   )
 }
 
@@ -212,29 +258,33 @@ function KindCell({
   kind,
   match,
   active,
-  onHover,
+  onSelect,
 }: {
   kind: DqWeaponKind
   match: DqWeaponMatch | null
   active: boolean
-  onHover: () => void
+  onSelect: () => void
 }) {
   const { t } = useTranslation(['stw-operations'])
   const label = t(`dq-weapons.kinds.${kind}`)
   const has = match !== null
   const chip = (
-    <div
+    <button
+      type="button"
       className={cn(
-        'flex items-center gap-1 rounded-md border px-2 py-1 text-xs',
+        'flex w-full items-center gap-1.5 rounded-md border px-2 py-1 text-left text-xs',
         has
-          ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-          : 'border-border text-muted-foreground',
+          ? 'cursor-pointer border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
+          : 'cursor-default border-border text-muted-foreground',
         active && 'outline outline-2 outline-amber-400 outline-offset-1'
       )}
-      onMouseEnter={onHover}
+      onClick={onSelect}
     >
       {has ? (
-        <Check className="size-3 shrink-0" />
+        <StwIcon
+          src={match.imageUrl}
+          className="h-6 w-6 shrink-0 drop-shadow"
+        />
       ) : (
         <X className="size-3 shrink-0" />
       )}
@@ -242,7 +292,7 @@ function KindCell({
       {has && match.power > 0 ? (
         <span className="ml-auto shrink-0 tabular-nums">{match.power}</span>
       ) : null}
-    </div>
+    </button>
   )
 
   if (has) {
@@ -259,17 +309,14 @@ function KindCell({
   )
 }
 
-function PerkPips({ filled, rarity }: { filled: number; rarity: string | null }) {
-  const color =
-    rarity === 'sr' || rarity === 'ur'
-      ? 'bg-orange-500'
-      : rarity === 'vr'
-        ? 'bg-purple-400'
-        : rarity === 'r'
-          ? 'bg-sky-400'
-          : rarity === 'uc'
-            ? 'bg-lime-500'
-            : 'bg-zinc-500'
+function PerkPips({
+  filled,
+  rarity,
+}: {
+  filled: number
+  rarity: DqWeaponMatch['rarity']
+}) {
+  const color = rarity ? PERK_PIP_COLOR[rarity] : 'bg-zinc-400'
 
   return (
     <span className="flex w-2.5 shrink-0 flex-col gap-px">
@@ -298,6 +345,10 @@ function InspectDrawer({ match }: { match: DqWeaponMatch }) {
   return (
     <div className="mt-2 flex overflow-hidden rounded-md border border-orange-950/80 bg-[#14110e]">
       <div className="w-[11.5rem] shrink-0 bg-gradient-to-b from-[#2a2118] to-[#1a1612] px-3 py-2.5">
+        <StwIcon
+          src={match.imageUrl}
+          className="mb-2 h-16 w-16 drop-shadow"
+        />
         <div className="text-[10px] font-bold uppercase tracking-wide text-amber-400">
           {rarityLabel ? `${rarityLabel} · ` : ''}
           {t('dq-weapons.inspect.schematic')}
@@ -319,9 +370,9 @@ function InspectDrawer({ match }: { match: DqWeaponMatch }) {
       </div>
 
       <div className="min-w-0 flex-1">
-        {perks.map((perk) => (
+        {perks.map((perk, index) => (
           <div
-            key={perk.id}
+            key={`${match.itemId}-${index}-${perk.id}`}
             className="flex items-center gap-2 border-t border-white/5 px-2.5 py-1.5 text-[11px] text-stone-200 first:border-t-0"
           >
             <PerkPips filled={perk.filled} rarity={perk.rarity} />
