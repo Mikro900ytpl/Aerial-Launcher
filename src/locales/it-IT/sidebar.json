@@ -19,6 +19,7 @@
       "auto-llamas": "Auto-lama",
       "llama-manager": "Gestore Llama",
       "item-shop": "Item Shop",
+      "stw-shop": "STW Shop",
       "collection-book": "Libro collezione",
       "account-info": "Account Information",
       "unlock": "Sblocca Ricompense SSD"
@@ -34,6 +35,8 @@
       "vbucks-information": "Informazioni V-Bucks",
       "cloud-storage": "Cloud Storage",
       "account-export": "Account Export",
+      "ban-status": "Ban Status",
+      "sprites": "Sprites",
       "redeem-codes": "Riscatta Codici",
       "devices-auth": "Autorizzazione Dispositivi",
       "epic-settings": "Impostazioni Epic Games"

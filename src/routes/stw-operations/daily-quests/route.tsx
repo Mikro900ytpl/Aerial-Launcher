@@ -3,6 +3,7 @@ import type { DailyQuest } from '../../../types/daily-quests'
 import { UpdateIcon } from '@radix-ui/react-icons'
 import { createRoute } from '@tanstack/react-router'
 import { RefreshCw } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import dailyQuestsTotal from '../../../data/dailiy-quests.json'
@@ -42,6 +43,7 @@ import { parseResource } from '../../../lib/parsers/resources'
 import { buildSettingsSnapshot } from '../../../lib/settings/snapshot'
 import { cn, parseCustomDisplayName } from '../../../lib/utils'
 import { useSettingsStore } from '../../../state/settings/main'
+import { useDailyQuestsStore } from '../../../state/stw-operations/daily-quests'
 
 import { useDailyQuestsData } from './-hooks'
 
@@ -117,8 +119,10 @@ function Content() {
   const {
     accounts,
     accountList,
+    claimAllDisabled,
     dailyQuests,
     fetchButtonIsDisabled,
+    isClaiming,
     isLoading,
     parsedSelectedAccounts,
     parsedSelectedTags,
@@ -128,6 +132,7 @@ function Content() {
 
     dailyQuestsUpdateAccounts,
     dailyQuestsUpdateTags,
+    handleClaimAll,
     handleFetch,
     handleReroll,
   } = useDailyQuestsData()
@@ -161,6 +166,18 @@ function Content() {
                   <UpdateIcon className="animate-spin" />
                 ) : (
                   t('daily-quests.form.submit-button')
+                )}
+              </Button>
+              <Button
+                className="shrink-0"
+                variant="secondary"
+                onClick={handleClaimAll}
+                disabled={claimAllDisabled}
+              >
+                {isClaiming ? (
+                  <UpdateIcon className="animate-spin" />
+                ) : (
+                  t('daily-quests.form.claim-all')
                 )}
               </Button>
             </div>
@@ -247,8 +264,23 @@ function Content() {
 
 function AutoDailyQuestsContent() {
   const { t } = useTranslation(['stw-operations'])
+  const { claimAllDisabled, handleClaimAll, isClaiming } = useDailyQuestsData()
   const settings = useSettingsStore()
   const autoDailyQuests = settings.autoDailyQuests
+  const autoConfig = useDailyQuestsStore((state) => state.autoConfig)
+  const [filter, setFilter] = useState('')
+  const questIds = useMemo(() => Object.keys(QUEST_TOTALS), [])
+  const query = filter.trim().toLowerCase()
+  const visibleQuestIds = questIds.filter((questId) => {
+    const name = t(`daily-quests.quests.${questId}`, {
+      defaultValue: questId,
+    })
+
+    return name.toLowerCase().includes(query)
+  })
+  const selected = new Set(autoConfig.replaceIds)
+  const today = new Date().toISOString().slice(0, 10)
+  const refreshedToday = autoConfig.day === today
 
   const handleChange = (checked: boolean) => {
     const updated = buildSettingsSnapshot(settings, {
@@ -257,13 +289,29 @@ function AutoDailyQuestsContent() {
 
     settings.updateSettings(updated)
     window.electronAPI.updateSettings(updated)
+
+    if (checked) {
+      window.electronAPI.runAutoDailyQuests()
+    }
+  }
+
+  const toggleQuest = (questId: string, checked: boolean) => {
+    const next = checked
+      ? [...new Set([...autoConfig.replaceIds, questId])]
+      : autoConfig.replaceIds.filter((id) => id !== questId)
+
+    useDailyQuestsStore.getState().setAutoConfig({
+      ...autoConfig,
+      replaceIds: next,
+    })
+    window.electronAPI.saveAutoDailyQuestReplaceIds(next)
   }
 
   return (
     <div className="flex flex-grow">
       <div className="flex items-start justify-center w-full">
-        <Card className="max-w-lg w-full">
-          <CardContent className="pt-6">
+        <Card className="max-w-2xl w-full">
+          <CardContent className="space-y-4 pt-6">
             <div className="flex items-center justify-between">
               <span className="pr-5">
                 {t('daily-quests.form.auto-daily-quests')}
@@ -272,6 +320,60 @@ function AutoDailyQuestsContent() {
                 onCheckedChange={handleChange}
                 checked={autoDailyQuests}
               />
+            </div>
+            <Button
+              variant="secondary"
+              onClick={handleClaimAll}
+              disabled={claimAllDisabled}
+            >
+              {isClaiming ? (
+                <UpdateIcon className="animate-spin" />
+              ) : (
+                t('daily-quests.form.claim-all')
+              )}
+            </Button>
+            <p className="text-muted-foreground text-sm">
+              {t('daily-quests.form.replace-list-hint')}
+            </p>
+            <p className="text-muted-foreground text-xs">
+              {refreshedToday
+                ? t('daily-quests.form.refreshed-today', {
+                    count: autoConfig.doneAccountIds.length,
+                  })
+                : t('daily-quests.form.not-refreshed')}
+            </p>
+            <div className="border-t pt-4">
+              <div className="text-sm font-medium">
+                {t('daily-quests.form.replace-list')}
+              </div>
+              <input
+                value={filter}
+                onChange={(event) => setFilter(event.target.value)}
+                placeholder={t('daily-quests.form.filter')}
+                className="mt-2 h-8 w-full rounded-md border bg-transparent px-2 text-sm"
+              />
+              <div className="mt-3 grid max-h-80 grid-cols-1 gap-1 overflow-y-auto sm:grid-cols-2">
+                {visibleQuestIds.map((questId) => (
+                  <label
+                    key={questId}
+                    className="flex items-center gap-2 rounded px-1 py-1 text-sm hover:bg-muted/40"
+                  >
+                    <input
+                      type="checkbox"
+                      className="size-3.5 accent-violet-400"
+                      checked={selected.has(questId)}
+                      onChange={(event) =>
+                        toggleQuest(questId, event.target.checked)
+                      }
+                    />
+                    <span className="truncate">
+                      {t(`daily-quests.quests.${questId}`, {
+                        defaultValue: questId,
+                      })}
+                    </span>
+                  </label>
+                ))}
+              </div>
             </div>
           </CardContent>
         </Card>

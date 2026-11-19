@@ -19,6 +19,7 @@
       "auto-llamas": "Lhamas Automáticas",
       "llama-manager": "Gerenciador de Lhamas",
       "item-shop": "Loja",
+      "stw-shop": "STW Shop",
       "collection-book": "Livro de coleção",
       "account-info": "Account Information",
       "unlock": "Desbloquear Recompensas dos Escudos"
@@ -34,6 +35,8 @@
       "vbucks-information": "Informações de V-Bucks",
       "cloud-storage": "Cloud Storage",
       "account-export": "Account Export",
+      "ban-status": "Ban Status",
+      "sprites": "Sprites",
       "redeem-codes": "Resgatar Códigos",
       "devices-auth": "Autenticação de Dispositivos",
       "epic-settings": "Configurações da Epic Games"

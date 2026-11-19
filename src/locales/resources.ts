@@ -25,6 +25,7 @@ import enUS_stwOperations_LlamaManager from './en-US/stw-operations/llama-manage
 import enUS_stwOperations_CollectionBook from './en-US/stw-operations/collection-book.json'
 import enUS_stwOperations_AccountInfo from './en-US/stw-operations/account-info.json'
 import enUS_stwOperations_ItemShop from './en-US/stw-operations/item-shop.json'
+import enUS_stwOperations_StwShop from './en-US/stw-operations/stw-shop.json'
 import enUS_stwOperations_Unlock from './en-US/stw-operations/unlock.json'
 import enUS_accountManagement_VBucksInformation from './en-US/account-management/vbucks-information.json'
 import enUS_accountManagement_EULA from './en-US/account-management/eula.json'
@@ -32,6 +33,10 @@ import enUS_accountManagement_RedeemCodes from './en-US/account-management/redee
 import enUS_accountManagement_DevicesAuth from './en-US/account-management/devices-auth.json'
 import enUS_accountManagement_EpicSettings from './en-US/account-management/epic-settings.json'
 import enUS_accountManagement_AccountExport from './en-US/account-management/account-export.json'
+import enUS_accountManagement_BanStatus from './en-US/account-management/ban-status.json'
+import enUS_accountManagement_Sprites from './en-US/account-management/sprites.json'
+import plPL_accountManagement_BanStatus from './pl-PL/account-management/ban-status.json'
+import plPL_accountManagement_Sprites from './pl-PL/account-management/sprites.json'
 import enUS_advancedMode_MatchmakingTrack from './en-US/advanced-mode/matchmaking-track.json'
 import enUS_advancedMode_WorldInfo from './en-US/advanced-mode/world-info.json'
 import enUS_myAccounts_General from './en-US/accounts/general.json'
@@ -66,6 +71,7 @@ const enUS = {
     'collection-book': enUS_stwOperations_CollectionBook,
     'account-info': enUS_stwOperations_AccountInfo,
     'item-shop': enUS_stwOperations_ItemShop,
+    'stw-shop': enUS_stwOperations_StwShop,
     unlock: enUS_stwOperations_Unlock,
   },
   'account-management': {
@@ -74,6 +80,8 @@ const enUS = {
     'devices-auth': enUS_accountManagement_DevicesAuth,
     'epic-settings': enUS_accountManagement_EpicSettings,
     'account-export': enUS_accountManagement_AccountExport,
+    'ban-status': enUS_accountManagement_BanStatus,
+    sprites: enUS_accountManagement_Sprites,
     eula: enUS_accountManagement_EULA,
   },
   'advanced-mode': {
@@ -146,6 +154,7 @@ const es419 = {
     'collection-book': enUS_stwOperations_CollectionBook,
     'account-info': enUS_stwOperations_AccountInfo,
     'item-shop': enUS_stwOperations_ItemShop,
+    'stw-shop': enUS_stwOperations_StwShop,
     unlock: es419_stwOperations_Unlock,
   },
   'account-management': {
@@ -154,6 +163,8 @@ const es419 = {
     'devices-auth': es419_accountManagement_DevicesAuth,
     'epic-settings': es419_accountManagement_EpicSettings,
     'account-export': enUS_accountManagement_AccountExport,
+    'ban-status': enUS_accountManagement_BanStatus,
+    sprites: enUS_accountManagement_Sprites,
     eula: es419_accountManagement_EULA,
   },
   'advanced-mode': {
@@ -226,6 +237,7 @@ const zhCN = {
     'collection-book': enUS_stwOperations_CollectionBook,
     'account-info': enUS_stwOperations_AccountInfo,
     'item-shop': enUS_stwOperations_ItemShop,
+    'stw-shop': enUS_stwOperations_StwShop,
     unlock: zhCN_stwOperations_Unlock,
   },
   'account-management': {
@@ -234,6 +246,8 @@ const zhCN = {
     'devices-auth': zhCN_accountManagement_DevicesAuth,
     'epic-settings': zhCN_accountManagement_EpicSettings,
     'account-export': enUS_accountManagement_AccountExport,
+    'ban-status': enUS_accountManagement_BanStatus,
+    sprites: enUS_accountManagement_Sprites,
     eula: zhCN_accountManagement_EULA,
   },
   'advanced-mode': {
@@ -306,6 +320,7 @@ const ruRU = {
     'collection-book': enUS_stwOperations_CollectionBook,
     'account-info': enUS_stwOperations_AccountInfo,
     'item-shop': enUS_stwOperations_ItemShop,
+    'stw-shop': enUS_stwOperations_StwShop,
     unlock: ruRU_stwOperations_Unlock,
   },
   'account-management': {
@@ -314,6 +329,8 @@ const ruRU = {
     'devices-auth': ruRU_accountManagement_DevicesAuth,
     'epic-settings': ruRU_accountManagement_EpicSettings,
     'account-export': enUS_accountManagement_AccountExport,
+    'ban-status': enUS_accountManagement_BanStatus,
+    sprites: enUS_accountManagement_Sprites,
     eula: ruRU_accountManagement_EULA,
   },
   'advanced-mode': {
@@ -386,6 +403,7 @@ const ptBR = {
     'collection-book': enUS_stwOperations_CollectionBook,
     'account-info': enUS_stwOperations_AccountInfo,
     'item-shop': enUS_stwOperations_ItemShop,
+    'stw-shop': enUS_stwOperations_StwShop,
     unlock: ptBR_stwOperations_Unlock,
   },
   'account-management': {
@@ -394,6 +412,8 @@ const ptBR = {
     'devices-auth': ptBR_accountManagement_DevicesAuth,
     'epic-settings': ptBR_accountManagement_EpicSettings,
     'account-export': enUS_accountManagement_AccountExport,
+    'ban-status': enUS_accountManagement_BanStatus,
+    sprites: enUS_accountManagement_Sprites,
     eula: ptBR_accountManagement_EULA,
   },
   'advanced-mode': {
@@ -470,6 +490,7 @@ const plPL = {
     'collection-book': plPL_stwOperations_CollectionBook,
     'account-info': enUS_stwOperations_AccountInfo,
     'item-shop': plPL_stwOperations_ItemShop,
+    'stw-shop': enUS_stwOperations_StwShop,
     unlock: plPL_stwOperations_Unlock,
   },
   'account-management': {
@@ -478,6 +499,8 @@ const plPL = {
     'devices-auth': plPL_accountManagement_DevicesAuth,
     'epic-settings': plPL_accountManagement_EpicSettings,
     'account-export': enUS_accountManagement_AccountExport,
+    'ban-status': plPL_accountManagement_BanStatus,
+    sprites: plPL_accountManagement_Sprites,
     eula: plPL_accountManagement_EULA,
   },
   'advanced-mode': {
@@ -550,6 +573,7 @@ const itIT = {
     'collection-book': enUS_stwOperations_CollectionBook,
     'account-info': enUS_stwOperations_AccountInfo,
     'item-shop': enUS_stwOperations_ItemShop,
+    'stw-shop': enUS_stwOperations_StwShop,
     unlock: itIT_stwOperations_Unlock,
   },
   'account-management': {
@@ -558,6 +582,8 @@ const itIT = {
     'devices-auth': itIT_accountManagement_DevicesAuth,
     'epic-settings': itIT_accountManagement_EpicSettings,
     'account-export': enUS_accountManagement_AccountExport,
+    'ban-status': enUS_accountManagement_BanStatus,
+    sprites: enUS_accountManagement_Sprites,
     eula: itIT_accountManagement_EULA,
   },
   'advanced-mode': {

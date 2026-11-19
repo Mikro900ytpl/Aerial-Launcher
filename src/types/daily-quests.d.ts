@@ -21,6 +21,22 @@ export type DailyQuestsAccountData = {
   errorMessage?: string
 }
 
+export type AutoDailyQuestsConfig = {
+  replaceIds: Array<string>
+  day: string
+  doneAccountIds: Array<string>
+}
+
+export type DailyQuestClaimSummary = {
+  ok: number
+  total: number
+  failures: Array<{
+    accountId: string
+    displayName: string
+    errorMessage: string
+  }>
+}
+
 export type DailyQuestRerollResponse =
   | {
       accountId: string

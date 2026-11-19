@@ -19,6 +19,7 @@
       "auto-llamas": "Автолама",
       "llama-manager": "Менеджер лам",
       "item-shop": "Магазин",
+      "stw-shop": "STW Shop",
       "collection-book": "Книга коллекции",
       "account-info": "Account Information",
       "unlock": "Скип щитов"
@@ -34,6 +35,8 @@
       "vbucks-information": "Информацию о В-баксах",
       "cloud-storage": "Cloud Storage",
       "account-export": "Account Export",
+      "ban-status": "Ban Status",
+      "sprites": "Sprites",
       "redeem-codes": "Активация Кодов",
       "devices-auth": "Аутентификация Устройств",
       "epic-settings": "Настройки Epic Games"

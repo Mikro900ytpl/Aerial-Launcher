@@ -19,6 +19,7 @@
       "auto-llamas": "Auto-llamy",
       "llama-manager": "Menedżer lam",
       "item-shop": "Sklep",
+      "stw-shop": "Sklep STW",
       "collection-book": "Księga kolekcji",
       "account-info": "Informacje o koncie",
       "unlock": "Odblokuj nagrody Burzowej Tarczy"
@@ -34,6 +35,8 @@
       "vbucks-information": "Informacje o V-Dolcach",
       "cloud-storage": "Cloud Storage",
       "account-export": "Account Export",
+      "ban-status": "Status bana",
+      "sprites": "Duszki",
       "redeem-codes": "Zrealizuj kody",
       "devices-auth": "Urządzenia autoryzowane",
       "epic-settings": "Ustawienia Epic Games"

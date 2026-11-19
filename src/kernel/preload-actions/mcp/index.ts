@@ -1,3 +1,4 @@
+export * from './auto-daily-quests'
 export * from './account-info'
 export * from './claim-rewards'
 export * from './client-quest-login'

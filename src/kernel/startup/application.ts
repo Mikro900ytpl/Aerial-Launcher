@@ -4,17 +4,17 @@ import { ElectronAPIEventKeys } from '../../config/constants/main-process'
 
 import { MainWindow } from './windows/main'
 
-import { getAppReleases } from '../../services/endpoints/repository'
+import { getLatestAppRelease } from '../../services/endpoints/repository'
 
 export class Application {
   static async checkVersion() {
     try {
       const currentVersion = `v${packageJson.version}`
 
-      const response = await getAppReleases()
-      const latest = response.data[0]
+      const response = await getLatestAppRelease()
+      const latest = response.data
 
-      if (latest && latest.tag_name !== currentVersion) {
+      if (latest?.tag_name && latest.tag_name !== currentVersion) {
         MainWindow.instance.webContents.send(
           ElectronAPIEventKeys.ResponseNewVersionStatus,
           {

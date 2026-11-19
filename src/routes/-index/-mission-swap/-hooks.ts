@@ -30,11 +30,6 @@ import {
   indexWorldInfoByTile,
   missionTileKey,
 } from '../../../lib/misje/swap-missions'
-import {
-  DEFAULT_SWAP_DISPLAY_NAME,
-  MISJE_PRESETS,
-} from '../../../lib/misje/presets'
-import { applyWorldInfoModifications } from '../../../lib/misje/world-info-mods'
 import { getWorldInfoMissionDay } from '../../../lib/misje/world-info-day'
 import { toast } from '../../../lib/notifications'
 import { useMissionSwapStore } from '../../../state/alerts/mission-swap'
@@ -403,17 +398,10 @@ export function useMissionSwapPage() {
     setBusy(true)
 
     try {
-      let swapped: unknown = applyMissionSwaps(
+      const swapped = applyMissionSwaps(
         rawData,
         yesterdayRaw,
         Object.keys(selected),
-      )
-
-      const config = await window.electronAPI.misjeGetConfig()
-      swapped = applyWorldInfoModifications(
-        swapped,
-        MISJE_PRESETS.normalFilePlus.options,
-        config.displayNameValue || DEFAULT_SWAP_DISPLAY_NAME,
       )
 
       const defaultName = `${dayjs().format('DD.MM')}-swap.json`

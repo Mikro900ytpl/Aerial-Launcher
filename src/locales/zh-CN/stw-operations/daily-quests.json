@@ -2,7 +2,12 @@
   "description": "获取所选账户的每日任务并管理重Roll。",
   "form": {
     "submit-button": "加载每日任务",
-    "auto-daily-quests": "Auto Daily Quests (on app start & daily reset)",
+    "auto-daily-quests": "Auto Daily Quests (once a day)",
+    "replace-list": "Replace these quests",
+    "replace-list-hint": "On startup and at 00:01 UTC, if today's quests were not refreshed yet, they are refreshed and the checked ones are replaced while rerolls remain.",
+    "filter": "Filter quests",
+    "refreshed-today": "Refreshed today on {{count}} accounts.",
+    "not-refreshed": "Not refreshed yet today.",
     "replace-button": "替换"
   },
   "list": {

@@ -1,0 +1,69 @@
+{
+  "description": "Sprawdza duszki na wybranych kontach. Obecny sezon to Treasure Hunters. Wszystkie sezony dokładają też Rozdział 7 Sezon 4 i Rozdział 7 Sezon 3, każdy z własnym pyłem. Formy Gold i Sir Oscar, których jeszcze nie ma, nie liczą się jako brakujące w obecnym sezonie.",
+  "detail": {
+    "ability": "Umiejętność",
+    "discovered": "Odkryty, nie przyzwany",
+    "found": "Występowanie",
+    "holding": "Na koncie",
+    "level": "Poziom",
+    "level-max": "Poz. {{level}} · {{xp}} XP",
+    "level-progress": "Poz. {{level}} · {{xp}} / {{next}} XP",
+    "rarity": "Rzadkość",
+    "status": "Status",
+    "summon-cost": "Koszt przyzwania",
+    "summon-cost-value": "{{cost}} pyłu",
+    "summoned": "Przyzwany"
+  },
+  "dust": "{{dust}} pyłu",
+  "empty-filter": "Nic w tym filtrze.",
+  "filters": {
+    "all": "Wszystkie",
+    "owned": "Posiadane",
+    "missing": "Brakuje",
+    "mastered": "Wymasterowane",
+    "other": "Starsze"
+  },
+  "form": {
+    "submit-button": "Sprawdź"
+  },
+  "level": "Poz. {{level}}",
+  "other-count": "{{count}} starszych",
+  "rarity": {
+    "rare": "Rzadki",
+    "epic": "Epicki",
+    "legendary": "Legendarny",
+    "mythic": "Mityczny"
+  },
+  "scope": {
+    "current": "Obecny sezon",
+    "all": "Wszystkie sezony"
+  },
+  "seasons": {
+    "current": "Treasure Hunters",
+    "ch7s4": "Rozdział 7 Sezon 4",
+    "ch7s3": "Rozdział 7 Sezon 3"
+  },
+  "status": {
+    "owned": "Posiadany",
+    "missing": "Brakuje",
+    "mastered": "Wymasterowany"
+  },
+  "summary": "{{owned}}/{{total}} posiadane · {{mastered}} wymasterowane · {{missing}} brakuje",
+  "variant": {
+    "fortune": "Fortune",
+    "cursed": "Przeklęty",
+    "gold": "Złoty",
+    "cheat-master": "Cheat Master",
+    "loot-hacker": "Loot Hacker",
+    "bounty-hunter": "Bounty Hunter",
+    "trick-treat": "Trick or Treat",
+    "quack": "Quack",
+    "candy": "Candy",
+    "galaxy": "Galaxy",
+    "galactic": "Galactic",
+    "gem": "Gem",
+    "holofoil": "Holofoil",
+    "cube": "Cube",
+    "other": "Inny"
+  }
+}

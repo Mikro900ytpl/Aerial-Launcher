@@ -20,6 +20,8 @@ import { usePartyStatusStore } from '../../../state/stw-operations/party-status'
 import { useStormShieldsStore } from '../../../state/stw-operations/storm-shields'
 import { useCloudStorageStore } from '../../../state/stw-operations/cloud-storage'
 import { useAccountExportStore } from '../../../state/account-management/account-export'
+import { useBanStatusStore } from '../../../state/account-management/ban-status'
+import { useSpritesStore } from '../../../state/account-management/sprites'
 import { useAlertsDoneCheckStore } from '../../../state/alerts/alerts-done-check'
 import {
   useClaimRewardsSelectorStore,
@@ -74,6 +76,18 @@ function useClearForms() {
       updateAccounts: state.updateAccounts,
     }))
   )
+  const banStatusForm = useBanStatusStore(
+    useShallow((state) => ({
+      accounts: state.accounts,
+      updateAccounts: state.updateAccounts,
+    }))
+  )
+  const spritesForm = useSpritesStore(
+    useShallow((state) => ({
+      accounts: state.accounts,
+      updateAccounts: state.updateAccounts,
+    }))
+  )
   const alertsDoneCheckForm = useAlertsDoneCheckStore(
     useShallow((state) => ({
       accounts: state.accounts,
@@ -101,6 +115,8 @@ function useClearForms() {
     stormShieldsForm,
     cloudStorageForm,
     accountExportForm,
+    banStatusForm,
+    spritesForm,
     alertsDoneCheckForm,
     partyStatusForm,
     xpBoostsForm,

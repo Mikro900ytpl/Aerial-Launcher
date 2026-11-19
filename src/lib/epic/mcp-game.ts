@@ -149,3 +149,75 @@ async function issueFortnitePcUserAccessToken(): Promise<string> {
 
   return token
 }
+
+const accountFortniteTokens = new Map<
+  string,
+  { token: string; expiresAt: number }
+>()
+
+export async function getFortnitePcAccessToken(account: {
+  accountId: string
+  deviceId: string
+  secret: string
+}) {
+  const cached = accountFortniteTokens.get(account.accountId)
+
+  if (cached && Date.now() < cached.expiresAt - 60_000) {
+    return cached.token
+  }
+
+  const deviceAuth = await getAccessTokenUsingDeviceAuth({
+    accountId: account.accountId,
+    deviceId: account.deviceId,
+    secret: account.secret,
+    token_type: 'eg1',
+  })
+  const androidToken = deviceAuth.data.access_token
+
+  if (!androidToken) {
+    throw new Error('No access token')
+  }
+
+  const exchange = await getExchangeCode({
+    headers: {
+      Authorization: `bearer ${androidToken}`,
+    },
+    params: {
+      consumingClientId: fortnitePCGameClient.clientId,
+    },
+  })
+  const code = exchange.data.code
+
+  if (!code) {
+    throw new Error('No exchange code')
+  }
+
+  const fortnite = await createAccessTokenUsingExchange(
+    {
+      exchange_code: code,
+      token_type: 'eg1',
+    },
+    {
+      headers: {
+        Authorization: `basic ${fortnitePCGameClient.auth}`,
+        'X-Epic-Device-ID': account.deviceId,
+      },
+    },
+  )
+  const token = fortnite.data.access_token
+
+  if (!token) {
+    throw new Error('No Fortnite PC access token')
+  }
+
+  const expiresAt = fortnite.data.expires_at
+    ? Date.parse(fortnite.data.expires_at)
+    : Date.now() + (fortnite.data.expires_in ?? 7200) * 1000
+
+  accountFortniteTokens.set(account.accountId, {
+    token,
+    expiresAt: Number.isFinite(expiresAt) ? expiresAt : Date.now() + 7200_000,
+  })
+
+  return token
+}

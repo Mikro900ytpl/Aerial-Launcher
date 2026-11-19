@@ -2,8 +2,14 @@
   "description": "Fetch daily quests and manage rerolls for the selected accounts.",
   "form": {
     "submit-button": "Load",
+    "claim-all": "Claim all",
     "replace-button": "Replace",
-    "auto-daily-quests": "Auto Daily Quests (on app start & daily reset)"
+    "auto-daily-quests": "Auto Daily Quests (once a day)",
+    "replace-list": "Replace these quests",
+    "replace-list-hint": "On startup and at 00:01 UTC, if today's quests were not refreshed yet, they are refreshed and the checked ones are replaced while rerolls remain.",
+    "filter": "Filter quests",
+    "refreshed-today": "Refreshed today on {{count}} accounts.",
+    "not-refreshed": "Not refreshed yet today."
   },
   "list": {
     "description": "Active daily quests for the selected accounts.",
@@ -17,7 +23,10 @@
   },
   "notifications": {
     "rerolled": "Daily quest has been replaced.",
-    "failed": "Failed to replace daily quest."
+    "failed": "Failed to replace daily quest.",
+    "claimed": "Claimed daily quests on {{count}} accounts.",
+    "claimed-partial": "Claimed daily quests on {{ok}}/{{total}} accounts.",
+    "claim-empty": "No accounts to claim."
   },
   "quests": {
     "daily_destroyarcademachines": "Daily Destroy (Arcade Machines)",

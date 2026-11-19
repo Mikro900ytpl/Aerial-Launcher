@@ -2,8 +2,14 @@
   "description": "Pobieraj codzienne zadania i zarządzaj przerzuceniami dla wybranych kont.",
   "form": {
     "submit-button": "Wczytaj Codzienne Zadania",
+    "claim-all": "Odbierz wszystkie",
     "replace-button": "Zastąp",
-    "auto-daily-quests": "Auto Daily Quests (on app start & daily reset)"
+    "auto-daily-quests": "Auto Daily Quests (once a day)",
+    "replace-list": "Replace these quests",
+    "replace-list-hint": "On startup and at 00:01 UTC, if today's quests were not refreshed yet, they are refreshed and the checked ones are replaced while rerolls remain.",
+    "filter": "Filter quests",
+    "refreshed-today": "Refreshed today on {{count}} accounts.",
+    "not-refreshed": "Not refreshed yet today."
   },
   "list": {
     "description": "Aktywne codzienne zadania dla wybranych kont.",
@@ -17,7 +23,10 @@
   },
   "notifications": {
     "rerolled": "Codzienne zadanie zostało zastąpione.",
-    "failed": "Nie udało się zastąpić codziennego zadania."
+    "failed": "Nie udało się zastąpić codziennego zadania.",
+    "claimed": "Odebrano dzienne zadania na {{count}} kontach.",
+    "claimed-partial": "Odebrano dzienne zadania na {{ok}}/{{total}} kontach.",
+    "claim-empty": "Brak kont do odebrania."
   },
   "quests": {
     "daily_destroyarcademachines": "Demolka dnia (automaty do gier)",

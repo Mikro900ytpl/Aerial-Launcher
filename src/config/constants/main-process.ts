@@ -126,6 +126,22 @@ export enum ElectronAPIEventKeys {
   DailyQuestsNotification = 'daily-quests:notification',
   DailyQuestReroll = 'daily-quests:reroll',
   DailyQuestRerollNotification = 'daily-quests:reroll:notification',
+  DailyQuestsClaimAll = 'daily-quests:claim-all',
+
+  AutoDailyQuestsConfigRequest = 'auto-daily-quests:config:request',
+  AutoDailyQuestsConfigNotification = 'auto-daily-quests:config:notification',
+  AutoDailyQuestsConfigSave = 'auto-daily-quests:config:save',
+  AutoDailyQuestsRun = 'auto-daily-quests:run',
+
+  StwShopConfigRequest = 'stw-shop:config:request',
+  StwShopConfigNotification = 'stw-shop:config:notification',
+  StwShopConfigSave = 'stw-shop:config:save',
+  StwShopLoadRequest = 'stw-shop:load:request',
+  StwShopLoadNotification = 'stw-shop:load:notification',
+  StwShopBuyRequest = 'stw-shop:buy:request',
+  StwShopBuyNotification = 'stw-shop:buy:notification',
+  StwShopAutoRun = 'stw-shop:auto:run',
+  StwShopAutoNotification = 'stw-shop:auto:notification',
 
   DqWeaponsRequest = 'dq-weapons:request',
   DqWeaponsNotification = 'dq-weapons:notification',
@@ -357,6 +373,12 @@ export enum ElectronAPIEventKeys {
 
   VBucksInformationRequest = 'vbucks-information:request:data',
   VBucksInformationResponseData = 'vbucks-information:response:data',
+
+  BanStatusRequest = 'ban-status:request',
+  BanStatusResponse = 'ban-status:response',
+
+  SpritesRequest = 'sprites:request',
+  SpritesResponse = 'sprites:response',
 
   /**
    * Redeem Codes

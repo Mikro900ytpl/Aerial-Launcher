@@ -7,7 +7,12 @@ import {
   resourcesJson,
   trapsJson,
 } from '../../config/constants/resources'
+import { gameItemName } from '../../lib/stw/display-names'
 import { enduranceWaveLines } from '../../lib/stw/endurance-waves'
+import {
+  bannerRewardName,
+  claimedQuestTitles,
+} from '../../lib/stw/reward-names'
 import { numberWithCommaSeparator } from '../../lib/parsers/numbers'
 import { checkIfCustomDisplayNameIsValid } from '../../lib/validations/properties'
 
@@ -310,7 +315,16 @@ function formatOverlayToast(
 }
 
 function getRewardLines(notification: RewardsNotification) {
-  const lines: Array<string> = enduranceWaveLines(notification.endurance)
+  const lines: Array<string> = []
+
+  const quests = claimedQuestTitles(notification)
+
+  if (quests.length > 0) {
+    lines.push('Quests')
+    lines.push(...quests)
+  }
+
+  lines.push(...enduranceWaveLines(notification.endurance))
 
   Object.entries(notification.rewards).forEach(([itemType, quantity]) => {
     if (!quantity) {
@@ -334,6 +348,18 @@ function getRewardLines(notification: RewardsNotification) {
 }
 
 function lookupRewardName(itemType: string) {
+  const banner = bannerRewardName(itemType)
+
+  if (banner) {
+    return banner
+  }
+
+  const named = gameItemName(itemType)
+
+  if (named) {
+    return named
+  }
+
   const key = itemType
     .replace(/_((very)?low|medium|(very)?high|extreme)$/gi, '')
     .replace(/^AccountResource:/i, '')

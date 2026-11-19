@@ -1,3 +1,4 @@
+export { AutoDailyQuests } from './auto-daily-quests'
 export { MCPAccountInfo } from './account-info'
 export { MCPClientQuestLogin } from './client-quest-login'
 export { MCPDailyQuests } from './daily-quests'

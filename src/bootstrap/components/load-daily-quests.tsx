@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import { describeDailyQuestClaim } from '../../lib/stw/daily-quest-claim'
 import { toast } from '../../lib/notifications'
 import { useDailyQuestsStore } from '../../state/stw-operations/daily-quests'
 
@@ -33,9 +34,29 @@ export function LoadDailyQuests() {
       },
     )
 
+    const configListener = window.electronAPI.notificationAutoDailyQuestsConfig(
+      async (config) => {
+        useDailyQuestsStore.getState().setAutoConfig(config)
+      },
+    )
+
+    const claimListener = window.electronAPI.notificationClientQuestLogin(
+      async (summary) => {
+        if (!summary || typeof summary.total !== 'number') {
+          return
+        }
+
+        toast(describeDailyQuestClaim(summary, (key, options) => t(key, options)))
+      },
+    )
+
+    window.electronAPI.requestAutoDailyQuestsConfig()
+
     return () => {
       listListener.removeListener()
       rerollListener.removeListener()
+      configListener.removeListener()
+      claimListener.removeListener()
     }
   }, [t])
 

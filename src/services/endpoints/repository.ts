@@ -1,7 +1,7 @@
-import type { RepositoryReleaseListResponse } from '../../types/services/repository'
+import type { RepositoryReleaseResponse } from '../../types/services/repository'
 
 import { repositoryService } from '../config/repository'
 
-export function getAppReleases() {
-  return repositoryService.get<RepositoryReleaseListResponse>('/releases')
+export function getLatestAppRelease() {
+  return repositoryService.get<RepositoryReleaseResponse>('/releases/latest')
 }

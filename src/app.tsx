@@ -29,6 +29,7 @@ import { LoadAccountInfo } from './bootstrap/components/load-account-info'
 import { LoadStormShields } from './bootstrap/components/load-storm-shields'
 import { LoadFriends } from './bootstrap/components/load-friends'
 import { LoadItemShop } from './bootstrap/components/load-item-shop'
+import { LoadStwShop } from './bootstrap/components/load-stw-shop'
 import { LoadGroups } from './bootstrap/components/load-groups'
 import { LoadSettings } from './bootstrap/components/load-settings'
 import { LoadTags } from './bootstrap/components/load-tags'
@@ -60,6 +61,7 @@ root.render(
       <LoadAccounts />
       <LoadFriends />
       <LoadItemShop />
+      <LoadStwShop />
       <LoadHomeWorldInfo />
       <LoadWorldInfoData />
       {/* <LoadWorldInfoFiles /> */}

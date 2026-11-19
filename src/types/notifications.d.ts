@@ -7,7 +7,16 @@ export type RewardsNotification = {
   createdAt: string
   id: string
   rewards: Record<string, number>
-  /** Highest claimed endurance reward wave per zone. */
+  /** Quests redeemed in this one claim. One notification lists every quest. */
+  quests?: Array<{
+    questId: string
+    title: string
+  }>
+  /** Older rows stored a single quest id before claims were grouped. */
+  questId?: string
+  /** Older rows stored a single quest title. */
+  title?: string
+  /** Endurance zone + wave from the dump pack / same-session accolades. */
   endurance?: Array<{
     zone: string
     wave: number

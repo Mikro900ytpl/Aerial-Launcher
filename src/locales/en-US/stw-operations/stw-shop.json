@@ -1,0 +1,36 @@
+{
+  "tabs": {
+    "shop": "Shop",
+    "auto": "Auto weekly"
+  },
+  "gold": "gold",
+  "unlimited": "Unlimited",
+  "limit": "Limit {{count}}",
+  "bought": "Bought {{count}}",
+  "purchased": "{{bought}}/{{limit}} bought",
+  "form": {
+    "load": "Load",
+    "buy": "Buy"
+  },
+  "list": {
+    "empty": "Load the shop to see this week's gold items."
+  },
+  "sections": {
+    "event": "Event items",
+    "weekly": "Weekly items",
+    "resets": "Resets in {{time}}"
+  },
+  "auto": {
+    "title": "Auto weekly shop buy",
+    "hint": "Checked items are bought up to their limit once each week, on Wednesday at 00:00 UTC, for the accounts selected here. Unlimited items stay on the Shop tab.",
+    "list": "Buy these every week",
+    "empty": "Load the shop to choose items.",
+    "buy-now": "Buy now",
+    "not-in-shop": "Not in the shop this week"
+  },
+  "notifications": {
+    "bought": "Bought {{count}}.",
+    "failed": "Purchase failed.",
+    "auto": "Weekly shop: bought {{bought}} on {{accounts}} accounts."
+  }
+}

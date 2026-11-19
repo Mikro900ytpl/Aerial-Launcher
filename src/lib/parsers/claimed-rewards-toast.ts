@@ -2,6 +2,7 @@ import type { AccountDataRecord } from '../../types/accounts'
 import type { RewardsNotification } from '../../types/notifications'
 
 import { enduranceWaveLines } from '../stw/endurance-waves'
+import { claimedQuestTitles } from '../stw/reward-names'
 import { numberWithCommaSeparator } from './numbers'
 import { parseResource } from './resources'
 import { toast } from '../notifications'
@@ -13,7 +14,16 @@ const recentlyToastedIds = new Set<string>()
 export function getRewardDetailLines(
   notification: RewardsNotification,
 ): string[] {
-  const lines: string[] = enduranceWaveLines(notification.endurance)
+  const lines: string[] = []
+
+  const quests = claimedQuestTitles(notification)
+
+  if (quests.length > 0) {
+    lines.push('Quests')
+    lines.push(...quests)
+  }
+
+  lines.push(...enduranceWaveLines(notification.endurance))
 
   Object.entries(notification.rewards).forEach(([key, quantity]) => {
     if (!quantity) {

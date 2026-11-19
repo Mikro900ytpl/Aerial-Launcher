@@ -1,0 +1,23 @@
+{
+  "description": "Sprawdź, czy wybrane konta mają bana w Fortnite i na ile.",
+  "form": {
+    "submit-button": "Sprawdź"
+  },
+  "summary": "{{banned}} z banem · {{clean}} bez bana",
+  "status": {
+    "clean": "Bez bana",
+    "banned": "Ban",
+    "expired": "Ban się skończył",
+    "error": "Nie udało się sprawdzić",
+    "permanent": "Na stałe"
+  },
+  "fields": {
+    "reason": "Powód",
+    "started": "Od",
+    "ends": "Do",
+    "ended": "Skończył się",
+    "duration": "Długość (dni)",
+    "remaining": "Zostało"
+  },
+  "remaining": "{{days}}d {{hours}}h {{minutes}}m"
+}

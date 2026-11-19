@@ -4,6 +4,8 @@
 import { contextBridge } from 'electron'
 
 import * as accountExportActions from './preload-actions/account-export'
+import * as banStatusActions from './preload-actions/ban-status'
+import * as spritesActions from './preload-actions/sprites'
 import * as accountsActions from './preload-actions/accounts'
 import * as alertsActions from './preload-actions/alerts'
 import * as authenticationActions from './preload-actions/authentication'
@@ -20,6 +22,7 @@ import * as gamesLauncherActions from './preload-actions/games-launcher'
 import * as generalActions from './preload-actions/general'
 import * as launcherActions from './preload-actions/launcher'
 import * as itemShopActions from './preload-actions/item-shop'
+import * as stwShopActions from './preload-actions/stw-shop'
 import * as llamaManagerActions from './preload-actions/llama-manager'
 import * as matchmakingActions from './preload-actions/matchmaking'
 import * as mcpActions from './preload-actions/mcp'
@@ -35,6 +38,8 @@ import * as worldInfoActions from './preload-actions/world-info'
 
 export const availableElectronAPIs = {
   ...accountExportActions,
+  ...banStatusActions,
+  ...spritesActions,
   ...accountsActions,
   ...alertsActions,
   ...authenticationActions,
@@ -51,6 +56,7 @@ export const availableElectronAPIs = {
   ...generalActions,
   ...launcherActions,
   ...itemShopActions,
+  ...stwShopActions,
   ...llamaManagerActions,
   ...partyActions,
   ...redeemCodesActions,

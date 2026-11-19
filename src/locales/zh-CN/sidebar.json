@@ -19,6 +19,7 @@
       "auto-llamas": "自动羊驼",
       "llama-manager": "羊驼管理",
       "item-shop": "商店",
+      "stw-shop": "STW Shop",
       "collection-book": "收藏书",
       "account-info": "Account Information",
       "unlock": "解锁 SSD 奖励"
@@ -34,6 +35,8 @@
       "vbucks-information": "V币信息",
       "cloud-storage": "Cloud Storage",
       "account-export": "Account Export",
+      "ban-status": "Ban Status",
+      "sprites": "Sprites",
       "redeem-codes": "兑换码",
       "devices-auth": "设备授权",
       "epic-settings": "Epic 游戏设置"

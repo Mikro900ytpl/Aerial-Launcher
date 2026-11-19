@@ -2,7 +2,12 @@
   "description": "Получайте ежедневные задания и управляйте заменой для выбранных аккаунтов.",
   "form": {
     "submit-button": "Загрузить ежедневные задания",
-    "auto-daily-quests": "Auto Daily Quests (on app start & daily reset)",
+    "auto-daily-quests": "Auto Daily Quests (once a day)",
+    "replace-list": "Replace these quests",
+    "replace-list-hint": "On startup and at 00:01 UTC, if today's quests were not refreshed yet, they are refreshed and the checked ones are replaced while rerolls remain.",
+    "filter": "Filter quests",
+    "refreshed-today": "Refreshed today on {{count}} accounts.",
+    "not-refreshed": "Not refreshed yet today.",
     "replace-button": "Заменить"
   },
   "list": {

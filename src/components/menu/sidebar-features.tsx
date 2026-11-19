@@ -23,7 +23,10 @@ import {
   ScrollText,
   Settings,
   Shield,
+  ShieldAlert,
+  Sparkles,
   ShoppingBag,
+  Store,
   Swords,
   Ticket,
   UserMinus,
@@ -277,6 +280,12 @@ function featureContent(
         icon: <ShoppingBag className={iconClass} />,
         label: t('stw-operations.options.item-shop'),
       }
+    case 'stwShop':
+      return {
+        link: { to: '/stw-operations/stw-shop' },
+        icon: <Store className={iconClass} />,
+        label: t('stw-operations.options.stw-shop'),
+      }
     case 'llamaManager':
       return {
         link: { to: '/stw-operations/llama-manager' },
@@ -312,6 +321,20 @@ function featureContent(
         link: { to: '/account-management/account-export' },
         icon: <Download className={iconClass} />,
         label: t('account-management.options.account-export'),
+      }
+    case 'banStatus':
+      return {
+        link: { to: '/account-management/ban-status' },
+        icon: <ShieldAlert className={iconClass} />,
+        label: t('account-management.options.ban-status'),
+        disabled: !areThereAccounts,
+      }
+    case 'sprites':
+      return {
+        link: { to: '/account-management/sprites' },
+        icon: <Sparkles className={iconClass} />,
+        label: t('account-management.options.sprites'),
+        disabled: !areThereAccounts,
       }
     case 'redeemCodes':
       return {

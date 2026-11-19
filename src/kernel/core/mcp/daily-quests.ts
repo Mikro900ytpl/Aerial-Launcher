@@ -11,6 +11,8 @@ import { ElectronAPIEventKeys } from '../../../config/constants/main-process'
 import { MainWindow } from '../../startup/windows/main'
 import { Authentication } from '../authentication'
 
+import { MCPClientQuestLogin } from './client-quest-login'
+
 import {
   getQueryProfile,
   setFortRerollDailyQuest,
@@ -129,6 +131,73 @@ export class MCPDailyQuests {
     )
   }
 
+  static async loginAndReplace(
+    account: AccountData,
+    replaceIds: Set<string>,
+  ): Promise<{ ok: boolean; errorMessage?: string }> {
+    const claimed = await MCPClientQuestLogin.claimAccount(account)
+
+    if (!claimed.ok) {
+      return {
+        ok: false,
+        errorMessage: claimed.errorMessage ?? 'Unknown Error',
+      }
+    }
+
+    const accessToken = await Authentication.verifyAccessToken(account)
+
+    if (!accessToken) {
+      return { ok: true }
+    }
+
+    if (replaceIds.size === 0) {
+      return { ok: true }
+    }
+
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      let profile: Awaited<
+        ReturnType<typeof getQueryProfile>
+      >['data']['profileChanges'][0]['profile'] | null = null
+
+      try {
+        const profileResponse = await getQueryProfile({
+          accessToken,
+          accountId: account.accountId,
+        })
+
+        profile = profileResponse.data.profileChanges?.[0]?.profile ?? null
+      } catch {
+        return { ok: true }
+      }
+
+      if (!profile) {
+        return { ok: true }
+      }
+
+      const rerolls =
+        profile.stats?.attributes?.quest_manager?.dailyQuestRerolls ?? 0
+      const target = parseDailyQuests(profile).find((quest) =>
+        replaceIds.has(dailyQuestKey(quest.templateId)),
+      )
+
+      if (!target || rerolls <= 0) {
+        return { ok: true }
+      }
+
+      try {
+        await setFortRerollDailyQuest({
+          accessToken,
+          accountId: account.accountId,
+          questId: target.questId,
+        })
+      } catch {
+        return { ok: true }
+      }
+    }
+
+    return { ok: true }
+  }
+
   private static async requestAccount(
     account: AccountData,
   ): Promise<DailyQuestsAccountData> {
@@ -179,6 +248,10 @@ export class MCPDailyQuests {
 
     return result
   }
+}
+
+function dailyQuestKey(templateId: string) {
+  return templateId.replace(/^Quest:/i, '').trim().toLowerCase()
 }
 
 function parseDailyQuests(

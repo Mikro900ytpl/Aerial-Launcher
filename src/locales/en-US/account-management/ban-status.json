@@ -1,0 +1,23 @@
+{
+  "description": "Check whether the selected accounts have a Fortnite ban, and for how long.",
+  "form": {
+    "submit-button": "Check"
+  },
+  "summary": "{{banned}} banned · {{clean}} clean",
+  "status": {
+    "clean": "No ban",
+    "banned": "Banned",
+    "expired": "Ban expired",
+    "error": "Could not check",
+    "permanent": "Permanent"
+  },
+  "fields": {
+    "reason": "Reason",
+    "started": "Started",
+    "ends": "Ends",
+    "ended": "Ended",
+    "duration": "Length (days)",
+    "remaining": "Time left"
+  },
+  "remaining": "{{days}}d {{hours}}h {{minutes}}m"
+}

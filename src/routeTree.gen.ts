@@ -18,6 +18,7 @@ import { Route as StwOperationsXpboostsRouteImport } from './routes/stw-operatio
 import { Route as StwOperationsUrnsRouteImport } from './routes/stw-operations/urns/route'
 import { Route as StwOperationsUnlockRouteImport } from './routes/stw-operations/unlock/route'
 import { Route as StwOperationsTaxiServiceRouteImport } from './routes/stw-operations/taxi-service/route'
+import { Route as StwOperationsStwShopRouteImport } from './routes/stw-operations/stw-shop/route'
 import { Route as StwOperationsStormShieldsRouteImport } from './routes/stw-operations/storm-shields/route'
 import { Route as StwOperationsSaveQuestsRouteImport } from './routes/stw-operations/save-quests/route'
 import { Route as StwOperationsPartyRouteImport } from './routes/stw-operations/party/route'
@@ -36,10 +37,12 @@ import { Route as AdvancedModeWorldInfoRouteImport } from './routes/advanced-mod
 import { Route as AdvancedModeMatchmakingTrackRouteImport } from './routes/advanced-mode/matchmaking-track/route'
 import { Route as AccountsRemoveRouteImport } from './routes/accounts/remove/route'
 import { Route as AccountManagementVbucksInformationRouteImport } from './routes/account-management/vbucks-information/route'
+import { Route as AccountManagementSpritesRouteImport } from './routes/account-management/sprites/route'
 import { Route as AccountManagementRedeemCodesRouteImport } from './routes/account-management/redeem-codes/route'
 import { Route as AccountManagementEulaRouteImport } from './routes/account-management/eula/route'
 import { Route as AccountManagementEpicGamesSettingsRouteImport } from './routes/account-management/epic-games-settings/route'
 import { Route as AccountManagementDevicesAuthRouteImport } from './routes/account-management/devices-auth/route'
+import { Route as AccountManagementBanStatusRouteImport } from './routes/account-management/ban-status/route'
 import { Route as AccountManagementAccountExportRouteImport } from './routes/account-management/account-export/route'
 import { Route as AccountsAddTypeImport } from './routes/accounts/add/$type'
 
@@ -82,6 +85,11 @@ const StwOperationsTaxiServiceRouteRoute =
     path: '/stw-operations/taxi-service',
     getParentRoute: () => rootRoute,
   } as any)
+
+const StwOperationsStwShopRouteRoute = StwOperationsStwShopRouteImport.update({
+  path: '/stw-operations/stw-shop',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const StwOperationsStormShieldsRouteRoute =
   StwOperationsStormShieldsRouteImport.update({
@@ -190,6 +198,12 @@ const AccountManagementVbucksInformationRouteRoute =
     getParentRoute: () => rootRoute,
   } as any)
 
+const AccountManagementSpritesRouteRoute =
+  AccountManagementSpritesRouteImport.update({
+    path: '/account-management/sprites',
+    getParentRoute: () => rootRoute,
+  } as any)
+
 const AccountManagementRedeemCodesRouteRoute =
   AccountManagementRedeemCodesRouteImport.update({
     path: '/account-management/redeem-codes',
@@ -212,6 +226,12 @@ const AccountManagementEpicGamesSettingsRouteRoute =
 const AccountManagementDevicesAuthRouteRoute =
   AccountManagementDevicesAuthRouteImport.update({
     path: '/account-management/devices-auth',
+    getParentRoute: () => rootRoute,
+  } as any)
+
+const AccountManagementBanStatusRouteRoute =
+  AccountManagementBanStatusRouteImport.update({
+    path: '/account-management/ban-status',
     getParentRoute: () => rootRoute,
   } as any)
 
@@ -246,6 +266,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountManagementAccountExportRouteImport
       parentRoute: typeof rootRoute
     }
+    '/account-management/ban-status': {
+      preLoaderRoute: typeof AccountManagementBanStatusRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/account-management/devices-auth': {
       preLoaderRoute: typeof AccountManagementDevicesAuthRouteImport
       parentRoute: typeof rootRoute
@@ -260,6 +284,10 @@ declare module '@tanstack/react-router' {
     }
     '/account-management/redeem-codes': {
       preLoaderRoute: typeof AccountManagementRedeemCodesRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/account-management/sprites': {
+      preLoaderRoute: typeof AccountManagementSpritesRouteImport
       parentRoute: typeof rootRoute
     }
     '/account-management/vbucks-information': {
@@ -334,6 +362,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StwOperationsStormShieldsRouteImport
       parentRoute: typeof rootRoute
     }
+    '/stw-operations/stw-shop': {
+      preLoaderRoute: typeof StwOperationsStwShopRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/stw-operations/taxi-service': {
       preLoaderRoute: typeof StwOperationsTaxiServiceRouteImport
       parentRoute: typeof rootRoute
@@ -364,10 +396,12 @@ export const routeTree = rootRoute.addChildren([
   GamesLauncherRouteRoute,
   SettingsRouteRoute,
   AccountManagementAccountExportRouteRoute,
+  AccountManagementBanStatusRouteRoute,
   AccountManagementDevicesAuthRouteRoute,
   AccountManagementEpicGamesSettingsRouteRoute,
   AccountManagementEulaRouteRoute,
   AccountManagementRedeemCodesRouteRoute,
+  AccountManagementSpritesRouteRoute,
   AccountManagementVbucksInformationRouteRoute,
   AccountsRemoveRouteRoute,
   AdvancedModeMatchmakingTrackRouteRoute,
@@ -386,6 +420,7 @@ export const routeTree = rootRoute.addChildren([
   StwOperationsPartyRouteRoute,
   StwOperationsSaveQuestsRouteRoute,
   StwOperationsStormShieldsRouteRoute,
+  StwOperationsStwShopRouteRoute,
   StwOperationsTaxiServiceRouteRoute,
   StwOperationsUnlockRouteRoute,
   StwOperationsUrnsRouteRoute,

@@ -21,6 +21,7 @@ import {
 import { assets } from '../repository'
 import { schematicDisplayName, schematicIconUrl } from '../stw/dq-weapons'
 import { gameItemName } from '../stw/display-names'
+import { bannerRewardName } from '../stw/reward-names'
 import {
   defenderItemName,
   itemIconUrl,
@@ -279,6 +280,14 @@ export function parseResource({
           `${rarities[rarity.rarity]} ${schematicDisplayName(key)}`
       }
     }
+
+    return data
+  }
+
+  const bannerName = bannerRewardName(key)
+
+  if (bannerName) {
+    data.name = bannerName
 
     return data
   }

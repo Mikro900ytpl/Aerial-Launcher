@@ -22,6 +22,18 @@ import {
   isMCPQueryProfileChangesQuest,
 } from '../../../lib/check-objects'
 
+export type ClaimedQuestReward = {
+  questId: string
+  templateId: string
+  response: MCPClaimQuestRewardResponse
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+}
+
 export class MCPClaimRewards {
   static async openCardPackBatch(
     queryProfile: MCPQueryProfile,
@@ -77,62 +89,50 @@ export class MCPClaimRewards {
     queryProfile: MCPQueryProfile,
     account: AccountData
   ) {
-    const defaultResponse: Array<MCPClaimQuestRewardResponse> = []
+    const claimed: Array<ClaimedQuestReward> = []
 
     try {
       const items = Object.entries(
         queryProfile.profileChanges[0]?.profile?.items ?? {}
       )
-
-      if (items.length <= 0) {
-        return defaultResponse
-      }
-
-      const questIds = items
+      const quests = items
         .filter(
           ([, itemValue]) =>
             isMCPQueryProfileChangesQuest(itemValue) &&
             itemValue.attributes.quest_state === 'Completed'
         )
-        .map(([itemKey]) => itemKey)
+        .map(([itemKey, itemValue]) => ({
+          questId: itemKey,
+          templateId: itemValue.templateId,
+        }))
 
-      if (questIds.length <= 0) {
-        return defaultResponse
+      if (quests.length <= 0) {
+        return claimed
       }
 
-      const response = await Promise.allSettled(
-        questIds.map(async (questId) => {
-          const accessToken =
-            await Authentication.verifyAccessToken(account)
+      // One in-flight ClaimQuestReward per profile. Parallel calls keep a single quest.
+      for (const quest of quests) {
+        const response = await claimQuestOnce(account, quest.questId)
 
-          if (!accessToken) {
-            return null
-          }
+        if (!response) {
+          continue
+        }
 
-          const response = await setClaimQuestReward({
-            accessToken,
-            questId,
-            accountId: account.accountId,
-          })
-
-          return response.data
+        claimed.push({
+          questId: quest.questId,
+          templateId: quest.templateId,
+          response,
         })
-      )
 
-      const sample = response
-        .map((item) =>
-          item.status === 'fulfilled' && item.value ? item.value : null
-        )
-        .filter((item) => item !== null)
-
-      return sample as Array<MCPClaimQuestRewardResponse>
+        await sleep(150)
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       //
     }
 
-    return defaultResponse
+    return claimed
   }
 
   static async claimMissionAlertRewards(account: AccountData) {
@@ -203,4 +203,30 @@ export class MCPClaimRewards {
 
     return null
   }
+}
+
+async function claimQuestOnce(account: AccountData, questId: string) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const accessToken = await Authentication.verifyAccessToken(account)
+
+      if (!accessToken) {
+        return null
+      }
+
+      const response = await setClaimQuestReward({
+        accessToken,
+        questId,
+        accountId: account.accountId,
+      })
+
+      return response.data
+    } catch {
+      if (attempt === 0) {
+        await sleep(400)
+      }
+    }
+  }
+
+  return null
 }

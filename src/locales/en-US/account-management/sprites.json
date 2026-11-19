@@ -1,0 +1,69 @@
+{
+  "description": "Check sprites on the selected accounts. Current season is Treasure Hunters. All seasons also includes Chapter 7 Season 4 and Chapter 7 Season 3, each with its own dust. Gold forms and Sir Oscar that are not out yet are left off the current missing list.",
+  "detail": {
+    "ability": "Ability",
+    "discovered": "Discovered, not summoned",
+    "found": "Found",
+    "holding": "Held",
+    "level": "Level",
+    "level-max": "Lv {{level}} · {{xp}} XP",
+    "level-progress": "Lv {{level}} · {{xp}} / {{next}} XP",
+    "rarity": "Rarity",
+    "status": "Status",
+    "summon-cost": "Summon cost",
+    "summon-cost-value": "{{cost}} dust",
+    "summoned": "Summoned"
+  },
+  "dust": "{{dust}} dust",
+  "empty-filter": "Nothing in this filter.",
+  "filters": {
+    "all": "All",
+    "owned": "Owned",
+    "missing": "Missing",
+    "mastered": "Mastered",
+    "other": "Older"
+  },
+  "form": {
+    "submit-button": "Check"
+  },
+  "level": "Lv {{level}}",
+  "other-count": "{{count}} older",
+  "rarity": {
+    "rare": "Rare",
+    "epic": "Epic",
+    "legendary": "Legendary",
+    "mythic": "Mythic"
+  },
+  "scope": {
+    "current": "Current season",
+    "all": "All seasons"
+  },
+  "seasons": {
+    "current": "Treasure Hunters",
+    "ch7s4": "Chapter 7 Season 4",
+    "ch7s3": "Chapter 7 Season 3"
+  },
+  "status": {
+    "owned": "Owned",
+    "missing": "Missing",
+    "mastered": "Mastered"
+  },
+  "summary": "{{owned}}/{{total}} owned · {{mastered}} mastered · {{missing}} missing",
+  "variant": {
+    "fortune": "Fortune",
+    "cursed": "Cursed",
+    "gold": "Gold",
+    "cheat-master": "Cheat Master",
+    "loot-hacker": "Loot Hacker",
+    "bounty-hunter": "Bounty Hunter",
+    "trick-treat": "Trick or Treat",
+    "quack": "Quack",
+    "candy": "Candy",
+    "galaxy": "Galaxy",
+    "galactic": "Galactic",
+    "gem": "Gem",
+    "holofoil": "Holofoil",
+    "cube": "Cube",
+    "other": "Other"
+  }
+}

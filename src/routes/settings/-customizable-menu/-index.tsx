@@ -677,6 +677,8 @@ function featureLabel(
       return t('stw-operations.options.llama-manager', { ns: 'sidebar' })
     case 'itemShop':
       return t('stw-operations.options.item-shop', { ns: 'sidebar' })
+    case 'stwShop':
+      return t('stw-operations.options.stw-shop', { ns: 'sidebar' })
     case 'collectionBook':
       return t('stw-operations.options.collection-book', { ns: 'sidebar' })
     case 'accountInfo':
@@ -689,6 +691,10 @@ function featureLabel(
       return t('account-management.options.cloud-storage', { ns: 'sidebar' })
     case 'accountExport':
       return t('account-management.options.account-export', { ns: 'sidebar' })
+    case 'banStatus':
+      return t('account-management.options.ban-status', { ns: 'sidebar' })
+    case 'sprites':
+      return t('account-management.options.sprites', { ns: 'sidebar' })
     case 'redeemCodes':
       return t('account-management.options.redeem-codes', { ns: 'sidebar' })
     case 'devicesAuth':

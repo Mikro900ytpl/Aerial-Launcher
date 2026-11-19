@@ -41,7 +41,7 @@ export const Route = createRoute({
   getParentRoute: () => RootRoute,
   path: '/stw-operations/storm-shields',
   component: () => {
-    const { t } = useTranslation(['sidebar'])
+    const { t } = useTranslation(['sidebar', 'stw-operations'])
 
     return (
       <>
@@ -66,7 +66,7 @@ export const Route = createRoute({
           className="flex flex-grow flex-col"
         >
           <div className="flex justify-center px-2">
-            <TabsList>
+            <TabsList className="h-auto flex-wrap">
               <TabsTrigger value="shields">
                 {t('stw-operations.options.storm-shields')}
               </TabsTrigger>

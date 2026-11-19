@@ -42,6 +42,10 @@ import type {
   CloudStorageDownloadRequest,
 } from '../types/cloud-storage'
 import type {
+  StwShopBuyRequest,
+  StwShopSavedItem,
+} from '../types/stw-shop'
+import type {
   XPBoostsConsumePersonalData,
   XPBoostsConsumeTeammateData,
   XPBoostsSearchUserConfig,
@@ -61,6 +65,8 @@ import { ElectronAPIEventKeys } from '../config/constants/main-process'
 import { AlertsDone } from './core/alerts'
 // import { AntiCheatProvider } from './core/anti-cheat-provider'
 import { AccountExport } from './core/account-export'
+import { BanStatus } from './core/ban-status'
+import { Sprites } from './core/sprites'
 import { Authentication } from './core/authentication'
 import { AutomationLogFile } from './core/automation/log-file'
 import { CloudStorage } from './core/cloud-storage'
@@ -77,7 +83,9 @@ import {
 } from './core/item-shop-protocol'
 import { LlamaManager } from './core/llama-manager'
 import { registerFortniteToolsHandlers } from './core/fortnite-tools/register-handlers'
+import { StwShop } from './core/stw-shop'
 import {
+  AutoDailyQuests,
   MCPAccountInfo,
   MCPClientQuestLogin,
   MCPDailyQuests,
@@ -501,6 +509,17 @@ void (() => {
       },
     )
 
+    ipcMain.handle(ElectronAPIEventKeys.DailyQuestsClaimAll, async () => {
+      await Promise.race([
+        AccountsManager.waitUntilLoaded(),
+        new Promise((resolve) => setTimeout(resolve, 20_000)),
+      ])
+
+      return MCPClientQuestLogin.claim([
+        ...AccountsManager.getAccounts().values(),
+      ])
+    })
+
     ipcMain.on(
       ElectronAPIEventKeys.DailyQuestsRequest,
       async (_, accounts: Array<AccountData>) => {
@@ -514,6 +533,57 @@ void (() => {
         await MCPDailyQuests.reroll(account, questId)
       },
     )
+
+    ipcMain.on(ElectronAPIEventKeys.AutoDailyQuestsConfigRequest, async () => {
+      await AutoDailyQuests.publish()
+    })
+
+    ipcMain.on(
+      ElectronAPIEventKeys.AutoDailyQuestsConfigSave,
+      async (_, replaceIds: Array<string>) => {
+        await AutoDailyQuests.saveReplaceIds(replaceIds)
+      },
+    )
+
+    ipcMain.on(ElectronAPIEventKeys.AutoDailyQuestsRun, () => {
+      void AutoDailyQuests.kick({ forceEnabled: true })
+    })
+
+    ipcMain.on(ElectronAPIEventKeys.StwShopConfigRequest, () => {
+      void StwShop.publish()
+    })
+
+    ipcMain.on(
+      ElectronAPIEventKeys.StwShopConfigSave,
+      (
+        _,
+        config: {
+          enabled?: boolean
+          accountIds?: Array<string>
+          items?: Array<StwShopSavedItem>
+        },
+      ) => {
+        void StwShop.saveConfig(config)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.StwShopLoadRequest,
+      (_, accounts: Array<AccountData>) => {
+        void StwShop.load(accounts)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.StwShopBuyRequest,
+      (_, request: StwShopBuyRequest) => {
+        void StwShop.buy(request)
+      },
+    )
+
+    ipcMain.on(ElectronAPIEventKeys.StwShopAutoRun, (_, force?: boolean) => {
+      void StwShop.runAuto({ force: force === true })
+    })
 
     ipcMain.on(
       ElectronAPIEventKeys.DqWeaponsRequest,
@@ -1203,6 +1273,20 @@ void (() => {
       },
     )
 
+    ipcMain.on(
+      ElectronAPIEventKeys.BanStatusRequest,
+      async (_, accounts: Array<AccountData>) => {
+        await BanStatus.request(accounts)
+      },
+    )
+
+    ipcMain.on(
+      ElectronAPIEventKeys.SpritesRequest,
+      async (_, accounts: Array<AccountData>, scope: unknown) => {
+        await Sprites.request(accounts, scope === 'all' ? 'all' : 'current')
+      },
+    )
+
     /**
      * Redeem Codes
      */
@@ -1320,42 +1404,31 @@ void (() => {
     )
 
     /**
-     * Auto Daily Quests (ClientQuestLogin)
+     * Auto Daily Quests: once per UTC day, then replace the checked quests.
+     * Auto STW shop: once per weekly reset (Wednesday 00:00 UTC).
      */
 
-    const runAutoDailyQuests = async () => {
-      const settings = await SettingsManager.getData()
+    const runDailyMaintenance = () => {
+      void AutoDailyQuests.kick().then(() => {
+        if (new Date().getUTCDay() === 3) {
+          return StwShop.runAuto({ silent: true })
+        }
 
-      if (!settings.autoDailyQuests) {
-        return
-      }
-
-      const accounts = AccountsManager.getAccounts()
-
-      if (accounts.size > 0) {
-        MCPClientQuestLogin.save([...accounts.values()])
-      }
+        return undefined
+      })
     }
 
     schedule.scheduleJob(
       {
-        /**
-         * Runs: every reset at time: 00:01:00 AM
-         * Hour: 0 AM (midnight)
-         * Minute: 1
-         * Second: 0
-         */
         rule: '0 1 0 * * *',
-        /**
-         * Time zone
-         */
         tz: 'UTC',
       },
-      runAutoDailyQuests
+      runDailyMaintenance,
     )
 
-    // Startup trigger: run once after accounts have loaded
-    setTimeout(runAutoDailyQuests, 30_000)
+    setTimeout(() => {
+      void AutoDailyQuests.kick().then(() => StwShop.runAuto({ silent: true }))
+    }, 30_000)
   })
 
   // Quit when all windows are closed, except on macOS. There, it's common

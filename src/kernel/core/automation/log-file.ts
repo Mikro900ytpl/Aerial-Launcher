@@ -47,12 +47,20 @@ type FileCursor = {
   lastMatchAt: number
 }
 
+type PendingMatchAction = {
+  account: AccountData
+  label: string
+  settings: AutomationLogFileSettings
+  readyAt: number
+}
+
 export class AutomationLogFile {
   private static settings: AutomationLogFileSettings | null = null
   private static cursors = new Map<string, FileCursor>()
   private static timer: NodeJS.Timeout | null = null
   private static busy = false
-  private static acting = false
+  private static pumping = false
+  private static queue: Array<PendingMatchAction> = []
   private static lastStatusJson = ''
   private static lastEvent: string | null = null
   private static stamp = 0
@@ -364,19 +372,62 @@ export class AutomationLogFile {
       return
     }
 
-    if (AutomationLogFile.acting) {
+    // Another instance can reach End of Match while a claim is still running.
+    // Dropping that line also consumed lastMatchAt, so the account never claimed.
+    AutomationLogFile.enqueue({
+      account,
+      label,
+      settings: { ...settings },
+      readyAt: Date.now() + MATCH_SLEEP_MS,
+    })
+  }
+
+  private static enqueue(action: PendingMatchAction) {
+    const alreadyQueued = AutomationLogFile.queue.some(
+      (item) => item.account.accountId === action.account.accountId,
+    )
+
+    if (alreadyQueued) {
       return
     }
 
-    AutomationLogFile.acting = true
+    AutomationLogFile.queue.push(action)
+    AutomationLogFile.setEvent(`End of match · ${action.label} · queued`)
+    AutomationLogFile.pump()
+  }
+
+  private static pump() {
+    if (AutomationLogFile.pumping) {
+      return
+    }
+
+    const next = AutomationLogFile.queue[0]
+
+    if (!next) {
+      return
+    }
+
+    AutomationLogFile.pumping = true
+
+    const wait = Math.max(0, next.readyAt - Date.now())
 
     setTimeout(() => {
-      AutomationLogFile.runActions(account, label, settings)
+      const job = AutomationLogFile.queue.shift()
+
+      if (!job) {
+        AutomationLogFile.pumping = false
+        AutomationLogFile.pump()
+
+        return
+      }
+
+      AutomationLogFile.runActions(job.account, job.label, job.settings)
         .catch(() => {})
         .finally(() => {
-          AutomationLogFile.acting = false
+          AutomationLogFile.pumping = false
+          AutomationLogFile.pump()
         })
-    }, MATCH_SLEEP_MS)
+    }, wait)
   }
 
   private static async runActions(
